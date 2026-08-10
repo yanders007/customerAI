@@ -1,153 +1,84 @@
-2026-08-10T15:22:38.139985141Z Starting migration AddCreatorIdToProjectTable1764276827837
-2026-08-10T15:22:38.997624319Z Finished migration AddCreatorIdToProjectTable1764276827837
-2026-08-10T15:22:39.208429718Z Starting migration CreateDynamicCredentialResolverTable1764682447000
-2026-08-10T15:22:39.42293549Z Finished migration CreateDynamicCredentialResolverTable1764682447000
-2026-08-10T15:22:39.63343611Z Starting migration AddDynamicCredentialEntryTable1764689388394
-2026-08-10T15:22:39.918866047Z Finished migration AddDynamicCredentialEntryTable1764689388394
-2026-08-10T15:22:40.129335698Z Starting migration BackfillMissingWorkflowHistoryRecords1765448186933
-2026-08-10T15:22:40.20026632Z Finished migration BackfillMissingWorkflowHistoryRecords1765448186933
-2026-08-10T15:22:40.410365411Z Starting migration AddResolvableFieldsToCredentials1765459448000
-2026-08-10T15:22:41.268367917Z Finished migration AddResolvableFieldsToCredentials1765459448000
-2026-08-10T15:22:41.479393833Z Starting migration AddIconToAgentTable1765788427674
-2026-08-10T15:22:42.12557726Z Finished migration AddIconToAgentTable1765788427674
-2026-08-10T15:22:42.33637213Z Starting migration ConvertAgentIdToUuid1765804780000
-2026-08-10T15:22:42.481387962Z Finished migration ConvertAgentIdToUuid1765804780000
-2026-08-10T15:22:42.672337352Z There was an error initializing DB
-2026-08-10T15:22:42.672382223Z SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
-2026-08-10T15:22:42.692617025Z Starting migration AddAgentIdForeignKeys1765886667897
-2026-08-10T15:22:44.126312777Z Finished migration AddAgentIdForeignKeys1765886667897
-2026-08-10T15:22:44.337861099Z Starting migration AddWorkflowVersionIdToExecutionData1765892199653
-2026-08-10T15:22:44.408488282Z Finished migration AddWorkflowVersionIdToExecutionData1765892199653
-2026-08-10T15:22:44.618932253Z Starting migration AddWorkflowPublishScopeToProjectRoles1766064542000
-2026-08-10T15:22:44.746990376Z 2026-08-10 15:22:44,746 WARN exited: n8n (exit status 1; not expected)
-2026-08-10T15:22:44.747032597Z 2026-08-10 15:22:44,746 WARN exited: n8n (exit status 1; not expected)
-2026-08-10T15:22:44.762443253Z Added workflow:publish scope to project roles with workflow:update
-2026-08-10T15:22:44.762504875Z Finished migration AddWorkflowPublishScopeToProjectRoles1766064542000
-2026-08-10T15:22:44.973390458Z Starting migration AddChatMessageIndices1766068346315
-2026-08-10T15:22:45.748925273Z 2026-08-10 15:22:45,748 INFO spawned: 'n8n' with pid 159
-2026-08-10T15:22:45.748956984Z 2026-08-10 15:22:45,748 INFO spawned: 'n8n' with pid 159
-2026-08-10T15:22:45.830215671Z Finished migration AddChatMessageIndices1766068346315
-2026-08-10T15:22:46.041189936Z Starting migration ExpandInsightsWorkflowIdLength1766500000000
-2026-08-10T15:22:46.112870789Z Finished migration ExpandInsightsWorkflowIdLength1766500000000
-2026-08-10T15:22:46.352283049Z Starting migration ChangeWorkflowStatisticsFKToNoAction1767018516000
-2026-08-10T15:22:46.919120789Z Finished migration ChangeWorkflowStatisticsFKToNoAction1767018516000
-2026-08-10T15:22:47.130569998Z Starting migration ExpandModelColumnLength1768402473068
-2026-08-10T15:22:47.272397491Z Finished migration ExpandModelColumnLength1768402473068
-2026-08-10T15:22:47.483035137Z Starting migration AddStoredAtToExecutionEntity1768557000000
-2026-08-10T15:22:47.554108073Z Finished migration AddStoredAtToExecutionEntity1768557000000
-2026-08-10T15:22:47.764326577Z Starting migration AddDynamicCredentialUserEntryTable1768901721000
-2026-08-10T15:22:48.048996262Z Finished migration AddDynamicCredentialUserEntryTable1768901721000
-2026-08-10T15:22:48.259430082Z Starting migration AddPublishedVersionIdToWorkflowDependency1769000000000
-2026-08-10T15:22:48.976135099Z Finished migration AddPublishedVersionIdToWorkflowDependency1769000000000
-2026-08-10T15:22:49.188684149Z Starting migration CreateSecretsProviderConnectionTables1769433700000
-2026-08-10T15:22:50.119794867Z Finished migration CreateSecretsProviderConnectionTables1769433700000
-2026-08-10T15:22:50.328945152Z Starting migration CreateWorkflowPublishedVersionTable1769698710000
-2026-08-10T15:22:50.472144133Z Finished migration CreateWorkflowPublishedVersionTable1769698710000
-2026-08-10T15:22:50.682981155Z Starting migration ExpandSubjectIDColumnLength1769784356000
-2026-08-10T15:22:50.84551118Z 2026-08-10 15:22:50,845 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
-2026-08-10T15:22:50.845533691Z 2026-08-10 15:22:50,845 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
-2026-08-10T15:22:52.104856037Z Finished migration ExpandSubjectIDColumnLength1769784356000
-2026-08-10T15:22:52.31610124Z Starting migration AddWorkflowUnpublishScopeToCustomRoles1769900001000
-2026-08-10T15:22:52.456661408Z Finished migration AddWorkflowUnpublishScopeToCustomRoles1769900001000
-2026-08-10T15:22:57.150044378Z Importing 1 workflows...
-2026-08-10T15:22:58.416677337Z Deactivating workflow "final client". Remember to activate later.
-2026-08-10T15:22:59.343225047Z Successfully imported 1 workflow.
-2026-08-10T15:22:59.457305477Z ▶ Lancement de Supervisor...
-2026-08-10T15:23:00.669988068Z 2026-08-10 15:23:00,669 INFO Set uid to user 0 succeeded
-2026-08-10T15:23:00.670009019Z 2026-08-10 15:23:00,669 INFO Set uid to user 0 succeeded
-2026-08-10T15:23:00.744667066Z 2026-08-10 15:23:00,744 INFO RPC interface 'supervisor' initialized
-2026-08-10T15:23:00.744687557Z 2026-08-10 15:23:00,744 INFO RPC interface 'supervisor' initialized
-2026-08-10T15:23:00.744699867Z 2026-08-10 15:23:00,744 CRIT Server 'unix_http_server' running without any HTTP authentication checking
-2026-08-10T15:23:00.744726788Z 2026-08-10 15:23:00,744 CRIT Server 'unix_http_server' running without any HTTP authentication checking
-2026-08-10T15:23:00.745066548Z 2026-08-10 15:23:00,744 INFO supervisord started with pid 1
-2026-08-10T15:23:00.745078728Z 2026-08-10 15:23:00,744 INFO supervisord started with pid 1
-2026-08-10T15:23:01.74788266Z 2026-08-10 15:23:01,747 INFO spawned: 'n8n' with pid 54
-2026-08-10T15:23:01.747911451Z 2026-08-10 15:23:01,747 INFO spawned: 'n8n' with pid 54
-2026-08-10T15:23:01.74965643Z 2026-08-10 15:23:01,749 INFO spawned: 'php-fpm' with pid 55
-2026-08-10T15:23:01.74966721Z 2026-08-10 15:23:01,749 INFO spawned: 'php-fpm' with pid 55
-2026-08-10T15:23:01.751754808Z 2026-08-10 15:23:01,751 INFO spawned: 'nginx' with pid 56
-2026-08-10T15:23:01.751764879Z 2026-08-10 15:23:01,751 INFO spawned: 'nginx' with pid 56
-2026-08-10T15:23:01.846529709Z 2026-08-10 15:23:01,846 INFO spawned: 'queue-worker' with pid 57
-2026-08-10T15:23:01.846549009Z 2026-08-10 15:23:01,846 INFO spawned: 'queue-worker' with pid 57
-2026-08-10T15:23:02.848260561Z 2026-08-10 15:23:02,848 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-2026-08-10T15:23:02.848288271Z 2026-08-10 15:23:02,848 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-2026-08-10T15:23:02.848291262Z 2026-08-10 15:23:02,848 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-2026-08-10T15:23:02.848293271Z 2026-08-10 15:23:02,848 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-2026-08-10T15:23:03.550681473Z [10-Aug-2026 15:23:03] NOTICE: fpm is running, pid 55
-2026-08-10T15:23:03.645461774Z [10-Aug-2026 15:23:03] NOTICE: ready to handle connections
-2026-08-10T15:23:07.043751117Z Initializing n8n process
-2026-08-10T15:23:07.649213513Z 2026-08-10 15:23:07,648 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
-2026-08-10T15:23:07.649260284Z 2026-08-10 15:23:07,648 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
-2026-08-10T15:23:07.649267445Z 2026-08-10 15:23:07,648 INFO success: queue-worker entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
-2026-08-10T15:23:07.649272155Z 2026-08-10 15:23:07,648 INFO success: queue-worker entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
-2026-08-10T15:23:11.845212301Z ==> Your service is live 🎉
-2026-08-10T15:23:11.998239798Z ==> 
-2026-08-10T15:23:12.00093892Z ==> ///////////////////////////////////////////////////////////
-2026-08-10T15:23:12.00356494Z ==> 
-2026-08-10T15:23:12.005805484Z ==> Available at your primary URL https://customerai-oja8.onrender.com
-2026-08-10T15:23:12.008445235Z ==> 
-2026-08-10T15:23:12.010828811Z ==> ///////////////////////////////////////////////////////////
-2026-08-10T15:23:12.048952749Z 2026-08-10 15:23:12,048 WARN received SIGQUIT indicating exit request
-2026-08-10T15:23:12.04898584Z 2026-08-10 15:23:12,048 WARN received SIGQUIT indicating exit request
-2026-08-10T15:23:12.14346569Z 2026-08-10 15:23:12,143 CRIT unknown problem killing queue-worker (56):Traceback (most recent call last):
-2026-08-10T15:23:12.143497751Z   File "/usr/lib/python3/dist-packages/supervisor/process.py", line 467, in kill
-2026-08-10T15:23:12.143505351Z     options.kill(pid, sig)
-2026-08-10T15:23:12.143514031Z   File "/usr/lib/python3/dist-packages/supervisor/options.py", line 1320, in kill
-2026-08-10T15:23:12.143520131Z     os.kill(pid, signal)
-2026-08-10T15:23:12.143524961Z PermissionError: [Errno 1] Operation not permitted
-2026-08-10T15:23:12.143528842Z 
-2026-08-10T15:23:12.143533151Z 2026-08-10 15:23:12,143 CRIT unknown problem killing queue-worker (56):Traceback (most recent call last):
-2026-08-10T15:23:12.143537082Z   File "/usr/lib/python3/dist-packages/supervisor/process.py", line 467, in kill
-2026-08-10T15:23:12.143540962Z     options.kill(pid, sig)
-2026-08-10T15:23:12.143544922Z   File "/usr/lib/python3/dist-packages/supervisor/options.py", line 1320, in kill
-2026-08-10T15:23:12.143548762Z     os.kill(pid, signal)
-2026-08-10T15:23:12.143552662Z PermissionError: [Errno 1] Operation not permitted
-2026-08-10T15:23:12.143556412Z 
-2026-08-10T15:23:12.143572992Z 2026-08-10 15:23:12,143 INFO waiting for n8n, php-fpm, nginx to die
-2026-08-10T15:23:12.143577352Z 2026-08-10 15:23:12,143 INFO waiting for n8n, php-fpm, nginx to die
-2026-08-10T15:23:12.864451129Z There was an error initializing DB
-2026-08-10T15:23:12.864590022Z SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
-2026-08-10T15:23:12.86858025Z 2026-08-10 15:23:12,868 INFO stopped: nginx (exit status 0)
-2026-08-10T15:23:12.86858078Z [10-Aug-2026 15:23:12] NOTICE: Terminating ...
-2026-08-10T15:23:12.86859788Z 2026-08-10 15:23:12,868 INFO stopped: nginx (exit status 0)
-2026-08-10T15:23:14.949726814Z 2026-08-10 15:23:14,949 WARN exited: n8n (exit status 1; not expected)
-2026-08-10T15:23:14.949755015Z 2026-08-10 15:23:14,949 WARN exited: n8n (exit status 1; not expected)
-2026-08-10T15:23:15.950540214Z 2026-08-10 15:23:15,950 INFO waiting for php-fpm to die
-2026-08-10T15:23:15.950561365Z 2026-08-10 15:23:15,950 INFO waiting for php-fpm to die
-2026-08-10T15:23:26.157781534Z Initializing n8n process
-2026-08-10T15:23:32.985890911Z n8n ready on ::, port 5678
-2026-08-10T15:23:34.545511777Z n8n Task Broker ready on 127.0.0.1, port 5679
-2026-08-10T15:23:35.045832168Z Failed to start Python task runner in internal mode. because its virtual environment is missing from this system. Launching a Python runner in internal mode is intended only for debugging and is not recommended for production. Users are encouraged to deploy in external mode. See: https://docs.n8n.io/hosting/configuration/task-runners/#setting-up-external-mode
-2026-08-10T15:23:35.549684768Z 
-2026-08-10T15:23:35.54975099Z There is a deprecation related to your environment variables. Please take the recommended actions to update your configuration:
-2026-08-10T15:23:35.549757281Z  - N8N_RUNNERS_ENABLED -> Remove this environment variable; it is no longer needed.
-2026-08-10T15:23:35.54976027Z 
-2026-08-10T15:23:35.945788636Z [license SDK] Skipping renewal on init: license cert is not initialized
-2026-08-10T15:23:39.621652633Z ==> Detected a new open port HTTP:5678
-2026-08-10T15:23:50.244746627Z Database connection timed out
-2026-08-10T15:24:00.345856806Z Task runner connection attempt failed with status code 403
-2026-08-10T15:24:00.346633128Z Task runner connection attempt failed with status code 403
-2026-08-10T15:24:00.647925325Z Database connection timed out
-2026-08-10T15:24:08.046599928Z Database connection recovered
-2026-08-10T15:24:23.945005445Z Task runner connection attempt failed with status code 403
-2026-08-10T15:24:23.945297064Z Task runner connection attempt failed with status code 403
-2026-08-10T15:24:32.251886387Z Database connection timed out
-2026-08-10T15:24:38.144878067Z Database connection recovered
-2026-08-10T15:24:40.34402942Z Version: 2.8.4
-2026-08-10T15:24:40.346044736Z Building workflow dependency index...
-2026-08-10T15:24:41.635901323Z ==> Detected a new open port HTTP:5678
-2026-08-10T15:24:43.744827061Z Task runner connection attempt failed with status code 403
-2026-08-10T15:24:43.744846662Z Task runner connection attempt failed with status code 403
-2026-08-10T15:24:44.745099994Z Finished building workflow dependency index. Processed 0 draft workflows, 0 published workflows.
-2026-08-10T15:24:44.817042424Z 
-2026-08-10T15:24:44.817062774Z Editor is now accessible via:
-2026-08-10T15:24:44.817068634Z http://localhost:5678
-2026-08-10T15:24:53.043994227Z Registered runner "JS Task Runner" (7id6zNYXxD_mSYYPg8iTs) 
-2026-08-10T15:25:43.531112482Z ==> Detected a new open port HTTP:5678
-2026-08-10T15:26:45.462869972Z ==> Detected a new open port HTTP:5678
-2026-08-10T15:27:47.033579168Z ==> Detected a new open port HTTP:5678
-2026-08-10T15:28:43.28298273Z ==> Detected service running on port 10000 with additional ports HTTP:5678, TCP:9000
-2026-08-10T15:28:43.474863353Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+#!/bin/bash
+set -e
+export PORT="${PORT:-10000}"
+echo "▶ Démarrage sur le port $PORT"
+# ── Générer la conf Nginx avec le bon port ────────────────────────────────────
+envsubst '${PORT}' < /etc/nginx/templates/default.conf.template \
+    > /etc/nginx/sites-enabled/default
+rm -f /etc/nginx/sites-enabled/000-default.conf 2>/dev/null || true
+# ── Laravel : copier .env si absent ──────────────────────────────────────────
+cd /app/backend
+if [ ! -f ".env" ]; then cp .env.example .env; fi
+if grep -q "^APP_KEY=$" .env || grep -q "^APP_KEY=base64:CHANGE" .env; then
+    php artisan key:generate --force
+fi
+# ── Migrations ───────────────────────────────────────────────────────────────
+echo "▶ Migrations..."
+php artisan migrate --force --no-interaction
+# ── Caches Laravel ───────────────────────────────────────────────────────────
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+# ── Import du workflow n8n (idempotent) ───────────────────────────────────────
+if [ -f "/app/n8n/workflow.json" ]; then
+    echo "▶ Import du workflow n8n..."
+    n8n import:workflow --input=/app/n8n/workflow.json || echo "⚠ Import n8n échoué (workflow déjà présent ?)"
+fi
+# ── Lancer Supervisor (nginx + php-fpm + n8n + queue worker) ─────────────────
+echo "▶ Lancement de Supervisor..."
+exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/app.conf docker entry           supervisor [supervisord]
+nodaemon=true
+logfile=/dev/stdout
+logfile_maxbytes=0
+loglevel=info
+user=root
+[unix_http_server]
+file=/var/run/supervisor.sock
+[supervisorctl]
+serverurl=unix:///var/run/supervisor.sock
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+[program:php-fpm]
+command=php-fpm -F
+autostart=true
+autorestart=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+priority=10
+[program:nginx]
+command=nginx -g "daemon off;"
+autostart=true
+autorestart=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+priority=20
+[program:n8n]
+command=n8n start
+environment=N8N_PORT="5678",N8N_HOST="localhost",N8N_PROTOCOL="http",N8N_EDITOR_BASE_URL="http://localhost:5678/",WEBHOOK_URL="http://localhost:5678/",N8N_RUNNERS_ENABLED="true"
+autostart=true
+autorestart=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+priority=5
+startsecs=5
+[program:queue-worker]
+command=php /app/backend/artisan queue:work database --sleep=3 --tries=3 --timeout=120 --memory=128
+directory=/app/backend
+user=www-data
+autostart=true
+autorestart=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+priority=30
+startsecs=5
 
 
 # ─── APP ───────────────────────────────────────────
