@@ -2,7 +2,7 @@ FROM php:8.3-fpm-bookworm
 
 # ── System deps ─────────────────────────────────────────────────────────────
 RUN apt-get update && apt-get install -y \
-    nginx supervisor curl git unzip zip \
+    nginx supervisor curl git unzip zip gettext-base \
     libpq-dev libzip-dev libpng-dev libonig-dev libxml2-dev \
     && rm -rf /var/lib/apt/lists/*
 
