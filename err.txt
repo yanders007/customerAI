@@ -1,1 +1,30 @@
-o
+2026-08-10 14:59:16,084 WARN exited: n8n (exit status 1; not expected)
+2026-08-10 14:59:16,084 WARN exited: n8n (exit status 1; not expected)
+2026-08-10 14:59:17,087 INFO spawned: 'n8n' with pid 182
+2026-08-10 14:59:17,087 INFO spawned: 'n8n' with pid 182
+2026-08-10 14:59:22,092 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-08-10 14:59:22,092 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+==> Detected service running on port 10000 with additional ports TCP:9000
+==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+Initializing n8n process
+There was an error initializing DB
+SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+2026-08-10 14:59:46,182 WARN exited: n8n (exit status 1; not expected)
+2026-08-10 14:59:46,182 WARN exited: n8n (exit status 1; not expected)
+2026-08-10 14:59:47,184 INFO spawned: 'n8n' with pid 193
+2026-08-10 14:59:47,184 INFO spawned: 'n8n' with pid 193
+2026-08-10 14:59:52,283 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-08-10 14:59:52,283 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+Initializing n8n process
+There was an error initializing DB
+SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+2026-08-10 15:00:17,384 WARN exited: n8n (exit status 1; not expected)
+2026-08-10 15:00:17,384 WARN exited: n8n (exit status 1; not expected)
+2026-08-10 15:00:18,386 INFO spawned: 'n8n' with pid 204
+2026-08-10 15:00:18,386 INFO spawned: 'n8n' with pid 204
+2026-08-10 15:00:23,481 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-08-10 15:00:23,481 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+Initializing n8n process
+There was an error initializing DB
+SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
+0 services selected:
