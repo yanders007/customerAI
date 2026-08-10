@@ -1,0 +1,47 @@
+# ── Environnement ────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# ── Backend Laravel ──────────────────────────────────────────────────────────
+backend/vendor/
+backend/node_modules/
+backend/storage/logs/*.log
+backend/storage/framework/cache/data/*
+backend/storage/framework/views/*
+backend/storage/framework/sessions/*
+backend/bootstrap/cache/*.php
+backend/.phpunit.result.cache
+backend/database/database.sqlite
+backend/database/*.sqlite
+!backend/storage/logs/.gitignore
+!backend/storage/framework/cache/data/.gitignore
+!backend/storage/framework/views/.gitignore
+!backend/storage/framework/sessions/.gitignore
+!backend/bootstrap/cache/.gitignore
+
+# ── Frontend React ────────────────────────────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+frontend/.vercel/
+
+# ── Test files (ne pas exposer en open source) ───────────────────────────────
+backend/test-*.php
+backend/validation-finale.php
+backend/list-gemini-models.php
+backend/cookies.txt
+
+# ── Secrets / clés ───────────────────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+
+# ── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ──────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp

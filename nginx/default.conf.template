@@ -1,0 +1,37 @@
+server {
+    listen ${PORT};
+    server_name _;
+    root /app/backend/public;
+    index index.php;
+
+    # Taille max upload (documents/PDF)
+    client_max_body_size 50M;
+
+    # Laravel : tout renvoyer vers index.php
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # PHP-FPM
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_read_timeout 120;
+    }
+
+    # Fichiers statiques : cache long terme
+    location ~* \.(css|js|jpg|jpeg|png|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Bloquer l'accès aux fichiers sensibles
+    location ~ /\. {
+        deny all;
+    }
+
+    # n8n n'est PAS exposé publiquement (port 5678 interne seulement)
+    # Laravel lui parle via http://localhost:5678
+}
