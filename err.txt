@@ -1,50 +1,20 @@
-2026-08-10T16:39:16.909608979Z Importing 1 workflows...
-2026-08-10T16:39:18.183895179Z Deactivating workflow "final client". Remember to activate later.
-2026-08-10T16:39:18.914434079Z Successfully imported 1 workflow.
-2026-08-10T16:39:19.031298601Z ▶ Lancement de Supervisor...
-2026-08-10T16:39:20.116847606Z 2026-08-10 16:39:20,116 INFO Set uid to user 0 succeeded
-2026-08-10T16:39:20.116875197Z 2026-08-10 16:39:20,116 INFO Set uid to user 0 succeeded
-2026-08-10T16:39:20.120166292Z 2026-08-10 16:39:20,119 INFO RPC interface 'supervisor' initialized
-2026-08-10T16:39:20.120189012Z 2026-08-10 16:39:20,119 INFO RPC interface 'supervisor' initialized
-2026-08-10T16:39:20.120195072Z 2026-08-10 16:39:20,120 CRIT Server 'unix_http_server' running without any HTTP authentication checking
-2026-08-10T16:39:20.120201293Z 2026-08-10 16:39:20,120 CRIT Server 'unix_http_server' running without any HTTP authentication checking
-2026-08-10T16:39:20.120426199Z 2026-08-10 16:39:20,120 INFO supervisord started with pid 1
-2026-08-10T16:39:20.120439339Z 2026-08-10 16:39:20,120 INFO supervisord started with pid 1
-2026-08-10T16:39:21.123442776Z 2026-08-10 16:39:21,123 INFO spawned: 'n8n' with pid 54
-2026-08-10T16:39:21.123470747Z 2026-08-10 16:39:21,123 INFO spawned: 'n8n' with pid 54
-2026-08-10T16:39:21.125477024Z 2026-08-10 16:39:21,125 INFO spawned: 'php-fpm' with pid 55
-2026-08-10T16:39:21.125493215Z 2026-08-10 16:39:21,125 INFO spawned: 'php-fpm' with pid 55
-2026-08-10T16:39:21.207325052Z 2026-08-10 16:39:21,206 INFO spawned: 'nginx' with pid 56
-2026-08-10T16:39:21.207368934Z 2026-08-10 16:39:21,206 INFO spawned: 'nginx' with pid 56
-2026-08-10T16:39:21.309115843Z 2026-08-10 16:39:21,308 INFO spawned: 'queue-worker' with pid 62
-2026-08-10T16:39:21.309150324Z 2026-08-10 16:39:21,308 INFO spawned: 'queue-worker' with pid 62
-2026-08-10T16:39:22.011292109Z [10-Aug-2026 16:39:22] NOTICE: fpm is running, pid 55
-2026-08-10T16:39:22.106899392Z [10-Aug-2026 16:39:22] NOTICE: ready to handle connections
-2026-08-10T16:39:23.107705295Z 2026-08-10 16:39:23,107 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-2026-08-10T16:39:23.107734046Z 2026-08-10 16:39:23,107 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-2026-08-10T16:39:23.107739567Z 2026-08-10 16:39:23,107 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-2026-08-10T16:39:23.107744187Z 2026-08-10 16:39:23,107 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
-2026-08-10T16:39:24.676215649Z ==> Your service is live 🎉
-2026-08-10T16:39:24.855427012Z ==> 
-2026-08-10T16:39:24.858086371Z ==> ///////////////////////////////////////////////////////////
-2026-08-10T16:39:24.860601609Z ==> 
-2026-08-10T16:39:24.863189918Z ==> Available at your primary URL https://customerai-oja8.onrender.com
-2026-08-10T16:39:24.865888898Z ==> 
-2026-08-10T16:39:24.868629529Z ==> ///////////////////////////////////////////////////////////
-2026-08-10T16:39:26.206970245Z 2026-08-10 16:39:26,206 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
-2026-08-10T16:39:26.207006606Z 2026-08-10 16:39:26,206 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
-2026-08-10T16:39:27.20851153Z 2026-08-10 16:39:27,207 INFO success: queue-worker entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
-2026-08-10T16:39:27.208561631Z 2026-08-10 16:39:27,207 INFO success: queue-worker entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
-2026-08-10T16:39:45.207561163Z Initializing n8n process
-2026-08-10T16:39:52.003670962Z n8n ready on ::, port 5678
-2026-08-10T16:39:53.465078017Z n8n Task Broker ready on 127.0.0.1, port 5679
-2026-08-10T16:39:54.107638206Z Failed to start Python task runner in internal mode. because its virtual environment is missing from this system. Launching a Python runner in internal mode is intended only for debugging and is not recommended for production. Users are encouraged to deploy in external mode. See: https://docs.n8n.io/hosting/configuration/task-runners/#setting-up-external-mode
-2026-08-10T16:39:54.613167222Z 
-2026-08-10T16:39:54.613197623Z There is a deprecation related to your environment variables. Please take the recommended actions to update your configuration:
-2026-08-10T16:39:54.613202743Z  - N8N_RUNNERS_ENABLED -> Remove this environment variable; it is no longer needed.
-2026-08-10T16:39:54.613206333Z 
-2026-08-10T16:39:55.506862597Z [license SDK] Skipping renewal on init: license cert is not initialized
-2026-08-10T16:40:09.709935209Z Database connection timed out
-2026-08-10T16:40:19.708286706Z Task runner connection attempt failed with status code 403
-2026-08-10T16:40:19.709174241Z Task runner connection attempt failed with status code 403
-2026-08-10T16:40:20.809775863Z Database connection recovered
+[2026-08-10 16:52:21] production.ERROR: No application encryption key has been specified. {"exception":"[object] (Illuminate\\Encryption\\MissingAppKeyException(code: 0): No application encryption key has been specified. at /app/backend/vendor/laravel/framework/src/Illuminate/Encryption/EncryptionServiceProvider.php:83)
+[stacktrace]
+#0 /app/backend/vendor/laravel/framework/src/Illuminate/Support/helpers.php(393): Illuminate\\Encryption\\EncryptionServiceProvider->Illuminate\\Encryption\\{closure}('')
+#1 /app/backend/vendor/laravel/framework/src/Illuminate/Encryption/EncryptionServiceProvider.php(81): tap('', Object(Closure))
+#2 /app/backend/vendor/laravel/framework/src/Illuminate/Encryption/EncryptionServiceProvider.php(64): Illuminate\\Encryption\\EncryptionServiceProvider->key(Array)
+#3 /app/backend/vendor/laravel/framework/src/Illuminate/Encryption/EncryptionServiceProvider.php(32): Illuminate\\Encryption\\EncryptionServiceProvider->parseKey(Array)
+#4 /app/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(1118): Illuminate\\Encryption\\EncryptionServiceProvider->Illuminate\\Encryption\\{closure}(Object(Illuminate\\Foundation\\Application), Array)
+#5 /app/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(936): Illuminate\\Container\\Container->build(Object(Closure))
+#6 /app/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate\\Container\\Container->resolve('encrypter', Array, true)
+#7 /app/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate\\Foundation\\Application->resolve('encrypter', Array)
+#8 /app/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate\\Container\\Container->make('encrypter', Array)
+#9 /app/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(1339): Illuminate\\Foundation\\Application->make('encrypter')
+#10 /app/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(1240): Illuminate\\Container\\Container->resolveClass(Object(ReflectionParameter), 'Illuminate\\\\Cont...')
+#11 /app/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(1165): Illuminate\\Container\\Container->resolveDependencies(Array)
+#12 /app/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(936): Illuminate\\Container\\Container->build('Illuminate\\\\Cook...')
+#13 /app/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate\\Container\\Container->resolve('Illuminate\\\\Cook...', Array, true)
+#14 /app/backend/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate\\Foundation\\Application->resolve('Illuminate\\\\Cook...', Array)
+#15 /app/backend/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate\\Container\\Container->make('Illuminate\\\\Cook...', Array)
+#16 /app/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(208): Illuminate\\Foundation\\Application->make('Illuminate\\\\Cook...')
+#17 /app/backend/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
