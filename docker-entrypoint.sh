@@ -26,6 +26,12 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# ── Lancer Supervisor (nginx + php-fpm + queue worker) ───────────────────────
+# ── Import du workflow n8n (idempotent) ───────────────────────────────────────
+if [ -f "/app/n8n/workflow.json" ]; then
+    echo "▶ Import du workflow n8n..."
+    n8n import:workflow --input=/app/n8n/workflow.json || echo "⚠ Import n8n échoué (workflow déjà présent ?)"
+fi
+
+# ── Lancer Supervisor (nginx + php-fpm + n8n + queue worker) ─────────────────
 echo "▶ Lancement de Supervisor..."
 exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/app.conf
