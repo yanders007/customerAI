@@ -28,3 +28,30 @@ Initializing n8n process
 There was an error initializing DB
 SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string
 0 services selected:
+
+
+APP_URL=https://customerai-oja8.onrender.com
+DB_CONNECTION=pgsql
+DB_DATABASE=postgres
+DB_HOST=aws-1-eu-west-1.pooler.supabase.com
+DB_PASSWORD=Mahamoud@2006
+DB_PORT=5432
+DB_POSTGRESDB_DATABASE=postgres
+DB_POSTGRESDB_HOST=aws-1-eu-west-1.pooler.supabase.com
+DB_POSTGRESDB_PORT=5432
+DB_POSTGRESDB_SCHEMA=n8n
+DB_POSTGRESDB_USER=postgres.rulzcoqcuktyftmwysaq
+DB_TYPE=postgresdb
+DB_USERNAME=postgres.rulzcoqcuktyftmwysaq
+FRONTEND_URL=https://customer-ai-zeta.vercel.app
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=xxxx@gmail.com
+MAIL_FROM_NAME="Support IA"
+MAIL_HOST=smtp-relay.brevo.com
+MAIL_MAILER=smtp
+MAIL_PASSWORD=xsmtpsib-xxxx
+MAIL_PORT=587
+MAIL_USERNAME=xxxx@smtp-brevo.com
+SESSION_DOMAIN=null
+SESSION_SAME_SITE=none
+SESSION_SECURE_COOKIE=true
