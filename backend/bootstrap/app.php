@@ -13,22 +13,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // On force le démarrage de session sur TOUTES les routes API, sans
-        // dépendre de la détection d'origine fragile de Sanctum (qui exigeait
-        // que le port du frontend soit dans SANCTUM_STATEFUL_DOMAINS et
-        // cassait silencieusement sinon). Ça reproduit fidèlement l'ancien
-        // comportement PHP session_start() + cookie PHPSESSID.
+        // HandleCors en global (avant tout groupe) pour couvrir web + api
+        $middleware->prepend(\Illuminate\Http\Middleware\HandleCors::class);
+
+        // Groupe api : session + cookies pour Sanctum stateful, sans CSRF
         $middleware->group('api', [
             \Illuminate\Cookie\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class, // ✅ CSRF activé
+            // ValidateCsrfToken retiré — inutile et bloquant sur une API REST
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
 
-        // Alias utilisés dans routes/api.php, équivalents directs de
-        // requireAdmin() / requireClient() dans ton ancien auth.php
         $middleware->alias([
             'auth.admin' => \App\Http\Middleware\EnsureAdminAuthenticated::class,
             'auth.client' => \App\Http\Middleware\EnsureClientAuthenticated::class,
