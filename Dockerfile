@@ -14,6 +14,10 @@ RUN docker-php-ext-install \
 # ── Composer ─────────────────────────────────────────────────────────────────
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# ── Node.js + n8n ────────────────────────────────────────────────────────────
+RUN apt-get update && apt-get install -y nodejs npm && rm -rf /var/lib/apt/lists/* \
+    && npm install -g n8n
+
 # ── Backend Laravel ──────────────────────────────────────────────────────────
 WORKDIR /app/backend
 COPY backend/composer.json backend/composer.lock* ./
@@ -25,6 +29,9 @@ RUN composer run-script post-autoload-dump
 # ── Configs Nginx / Supervisor ───────────────────────────────────────────────
 COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY supervisord.conf /etc/supervisor/conf.d/app.conf
+
+# ── Workflow n8n ─────────────────────────────────────────────────────────────
+COPY "final client.json" /app/n8n/workflow.json
 
 # ── Script de démarrage ──────────────────────────────────────────────────────
 COPY docker-entrypoint.sh /usr/local/bin/entrypoint.sh
