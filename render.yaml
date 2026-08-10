@@ -63,6 +63,10 @@ services:
       - key: COHERE_API_KEY
         sync: false           # ⚠️ dashboard.cohere.com/api-keys
 
+      # n8n (workflow engine, réutilise la base Supabase ci-dessus)
+      - key: N8N_ENCRYPTION_KEY
+        generateValue: true   # clé stable pour chiffrer les credentials n8n
+
       # Drivers Laravel
       - key: QUEUE_CONNECTION
         value: database
