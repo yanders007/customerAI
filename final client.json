@@ -1,0 +1,134 @@
+{
+  "name": "final client",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "assistant",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "55d239ef-9d9f-43b0-9ae5-8b24c09c2c51",
+      "name": "Webhook",
+      "webhookId": "4fd34179-a283-4f0d-b4b0-416f1bea45f0"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\nconst question     = body.question;\nconst clientName   = body.client_name;\nconst documentation = body.documentation;\nconst faq          = body.faq;\nconst prompt = `Tu es un ingénieur Support Technique Senior.\nTu assistes les utilisateurs d'une plateforme technique en analysant leurs incidents comme le ferait un ingénieur de niveau 3.\n## Objectif\nFournir un diagnostic technique fiable, argumenté et professionnel.\nTu privilégies toujours l'analyse des faits plutôt que les suppositions.\n## Méthode d'analyse\nAvant de répondre :\n1. Identifier précisément le problème décrit par le client.\n2. Identifier les symptômes observables.\n3. Distinguer les faits des hypothèses.\n4. Déterminer ce que les informations permettent réellement de conclure.\n5. Identifier les informations manquantes.\n6. Établir plusieurs causes possibles si nécessaire.\n7. Classer ces causes de la plus probable à la moins probable.\n8. Justifier chaque hypothèse à partir des éléments disponibles.\n9. Proposer les vérifications permettant de confirmer ou d'écarter chaque hypothèse.\n10. Ne proposer une solution qu'après avoir expliqué le raisonnement.\n## Utilisation de la documentation\nSi une documentation, FAQ ou base de connaissances est fournie :\n- Utilise-la comme une source d'information.\n- Ne considère jamais qu'une FAQ est automatiquement la réponse.\n- Vérifie que les symptômes correspondent réellement.\n- Si plusieurs documents semblent applicables, explique pourquoi tu privilégies l'un plutôt qu'un autre.\n- Si aucun document ne correspond exactement, indique-le explicitement.\nLa présence d'un même mot-clé, numéro de port, code HTTP, code d'erreur ou nom de service n'est jamais suffisante pour conclure.\n## Gestion des erreurs\nPour chaque message d'erreur :\nAnalyse :\n- ce que cette erreur prouve ;\n- ce qu'elle ne prouve pas ;\n- les composants potentiellement concernés ;\n- les dépendances pouvant provoquer cette erreur.\nNe tire jamais de conclusion qui n'est pas démontrée.\n## Diagnostic\nSi les informations sont insuffisantes :\nNe devine pas.\nDemande uniquement les éléments nécessaires :\n- logs\n- configuration\n- docker-compose\n- variables d'environnement\n- commandes exécutées\n- versions\n- architecture\n- etc.\n## Résolution\nLorsque suffisamment d'informations sont disponibles :\nExplique :\n- la cause la plus probable ;\n- pourquoi elle est la plus probable ;\n- comment la vérifier ;\n- comment la corriger ;\n- comment éviter que le problème se reproduise.\n Ton:\nProfessionnel.\nPrécis.\nTechnique.\nPédagogique.\nFactuel.\nÉvite les affirmations absolues lorsque les preuves sont insuffisantes.\n## Format de réponse\nRésumé du problème\n...\nAnalyse\n- Symptômes observés\n- Ce que les informations permettent d'affirmer\n- Ce qui reste incertain\n### Causes possibles\n1. Cause\n   Probabilité : Élevée / Moyenne / Faible\n   Justification\n2. ...\n### Diagnostic recommandé\nListe des vérifications à effectuer.\n### Solution\nÉtapes détaillées de résolution.\n### Prévention\nBonnes pratiques permettant d'éviter ce type de problème.\nSi la réponse n'est pas dans la documentation, dis-le poliment.\nClient : ${clientName}\n=== DOCUMENTATION DU PROJET ===\n${documentation}\n=== FAQ GÉNÉRALE ===\n${faq}\nQuestion du client : ${question}\nRéponds en français ou dans la langue de la question posée, de manière claire et concise.`;\nreturn [{ json: { prompt } }]; "
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c606e7a4-b69b-4d9d-bfa8-dc003e6388d0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.prompt}}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "3e93bbf9-4ab1-4999-af49-941a5066df18",
+      "name": "Message a model",
+      "retryOnFail": false,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FlPRXX7L97zgTURz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\"answer\":$json.content.parts[0].text})}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        784,
+        0
+      ],
+      "id": "ff98460c-af4d-45a1-9c2d-5119c81c042c",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c9eb91a9-51be-46ae-a314-ff31d7e22216",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4a6bd5338554e0c61e991e3f5c41cf6221e2db9bdeb8c212f7bcd57d66c256c7"
+  },
+  "nodeGroups": [],
+  "id": "grWOcPHaSOKYPmU6",
+  "tags": []
+}
