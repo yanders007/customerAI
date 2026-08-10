@@ -1,50 +1,50 @@
-2026-08-10T16:21:52.372386157Z #25 pushing layers 12.4s done
-2026-08-10T16:21:52.58348236Z #25 DONE 26.5s
-2026-08-10T16:21:52.583495179Z 
-2026-08-10T16:21:52.583498114Z #26 exporting cache to registry
-2026-08-10T16:21:55.785137876Z #26 sending cache export 15.8s done
-2026-08-10T16:21:55.785152907Z #26 DONE 15.8s
-2026-08-10T16:21:57.343490969Z ==> Deploying...
-2026-08-10T16:21:57.52356349Z ==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
-2026-08-10T16:22:57.575138047Z ▶ Démarrage sur le port 10000
-2026-08-10T16:22:57.780252333Z ▶ Migrations...
-2026-08-10T16:22:59.193573575Z ==> No open ports detected, continuing to scan...
-2026-08-10T16:22:59.365156929Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
-2026-08-10T16:23:00.888588233Z 
-2026-08-10T16:23:00.888607743Z    INFO  Nothing to migrate.  
-2026-08-10T16:23:00.888611413Z 
-2026-08-10T16:23:01.987189586Z 
-2026-08-10T16:23:01.987213457Z    INFO  Configuration cached successfully.  
-2026-08-10T16:23:01.987218927Z 
-2026-08-10T16:23:03.076377631Z 
-2026-08-10T16:23:03.076402281Z    INFO  Routes cached successfully.  
-2026-08-10T16:23:03.076409252Z 
-2026-08-10T16:23:04.274349011Z 
-2026-08-10T16:23:04.27481175Z 
-2026-08-10T16:23:04.27482Z    INFO  Blade templates cached successfully.  
-2026-08-10T16:23:04.27482336Z 
-2026-08-10T16:23:04.281918215Z ▶ Import du workflow n8n...
-2026-08-10T16:23:27.773997493Z Importing 1 workflows...
-2026-08-10T16:23:29.038014247Z Deactivating workflow "final client". Remember to activate later.
-2026-08-10T16:23:29.756210335Z Successfully imported 1 workflow.
-2026-08-10T16:23:29.89026518Z ▶ Lancement de Supervisor...
-2026-08-10T16:23:30.99242719Z Error: Format string 'N8N_PORT="5678",N8N_HOST="localhost",N8N_PROTOCOL="http",N8N_EDITOR_BASE_URL="http://localhost:5678/",WEBHOOK_URL="http://localhost:5678/",N8N_RUNNERS_ENABLED="true",DB_TYPE="postgresdb",DB_POSTGRESDB_HOST="%(ENV_DB_HOST)s",DB_POSTGRESDB_PORT="%(ENV_DB_PORT)s",DB_POSTGRESDB_DATABASE="%(ENV_DB_DATABASE)s",DB_POSTGRESDB_USER="%(ENV_DB_USERNAME)s",DB_POSTGRESDB_PASSWORD="%(ENV_DB_PASSWORD)s",N8N_ENCRYPTION_KEY="%(ENV_N8N_ENCRYPTION_KEY)s"' for 'environment' contains names ('ENV_N8N_ENCRYPTION_KEY') which cannot be expanded. Available names: ENV_APP_URL, ENV_DB_CONNECTION, ENV_DB_DATABASE, ENV_DB_HOST, ENV_DB_PASSWORD, ENV_DB_PORT, ENV_DB_POSTGRESDB_DATABASE, ENV_DB_POSTGRESDB_HOST, ENV_DB_POSTGRESDB_PASSWORD, ENV_DB_POSTGRESDB_PORT, ENV_DB_POSTGRESDB_SCHEMA, ENV_DB_POSTGRESDB_USER, ENV_DB_TYPE, ENV_DB_USERNAME, ENV_FRONTEND_URL, ENV_GPG_KEYS, ENV_HOME, ENV_HOSTNAME, ENV_IS_PULL_REQUEST, ENV_KUBERNETES_PORT, ENV_KUBERNETES_PORT_443_TCP, ENV_KUBERNETES_PORT_443_TCP_ADDR, ENV_KUBERNETES_PORT_443_TCP_PORT, ENV_KUBERNETES_PORT_443_TCP_PROTO, ENV_KUBERNETES_SERVICE_HOST, ENV_KUBERNETES_SERVICE_PORT, ENV_KUBERNETES_SERVICE_PORT_HTTPS, ENV_LC_CTYPE, ENV_MAIL_ENCRYPTION, ENV_MAIL_FROM_ADDRESS, ENV_MAIL_FROM_NAME, ENV_MAIL_HOST, ENV_MAIL_MAILER, ENV_MAIL_PASSWORD, ENV_MAIL_PORT, ENV_MAIL_USERNAME, ENV_OLDPWD, ENV_PATH, ENV_PHPIZE_DEPS, ENV_PHP_ASC_URL, ENV_PHP_CFLAGS, ENV_PHP_CPPFLAGS, ENV_PHP_INI_DIR, ENV_PHP_LDFLAGS, ENV_PHP_SHA256, ENV_PHP_URL, ENV_PHP_VERSION, ENV_PORT, ENV_PWD, ENV_RENDER, ENV_RENDER_CPU_COUNT, ENV_RENDER_DISCOVERY_SERVICE, ENV_RENDER_ENV_IS_DOCKER, ENV_RENDER_EXTERNAL_HOSTNAME, ENV_RENDER_EXTERNAL_URL, ENV_RENDER_GIT_BRANCH, ENV_RENDER_GIT_COMMIT, ENV_RENDER_GIT_REPO_SLUG, ENV_RENDER_INSTANCE_ID, ENV_RENDER_INTERNAL_HOSTNAME, ENV_RENDER_INTERNAL_IP, ENV_RENDER_SERVICE_ID, ENV_RENDER_SERVICE_NAME, ENV_RENDER_SERVICE_TYPE, ENV_RENDER_WEB_CONCURRENCY, ENV_SANCTUM_STATEFUL_DOMAINS, ENV_SESSION_DOMAIN, ENV_SESSION_DRIVER, ENV_SESSION_SAME_SITE, ENV_SESSION_SECURE_COOKIE, ENV_SHLVL, ENV_WEB_CONCURRENCY, group_name, here, host_node_name, numprocs, process_num, program_name in section 'program:n8n' (file: '/etc/supervisor/conf.d/app.conf')
-2026-08-10T16:23:30.9924534Z For help, use /usr/bin/supervisord -h
-2026-08-10T16:23:31.662941442Z ▶ Démarrage sur le port 10000
-2026-08-10T16:23:31.722461803Z ▶ Migrations...
-2026-08-10T16:23:32.250959496Z ==> Exited with status 2
-2026-08-10T16:23:32.253555919Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
-2026-08-10T16:23:34.204786932Z 
-2026-08-10T16:23:34.204814162Z    INFO  Nothing to migrate.  
-2026-08-10T16:23:34.204818342Z 
-2026-08-10T16:23:35.232169071Z 
-2026-08-10T16:23:35.232194421Z    INFO  Configuration cached successfully.  
-2026-08-10T16:23:35.232197542Z 
-2026-08-10T16:23:36.324063205Z 
-2026-08-10T16:23:36.324093496Z    INFO  Routes cached successfully.  
-2026-08-10T16:23:36.324097176Z 
-2026-08-10T16:23:37.519828992Z 
-2026-08-10T16:23:37.520547595Z 
-2026-08-10T16:23:37.520563456Z    INFO  Blade templates cached successfully.  
-2026-08-10T16:23:37.520565896Z 
-2026-08-10T16:23:37.527825213Z ▶ Import du workflow n8n...
+2026-08-10T16:39:16.909608979Z Importing 1 workflows...
+2026-08-10T16:39:18.183895179Z Deactivating workflow "final client". Remember to activate later.
+2026-08-10T16:39:18.914434079Z Successfully imported 1 workflow.
+2026-08-10T16:39:19.031298601Z ▶ Lancement de Supervisor...
+2026-08-10T16:39:20.116847606Z 2026-08-10 16:39:20,116 INFO Set uid to user 0 succeeded
+2026-08-10T16:39:20.116875197Z 2026-08-10 16:39:20,116 INFO Set uid to user 0 succeeded
+2026-08-10T16:39:20.120166292Z 2026-08-10 16:39:20,119 INFO RPC interface 'supervisor' initialized
+2026-08-10T16:39:20.120189012Z 2026-08-10 16:39:20,119 INFO RPC interface 'supervisor' initialized
+2026-08-10T16:39:20.120195072Z 2026-08-10 16:39:20,120 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2026-08-10T16:39:20.120201293Z 2026-08-10 16:39:20,120 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2026-08-10T16:39:20.120426199Z 2026-08-10 16:39:20,120 INFO supervisord started with pid 1
+2026-08-10T16:39:20.120439339Z 2026-08-10 16:39:20,120 INFO supervisord started with pid 1
+2026-08-10T16:39:21.123442776Z 2026-08-10 16:39:21,123 INFO spawned: 'n8n' with pid 54
+2026-08-10T16:39:21.123470747Z 2026-08-10 16:39:21,123 INFO spawned: 'n8n' with pid 54
+2026-08-10T16:39:21.125477024Z 2026-08-10 16:39:21,125 INFO spawned: 'php-fpm' with pid 55
+2026-08-10T16:39:21.125493215Z 2026-08-10 16:39:21,125 INFO spawned: 'php-fpm' with pid 55
+2026-08-10T16:39:21.207325052Z 2026-08-10 16:39:21,206 INFO spawned: 'nginx' with pid 56
+2026-08-10T16:39:21.207368934Z 2026-08-10 16:39:21,206 INFO spawned: 'nginx' with pid 56
+2026-08-10T16:39:21.309115843Z 2026-08-10 16:39:21,308 INFO spawned: 'queue-worker' with pid 62
+2026-08-10T16:39:21.309150324Z 2026-08-10 16:39:21,308 INFO spawned: 'queue-worker' with pid 62
+2026-08-10T16:39:22.011292109Z [10-Aug-2026 16:39:22] NOTICE: fpm is running, pid 55
+2026-08-10T16:39:22.106899392Z [10-Aug-2026 16:39:22] NOTICE: ready to handle connections
+2026-08-10T16:39:23.107705295Z 2026-08-10 16:39:23,107 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-08-10T16:39:23.107734046Z 2026-08-10 16:39:23,107 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-08-10T16:39:23.107739567Z 2026-08-10 16:39:23,107 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-08-10T16:39:23.107744187Z 2026-08-10 16:39:23,107 INFO success: nginx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-08-10T16:39:24.676215649Z ==> Your service is live 🎉
+2026-08-10T16:39:24.855427012Z ==> 
+2026-08-10T16:39:24.858086371Z ==> ///////////////////////////////////////////////////////////
+2026-08-10T16:39:24.860601609Z ==> 
+2026-08-10T16:39:24.863189918Z ==> Available at your primary URL https://customerai-oja8.onrender.com
+2026-08-10T16:39:24.865888898Z ==> 
+2026-08-10T16:39:24.868629529Z ==> ///////////////////////////////////////////////////////////
+2026-08-10T16:39:26.206970245Z 2026-08-10 16:39:26,206 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-08-10T16:39:26.207006606Z 2026-08-10 16:39:26,206 INFO success: n8n entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-08-10T16:39:27.20851153Z 2026-08-10 16:39:27,207 INFO success: queue-worker entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-08-10T16:39:27.208561631Z 2026-08-10 16:39:27,207 INFO success: queue-worker entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-08-10T16:39:45.207561163Z Initializing n8n process
+2026-08-10T16:39:52.003670962Z n8n ready on ::, port 5678
+2026-08-10T16:39:53.465078017Z n8n Task Broker ready on 127.0.0.1, port 5679
+2026-08-10T16:39:54.107638206Z Failed to start Python task runner in internal mode. because its virtual environment is missing from this system. Launching a Python runner in internal mode is intended only for debugging and is not recommended for production. Users are encouraged to deploy in external mode. See: https://docs.n8n.io/hosting/configuration/task-runners/#setting-up-external-mode
+2026-08-10T16:39:54.613167222Z 
+2026-08-10T16:39:54.613197623Z There is a deprecation related to your environment variables. Please take the recommended actions to update your configuration:
+2026-08-10T16:39:54.613202743Z  - N8N_RUNNERS_ENABLED -> Remove this environment variable; it is no longer needed.
+2026-08-10T16:39:54.613206333Z 
+2026-08-10T16:39:55.506862597Z [license SDK] Skipping renewal on init: license cert is not initialized
+2026-08-10T16:40:09.709935209Z Database connection timed out
+2026-08-10T16:40:19.708286706Z Task runner connection attempt failed with status code 403
+2026-08-10T16:40:19.709174241Z Task runner connection attempt failed with status code 403
+2026-08-10T16:40:20.809775863Z Database connection recovered
