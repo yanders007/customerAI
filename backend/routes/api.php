@@ -35,6 +35,7 @@ Route::prefix('admin')->group(function () {
 
         // Projets / Docs / FAQ
         Route::get('/docs',    [DocsController::class, 'index']);
+        Route::get('/docs/{id}', [DocsController::class, 'show']);
         Route::post('/docs',   [DocsController::class, 'store']);
         Route::put('/docs',    [DocsController::class, 'update']);
         Route::delete('/docs', [DocsController::class, 'destroy']);

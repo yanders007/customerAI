@@ -7,6 +7,31 @@ Le provider IA se configure directement depuis l'interface admin — aucune vari
 
 ---
 
+## 🎉 Version 2.0 - Nouveautés
+
+✨ **Interface Admin Modernisée** :
+- 👁️ Visualisation et modification des documents avec modals
+- 🎨 Création de FAQ avec design moderne (gradients, animations)
+- 📊 Graphiques Chart.js améliorés (tooltips, légendes, gradients)
+- 📈 Nouveau graphique en ligne pour suivi tokens en temps réel
+- 🔐 Génération automatique de mots de passe professionnels (format `Secure@Network47`)
+- 📧 Configuration email Brevo/Sendinblue intégrée
+
+📚 **Documentation Complète** :
+- `AMELIORATIONS.md` - Détails techniques de toutes les fonctionnalités
+- `GUIDE_RAPIDE.md` - Guide de déploiement rapide
+- `CHANGELOG.md` - Historique complet des versions
+- `DEPLOY.sh` - Script automatique de déploiement
+
+🚀 **Déploiement Simplifié** :
+```bash
+# Depuis la racine du projet
+chmod +x DEPLOY.sh
+./DEPLOY.sh
+```
+
+---
+
 ## Architecture
 
 ```

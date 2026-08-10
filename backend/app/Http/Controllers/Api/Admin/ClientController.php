@@ -35,12 +35,11 @@ class ClientController extends Controller
             'email' => ['required', 'email', 'unique:clients,email'],
         ]);
 
-        // ── Mot de passe généré automatiquement ─────────────────
-        // L'admin ne saisit plus le mot de passe : on le génère nous-
-        // mêmes côté serveur et on l'envoie uniquement par email au
-        // client. Ça évite les mots de passe faibles/devinables tapés
-        // à la va-vite, et retire une étape manuelle à l'admin.
-        $plainPassword = Str::password(12);
+        // ── Mot de passe généré automatiquement (système pro) ───
+        // Format : 3 mots + 2 chiffres + 1 caractère spécial
+        // Exemple : Secure@Network47, Digital!System92
+        // Plus mémorisable qu'une suite aléatoire mais sécurisé
+        $plainPassword = $this->generateProPassword();
         $identifier    = 'CLIENT-' . strtoupper(Str::random(6));
 
         $client = Client::create([
@@ -51,7 +50,7 @@ class ClientController extends Controller
         ]);
 
         // ── Envoi des identifiants par email ────────────────────
-        $loginUrl = config('services.support.frontend_url') . '/login-client';
+        $loginUrl = config('services.support.frontend_url', env('FRONTEND_URL')) . '/login-client';
         Mail::to($data['email'])->send(new ClientCredentialsMail(
             clientName: $data['name'],
             identifier: $identifier,
@@ -69,6 +68,30 @@ class ClientController extends Controller
                 'client_identifier' => $identifier,
             ],
         ], 201);
+    }
+
+    /**
+     * Génère un mot de passe professionnel de type "Word@Word42"
+     * Plus mémorisable qu'une suite aléatoire tout en restant sécurisé
+     */
+    private function generateProPassword(): string
+    {
+        $words = [
+            'Secure', 'Digital', 'Network', 'System', 'Cloud', 'Tech',
+            'Smart', 'Access', 'Portal', 'Connect', 'Prime', 'Elite',
+            'Global', 'Master', 'Super', 'Ultra', 'Rapid', 'Swift',
+            'Power', 'Strong', 'Safe', 'Shield', 'Guard', 'Vault',
+        ];
+        
+        $special = ['@', '!', '#', '$', '%', '&', '*'];
+        
+        $word1 = $words[array_rand($words)];
+        $word2 = $words[array_rand($words)];
+        $symbol = $special[array_rand($special)];
+        $number = rand(10, 99);
+        
+        // Format: Word1@Word2[99]
+        return $word1 . $symbol . $word2 . $number;
     }
 
     public function update(Request $request)

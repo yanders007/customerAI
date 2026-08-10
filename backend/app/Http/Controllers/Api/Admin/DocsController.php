@@ -21,6 +21,30 @@ class DocsController extends Controller
     ) {}
 
     // ═══════════════════════════════════════════════
+    //  GET  /admin/docs/{id}  — Voir un document
+    // ═══════════════════════════════════════════════
+    public function show(int $id)
+    {
+        $doc = Documentation::with(['projet'])->findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id'         => $doc->id,
+                'projet_id'  => $doc->projet_id,
+                'titre'      => $doc->titre,
+                'contenu'    => $doc->contenu,
+                'file_path'  => $doc->file_path,
+                'created_at' => $doc->created_at,
+                'updated_at' => $doc->updated_at,
+                'projet'     => [
+                    'id'         => $doc->projet->id,
+                    'nom_projet' => $doc->projet->nom_projet,
+                ],
+            ],
+        ]);
+    }
+
+    // ═══════════════════════════════════════════════
     //  GET  /admin/docs?type=projet|doc|faq
     // ═══════════════════════════════════════════════
     public function index(Request $request)

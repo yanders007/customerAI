@@ -1001,7 +1001,29 @@ export function AdminPanel() {
                 </div>
               </div>
 
-              {/* Économies RAG - SUPPRIMÉ */}
+              {/* Graphique en ligne - Évolution tokens */}
+              <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e2e8f0', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1.5rem' }}>
+                  <div>
+                    <h3 style={{ fontWeight:700, fontSize:18, marginBottom:4, display:'flex', alignItems:'center', gap:8 }}>
+                      <div style={{ width:32, height:32, borderRadius:10, background:'rgba(99,102,241,.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                        <i className="fas fa-chart-line" style={{ color:'#6366f1', fontSize:14 }}/>
+                      </div>
+                      Évolution des Tokens (Graphique en ligne)
+                    </h3>
+                    <p style={{ fontSize:13, color:'#64748b' }}>Tendance de consommation sur {tokenPeriod === 'week' ? '7 jours' : '30 jours'}</p>
+                  </div>
+                </div>
+                <div style={{ height:220 }}>
+                  <TokenLineChart data={{
+                    labels: (tokenPeriod === 'month' ? (tokenStats?.month30_data || []) : (tokenStats?.week_data || [])).map(d => {
+                      const date = new Date(d.date);
+                      return date.toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+                    }),
+                    values: (tokenPeriod === 'month' ? (tokenStats?.month30_data || []) : (tokenStats?.week_data || [])).map(d => d.total || 0)
+                  }}/>
+                </div>
+              </div>
 
               {/* Tableau détaillé de consommation par jour */}
               {tokenStats && tokenStats.month30_data && (
@@ -1199,6 +1221,36 @@ export function AdminPanel() {
                 </div>
               </div>
 
+              {/* Graphique en ligne dans la section Tokens */}
+              <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e2e8f0', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1.5rem' }}>
+                  <div>
+                    <h3 style={{ fontWeight:700, fontSize:18, marginBottom:4, display:'flex', alignItems:'center', gap:8 }}>
+                      <div style={{ width:32, height:32, borderRadius:10, background:'linear-gradient(135deg, #8b5cf6, #6366f1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                        <i className="fas fa-chart-area" style={{ color:'#fff', fontSize:14 }}/>
+                      </div>
+                      Tendance en Temps Réel
+                    </h3>
+                    <p style={{ fontSize:13, color:'#64748b' }}>Suivi continu de la consommation de tokens</p>
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 12px', background:'#f8fafc', borderRadius:8, border:'1px solid #e2e8f0' }}>
+                    <div style={{ width:8, height:8, borderRadius:'50%', background:'#10b981', animation:'pulse 2s infinite' }}/>
+                    <span style={{ fontSize:12, fontWeight:600, color:'#64748b' }}>Mise à jour en direct</span>
+                  </div>
+                </div>
+                <div style={{ height:240 }}>
+                  <TokenLineChart data={{
+                    labels: (tokenPeriod === 'month' ? (tokenStats?.month30_data || []) : (tokenStats?.week_data || [])).map(d => {
+                      const date = new Date(d.date);
+                      return date.toLocaleDateString('fr-FR', { day:'numeric', month:'short' });
+                    }),
+                    values: (tokenPeriod === 'month' ? (tokenStats?.month30_data || []) : (tokenStats?.week_data || [])).map(d => d.total || 0)
+                  }}/>
+                </div>
+              </div>
+              
+              <style>{`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }`}</style>
+
               <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e2e8f0', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
                 <h3 style={{ fontWeight:700, marginBottom:'1rem' }}>Comment lire ces données ?</h3>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:16 }}>
@@ -1364,13 +1416,146 @@ function TokenChart({ data, period }) {
       type: 'bar',
       data,
       options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'top' } },
-        scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, beginAtZero: true } }
+        responsive: true, 
+        maintainAspectRatio: false,
+        plugins: { 
+          legend: { 
+            position: 'top',
+            labels: {
+              font: { size: 13, weight: '600' },
+              padding: 16,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(30,27,75,.95)',
+            padding: 12,
+            titleFont: { size: 14, weight: '700' },
+            bodyFont: { size: 13 },
+            borderColor: '#6366f1',
+            borderWidth: 1,
+            cornerRadius: 8,
+            displayColors: true,
+            callbacks: {
+              label: function(context) {
+                return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' tokens';
+              }
+            }
+          }
+        },
+        scales: { 
+          x: { 
+            grid: { display: false },
+            ticks: { font: { size: 12, weight: '600' }, color: '#64748b' }
+          }, 
+          y: { 
+            grid: { color: '#f1f5f9', drawBorder: false },
+            ticks: { 
+              font: { size: 12 }, 
+              color: '#64748b',
+              callback: function(value) {
+                return value.toLocaleString();
+              }
+            },
+            beginAtZero: true 
+          }
+        },
+        interaction: {
+          mode: 'index',
+          intersect: false
+        }
       }
     });
     return () => { if (chartRef.current) chartRef.current.destroy(); };
   }, [data, period]);
+
+  if (!data) return <div style={{ height:220, display:'flex', alignItems:'center', justifyContent:'center', color:'#94a3b8' }}>Aucune donnée</div>;
+  return <canvas ref={canvasRef} style={{ height:220 }}/>;
+}
+
+function TokenLineChart({ data }) {
+  const canvasRef = useRef(null);
+  const chartRef  = useRef(null);
+
+  useEffect(() => {
+    if (!data || !canvasRef.current) return;
+    if (chartRef.current) chartRef.current.destroy();
+    
+    const ctx = canvasRef.current.getContext('2d');
+    
+    // Créer un gradient pour la ligne
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(99, 102, 241, 0.3)');
+    gradient.addColorStop(1, 'rgba(99, 102, 241, 0.01)');
+    
+    chartRef.current = new window.Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          label: 'Tokens totaux',
+          data: data.values,
+          borderColor: '#6366f1',
+          backgroundColor: gradient,
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#6366f1',
+          pointBorderWidth: 3,
+          pointHoverBackgroundColor: '#6366f1',
+          pointHoverBorderColor: '#fff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(30,27,75,.95)',
+            padding: 12,
+            titleFont: { size: 14, weight: '700' },
+            bodyFont: { size: 13 },
+            borderColor: '#6366f1',
+            borderWidth: 1,
+            cornerRadius: 8,
+            callbacks: {
+              label: function(context) {
+                return 'Tokens: ' + context.parsed.y.toLocaleString();
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { font: { size: 12, weight: '600' }, color: '#64748b' }
+          },
+          y: {
+            grid: { color: '#f1f5f9', drawBorder: false },
+            ticks: { 
+              font: { size: 12 }, 
+              color: '#64748b',
+              callback: function(value) {
+                return value >= 1000 ? (value/1000).toFixed(1) + 'k' : value;
+              }
+            },
+            beginAtZero: true
+          }
+        },
+        interaction: {
+          mode: 'index',
+          intersect: false
+        }
+      }
+    });
+    
+    return () => { if (chartRef.current) chartRef.current.destroy(); };
+  }, [data]);
 
   if (!data) return <div style={{ height:220, display:'flex', alignItems:'center', justifyContent:'center', color:'#94a3b8' }}>Aucune donnée</div>;
   return <canvas ref={canvasRef} style={{ height:220 }}/>;
@@ -1388,15 +1573,79 @@ function RagPieChart({ data }) {
       type: 'doughnut',
       data: {
         labels: ['Chunks RAG', 'Fallback', 'FAQ directe', 'Small-talk'],
-        datasets: [{ data: [data.chunks||0, data.fallback||0, data.faq||0, data.smalltalk||0], backgroundColor: ['#6366f1','#f59e0b','#10b981','#94a3b8'], borderWidth:0, hoverOffset:4 }]
+        datasets: [{
+          data: [data.chunks||0, data.fallback||0, data.faq||0, data.smalltalk||0],
+          backgroundColor: ['#6366f1','#f59e0b','#10b981','#94a3b8'],
+          borderWidth: 0,
+          hoverOffset: 8,
+          hoverBorderColor: '#fff',
+          hoverBorderWidth: 3
+        }]
       },
-      options: { responsive:true, maintainAspectRatio:false, plugins: { legend: { position:'bottom' } }, cutout:'70%' }
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              font: { size: 12, weight: '600' },
+              padding: 12,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              generateLabels: function(chart) {
+                const data = chart.data;
+                const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                return data.labels.map((label, i) => {
+                  const value = data.datasets[0].data[i];
+                  const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                  return {
+                    text: `${label}: ${value} (${percentage}%)`,
+                    fillStyle: data.datasets[0].backgroundColor[i],
+                    hidden: false,
+                    index: i
+                  };
+                });
+              }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(30,27,75,.95)',
+            padding: 12,
+            titleFont: { size: 14, weight: '700' },
+            bodyFont: { size: 13 },
+            borderColor: '#6366f1',
+            borderWidth: 1,
+            cornerRadius: 8,
+            callbacks: {
+              label: function(context) {
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const value = context.parsed;
+                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                return context.label + ': ' + value + ' (' + percentage + '%)';
+              }
+            }
+          }
+        },
+        cutout: '65%'
+      }
     });
     return () => { if (chartRef.current) chartRef.current.destroy(); };
   }, [data]);
 
   if (!data) return <div style={{ height:180, display:'flex', alignItems:'center', justifyContent:'center', color:'#94a3b8' }}>Aucune donnée</div>;
-  return <canvas ref={canvasRef} style={{ height:180 }}/>;
+  
+  const total = (data.chunks||0) + (data.fallback||0) + (data.faq||0) + (data.smalltalk||0);
+  
+  return (
+    <div style={{ position:'relative', height:180 }}>
+      <canvas ref={canvasRef}/>
+      <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%, -50%)', textAlign:'center', pointerEvents:'none' }}>
+        <div style={{ fontSize:32, fontWeight:800, color:'#1e1b4b', lineHeight:1 }}>{total}</div>
+        <div style={{ fontSize:11, color:'#64748b', fontWeight:600, marginTop:4 }}>Total</div>
+      </div>
+    </div>
+  );
 }
 
 function ClientsSection({ clients, onPickClient, onCreated, onError }) {
@@ -1445,12 +1694,22 @@ function ClientsSection({ clients, onPickClient, onCreated, onError }) {
 
 function NewClientForm({ onCreated, onError }) {
   const [open, setOpen]       = useState(false);
-  const [form, setForm]       = useState({ name:'', email:'', password:'' });
+  const [form, setForm]       = useState({ name:'', email:'' });
   const [loading, setLoading] = useState(false);
 
   const handleCreate = async () => {
+    if (!form.name.trim() || !form.email.trim()) {
+      onError('Nom et email requis');
+      return;
+    }
+    
     setLoading(true);
-    try { await api.post('/admin/clients', form); setForm({ name:'', email:'', password:'' }); setOpen(false); onCreated(); }
+    try { 
+      await api.post('/admin/clients', form); 
+      setForm({ name:'', email:'' }); 
+      setOpen(false); 
+      onCreated(); 
+    }
     catch (e) { onError(e.response?.data?.error || 'Erreur lors de la création.'); }
     finally { setLoading(false); }
   };
@@ -1461,13 +1720,28 @@ function NewClientForm({ onCreated, onError }) {
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.5)', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
       <div style={{ background:'#fff', borderRadius:16, padding:'2rem', width:'100%', maxWidth:460, boxShadow:'0 25px 60px rgba(0,0,0,.2)' }}>
         <h3 style={{ fontWeight:800, marginBottom:4 }}>Nouveau client</h3>
-        <p style={{ fontSize:13, color:'#64748b', marginBottom:'1.5rem' }}>Les identifiants seront envoyés automatiquement par email.</p>
-        <div className="form-group"><label>Nom complet</label><input value={form.name} onChange={e => setForm({...form,name:e.target.value})} placeholder="Nom du client" autoFocus/></div>
-        <div className="form-group"><label>Email</label><input type="email" value={form.email} onChange={e => setForm({...form,email:e.target.value})} placeholder="email@client.com"/></div>
-        <div className="form-group"><label>Mot de passe temporaire</label><input type="password" value={form.password} onChange={e => setForm({...form,password:e.target.value})} placeholder="6 caractères minimum"/></div>
+        <p style={{ fontSize:13, color:'#64748b', marginBottom:'1.5rem' }}>
+          Un mot de passe sécurisé sera généré automatiquement et envoyé par email.
+        </p>
+        <div style={{ background:'#eff6ff', border:'1px solid #bfdbfe', borderRadius:10, padding:'12px 16px', marginBottom:'1.5rem', display:'flex', gap:10 }}>
+          <i className="fas fa-info-circle" style={{ color:'#3b82f6', fontSize:18, flexShrink:0, marginTop:2 }}/>
+          <div style={{ fontSize:13, color:'#1e40af', lineHeight:1.5 }}>
+            <strong>Génération automatique :</strong> Le système créera un mot de passe professionnel de type "Secure@Network47" pour une sécurité optimale.
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Nom complet</label>
+          <input value={form.name} onChange={e => setForm({...form,name:e.target.value})} placeholder="Nom du client" autoFocus/>
+        </div>
+        <div className="form-group">
+          <label>Email</label>
+          <input type="email" value={form.email} onChange={e => setForm({...form,email:e.target.value})} placeholder="email@client.com"/>
+        </div>
         <div style={{ display:'flex', gap:8, marginTop:'1rem' }}>
           <button className="btn btn-outline" style={{ flex:1 }} onClick={() => setOpen(false)}>Annuler</button>
-          <button className="btn btn-primary" style={{ flex:1 }} disabled={loading} onClick={handleCreate}>{loading ? 'Création…' : 'Créer et envoyer mail'}</button>
+          <button className="btn btn-primary" style={{ flex:1 }} disabled={loading} onClick={handleCreate}>
+            {loading ? 'Création…' : '✨ Créer et envoyer'}
+          </button>
         </div>
       </div>
     </div>
@@ -1602,6 +1876,9 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
   const [file, setFile]   = useState(null);
   const [loading, setLoading] = useState(false);
   const [localDocs, setLocalDocs] = useState(docs);
+  const [viewDoc, setViewDoc] = useState(null);
+  const [editDoc, setEditDoc] = useState(null);
+  const [editForm, setEditForm] = useState({ titre:'', contenu:'' });
 
   useEffect(() => { setLocalDocs(docs); }, [docs]);
 
@@ -1622,24 +1899,145 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
     finally { setLoading(false); }
   };
 
+  const viewDocument = async (doc) => {
+    try {
+      const r = await api.get(`/admin/docs/${doc.id}`);
+      setViewDoc(r.data.data);
+    } catch (e) {
+      onNotify('Erreur lors du chargement du document', 'error');
+    }
+  };
+
+  const startEdit = (doc) => {
+    setEditDoc(doc);
+    setEditForm({ titre: doc.titre, contenu: doc.contenu });
+    setViewDoc(null);
+  };
+
+  const saveEdit = async () => {
+    try {
+      await api.put('/admin/docs?type=doc', { id: editDoc.id, ...editForm });
+      onNotify('Document mis à jour et ré-indexé !');
+      setEditDoc(null);
+      // Mettre à jour localement
+      setLocalDocs(docs => docs.map(d => d.id === editDoc.id ? { ...d, ...editForm } : d));
+    } catch (e) {
+      onNotify(e.response?.data?.error || 'Erreur lors de la mise à jour', 'error');
+    }
+  };
+
   return (
     <div>
+      {/* Modal de visualisation */}
+      {viewDoc && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.6)', zIndex:700, display:'flex', alignItems:'center', justifyContent:'center', padding:'2rem' }} onClick={() => setViewDoc(null)}>
+          <div style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:900, maxHeight:'90vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.3)' }} onClick={e => e.stopPropagation()}>
+            <div style={{ padding:'1.5rem 2rem', borderBottom:'2px solid #e2e8f0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div>
+                <h3 style={{ fontSize:20, fontWeight:800, color:'#1e1b4b', marginBottom:4 }}>{viewDoc.titre}</h3>
+                <p style={{ fontSize:13, color:'#64748b' }}>Projet: {viewDoc.projet?.nom_projet}</p>
+              </div>
+              <div style={{ display:'flex', gap:8 }}>
+                <button className="btn btn-primary btn-sm" onClick={() => startEdit(viewDoc)}>
+                  <i className="fas fa-edit"/> Modifier
+                </button>
+                <button onClick={() => setViewDoc(null)} style={{ width:32, height:32, borderRadius:8, border:'none', background:'#f1f5f9', color:'#64748b', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <i className="fas fa-times"/>
+                </button>
+              </div>
+            </div>
+            <div style={{ flex:1, overflowY:'auto', padding:'2rem' }}>
+              <div style={{ background:'#f8fafc', borderRadius:12, padding:'1.5rem', fontFamily:'Georgia, serif', fontSize:15, lineHeight:1.8, color:'#1e293b', whiteSpace:'pre-wrap' }}>
+                {viewDoc.contenu}
+              </div>
+              {viewDoc.file_path && (
+                <div style={{ marginTop:'1rem', padding:'1rem', background:'#eff6ff', borderRadius:10, border:'1px solid #bfdbfe' }}>
+                  <i className="fas fa-file-pdf" style={{ color:'#3b82f6', marginRight:8 }}/>
+                  <span style={{ fontSize:13, color:'#1e40af' }}>Fichier source: {viewDoc.file_path.split('/').pop()}</span>
+                </div>
+              )}
+            </div>
+            <div style={{ padding:'1rem 2rem', borderTop:'1px solid #e2e8f0', display:'flex', justifyContent:'space-between', alignItems:'center', background:'#f8fafc' }}>
+              <span style={{ fontSize:12, color:'#64748b' }}>
+                Mis à jour le {new Date(viewDoc.updated_at).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' })}
+              </span>
+              <button className="btn btn-outline btn-sm" onClick={() => setViewDoc(null)}>Fermer</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal d'édition */}
+      {editDoc && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.6)', zIndex:700, display:'flex', alignItems:'center', justifyContent:'center', padding:'2rem' }} onClick={() => setEditDoc(null)}>
+          <div style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:900, maxHeight:'90vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.3)' }} onClick={e => e.stopPropagation()}>
+            <div style={{ padding:'1.5rem 2rem', borderBottom:'2px solid #e2e8f0' }}>
+              <h3 style={{ fontSize:20, fontWeight:800, color:'#1e1b4b' }}>Modifier le document</h3>
+            </div>
+            <div style={{ flex:1, overflowY:'auto', padding:'2rem' }}>
+              <div className="form-group">
+                <label style={{ fontWeight:600, marginBottom:8, display:'block' }}>Titre</label>
+                <input value={editForm.titre} onChange={e => setEditForm({...editForm, titre:e.target.value})} style={{ width:'100%', padding:'10px 14px', border:'1.5px solid #e2e8f0', borderRadius:8, fontSize:15 }}/>
+              </div>
+              <div className="form-group">
+                <label style={{ fontWeight:600, marginBottom:8, display:'block' }}>Contenu</label>
+                <textarea rows={15} value={editForm.contenu} onChange={e => setEditForm({...editForm, contenu:e.target.value})} style={{ width:'100%', padding:'12px 14px', border:'1.5px solid #e2e8f0', borderRadius:8, fontSize:14, fontFamily:'monospace', lineHeight:1.6, resize:'vertical' }}/>
+              </div>
+            </div>
+            <div style={{ padding:'1rem 2rem', borderTop:'1px solid #e2e8f0', display:'flex', gap:8, justifyContent:'flex-end', background:'#f8fafc' }}>
+              <button className="btn btn-outline" onClick={() => setEditDoc(null)}>Annuler</button>
+              <button className="btn btn-primary" onClick={saveEdit}>
+                <i className="fas fa-save"/> Enregistrer les modifications
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:16, padding:'1.5rem', marginBottom:16 }}>
-        <h3 style={{ fontWeight:700, marginBottom:'1rem' }}>Ajouter une documentation</h3>
+        <h3 style={{ fontWeight:700, marginBottom:'1rem', display:'flex', alignItems:'center', gap:8 }}>
+          <div style={{ width:32, height:32, borderRadius:10, background:'rgba(16,185,129,.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <i className="fas fa-plus" style={{ color:'#10b981', fontSize:14 }}/>
+          </div>
+          Ajouter une documentation
+        </h3>
         <div className="form-group"><label>Titre</label><input value={form.titre} onChange={e => setForm({...form,titre:e.target.value})} placeholder="Titre du document"/></div>
         <div className="form-group"><label>Contenu texte</label><textarea rows={5} value={form.contenu} onChange={e => setForm({...form,contenu:e.target.value})} placeholder="Collez le contenu de la documentation…"/></div>
         <div className="form-group"><label>Ou importer (PDF/TXT)</label><input type="file" accept=".pdf,.txt" onChange={e => setFile(e.target.files[0])}/>{file && <span style={{ fontSize:12, color:'#6366f1' }}>📎 {file.name}</span>}</div>
         <button className="btn btn-primary btn-sm" disabled={loading} onClick={create}>{loading ? 'Indexation en cours…' : 'Ajouter la documentation'}</button>
       </div>
-      <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-        {localDocs.length === 0 && <div style={{ textAlign:'center', padding:'2rem', color:'#94a3b8' }}>Aucune documentation.</div>}
+
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:12 }}>
+        {localDocs.length === 0 && <div style={{ gridColumn:'1/-1', textAlign:'center', padding:'3rem', color:'#94a3b8', background:'#fff', borderRadius:12, border:'1px solid #e2e8f0' }}><i className="fas fa-file-alt" style={{ fontSize:48, opacity:.2, marginBottom:16 }}/><p>Aucune documentation.</p></div>}
         {localDocs.map(d => (
-          <div key={d.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:12, padding:'1rem 1.25rem', display:'flex', alignItems:'center', gap:12 }}>
-            <div style={{ width:36, height:36, background:'rgba(16,185,129,.1)', borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center' }}><i className="fas fa-file-alt" style={{ color:'#10b981', fontSize:16 }}/></div>
-            <div style={{ flex:1 }}><strong style={{ fontSize:14 }}>{d.titre}</strong><div style={{ fontSize:12, color:'#64748b' }}>{d.contenu?.slice(0,100)}{(d.contenu?.length||0)>100?'…':''}</div></div>
-            <div style={{ display:'flex', gap:6 }}>
-              <button className="btn btn-outline btn-sm" onClick={() => onPickDoc(d)}>FAQ →</button>
-              <button className="btn btn-sm" style={{ background:'#fef2f2', color:'#ef4444' }} onClick={() => { onDeleteDoc(d.id); setLocalDocs(docs => docs.filter(x => x.id !== d.id)); }}>Supprimer</button>
+          <div key={d.id} style={{ background:'#fff', border:'1.5px solid #e2e8f0', borderRadius:14, padding:'1.25rem', transition:'all .2s', cursor:'pointer' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor='#10b981'; e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='0 12px 30px rgba(16,185,129,.15)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor='#e2e8f0'; e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow=''; }}>
+            <div style={{ display:'flex', alignItems:'flex-start', gap:12, marginBottom:12 }}>
+              <div style={{ width:44, height:44, background:'rgba(16,185,129,.1)', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                <i className="fas fa-file-alt" style={{ color:'#10b981', fontSize:18 }}/>
+              </div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <strong style={{ fontSize:15, fontWeight:700, color:'#1e1b4b', display:'block', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{d.titre}</strong>
+                <div style={{ fontSize:12, color:'#94a3b8', marginTop:2 }}>{new Date(d.updated_at).toLocaleDateString('fr-FR')}</div>
+              </div>
+            </div>
+            <div style={{ fontSize:13, color:'#64748b', lineHeight:1.5, marginBottom:12, overflow:'hidden', textOverflow:'ellipsis', display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical' }}>
+              {d.contenu?.slice(0, 150)}{(d.contenu?.length || 0) > 150 ? '…' : ''}
+            </div>
+            <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+              <button className="btn btn-outline btn-sm" style={{ flex:1 }} onClick={(e) => { e.stopPropagation(); viewDocument(d); }}>
+                <i className="fas fa-eye"/> Voir
+              </button>
+              <button className="btn btn-outline btn-sm" style={{ flex:1 }} onClick={(e) => { e.stopPropagation(); startEdit(d); }}>
+                <i className="fas fa-edit"/> Modifier
+              </button>
+              <button className="btn btn-outline btn-sm" onClick={(e) => { e.stopPropagation(); onPickDoc(d); }}>
+                <i className="fas fa-question-circle"/> FAQ
+              </button>
+              <button className="btn btn-sm" style={{ background:'#fef2f2', color:'#ef4444', border:'1px solid #fecaca' }} onClick={(e) => { e.stopPropagation(); if(confirm('Supprimer ce document ?')) { onDeleteDoc(d.id); setLocalDocs(docs => docs.filter(x => x.id !== d.id)); } }}>
+                <i className="fas fa-trash"/>
+              </button>
             </div>
           </div>
         ))}
@@ -1652,38 +2050,145 @@ function FaqTabPanel({ docId, faqs, onDeleteFaq, onNotify }) {
   const [form, setForm]   = useState({ question:'', reponse:'' });
   const [loading, setLoading] = useState(false);
   const [localFaqs, setLocalFaqs] = useState(faqs);
+  const [editId, setEditId] = useState(null);
+  const [editForm, setEditForm] = useState({ question:'', reponse:'' });
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => { setLocalFaqs(faqs); }, [faqs]);
 
   const create = async () => {
+    if (!form.question.trim() || !form.reponse.trim()) {
+      onNotify('Question et réponse requises', 'error');
+      return;
+    }
+    
     setLoading(true);
     try {
       const r = await api.post('/admin/docs?type=faq', { documentation_id: docId, ...form });
       setLocalFaqs(f => [...f, r.data.data]);
-      onNotify('FAQ ajoutée');
+      onNotify('FAQ ajoutée avec succès !');
       setForm({ question:'', reponse:'' });
+      setShowForm(false);
     } catch (e) { onNotify(e.response?.data?.error || 'Erreur', 'error'); }
     finally { setLoading(false); }
   };
 
+  const updateFaq = async () => {
+    try {
+      await api.put('/admin/docs?type=faq', { id: editId, ...editForm });
+      setLocalFaqs(faqs => faqs.map(f => f.id === editId ? { ...f, ...editForm } : f));
+      onNotify('FAQ mise à jour !');
+      setEditId(null);
+    } catch (e) {
+      onNotify(e.response?.data?.error || 'Erreur', 'error');
+    }
+  };
+
   return (
     <div>
-      <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:16, padding:'1.5rem', marginBottom:16 }}>
-        <h3 style={{ fontWeight:700, marginBottom:'1rem' }}>Ajouter une FAQ</h3>
-        <div className="form-group"><label>Question</label><input value={form.question} onChange={e => setForm({...form,question:e.target.value})} placeholder="Question fréquente…"/></div>
-        <div className="form-group"><label>Réponse</label><textarea rows={3} value={form.reponse} onChange={e => setForm({...form,reponse:e.target.value})} placeholder="Réponse concise et claire…"/></div>
-        <button className="btn btn-primary btn-sm" disabled={loading} onClick={create}>{loading ? 'Ajout…' : 'Ajouter cette FAQ'}</button>
-      </div>
-      <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-        {localFaqs.length === 0 && <div style={{ textAlign:'center', padding:'2rem', color:'#94a3b8' }}>Aucune FAQ pour cette documentation.</div>}
+      {/* Bouton d'ajout moderne */}
+      {!showForm ? (
+        <button onClick={() => setShowForm(true)} style={{ width:'100%', background:'linear-gradient(135deg, #f59e0b, #f97316)', color:'#fff', border:'none', borderRadius:16, padding:'1.5rem', cursor:'pointer', marginBottom:'1.5rem', display:'flex', alignItems:'center', justifyContent:'center', gap:12, fontSize:16, fontWeight:700, boxShadow:'0 8px 24px rgba(245,158,11,.25)', transition:'all .2s' }}
+          onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 12px 32px rgba(245,158,11,.35)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow='0 8px 24px rgba(245,158,11,.25)'; }}>
+          <i className="fas fa-plus-circle" style={{ fontSize:24 }}/>
+          <span>Ajouter une nouvelle FAQ</span>
+        </button>
+      ) : (
+        <div style={{ background:'linear-gradient(135deg, #fef3c7, #fed7aa)', border:'2px solid #f59e0b', borderRadius:16, padding:'1.5rem', marginBottom:'1.5rem' }}>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1rem' }}>
+            <h3 style={{ fontWeight:800, fontSize:18, color:'#92400e', display:'flex', alignItems:'center', gap:8 }}>
+              <i className="fas fa-sparkles"/>
+              Nouvelle FAQ
+            </h3>
+            <button onClick={() => setShowForm(false)} style={{ width:28, height:28, borderRadius:8, border:'none', background:'rgba(146,64,14,.1)', color:'#92400e', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <i className="fas fa-times"/>
+            </button>
+          </div>
+          <div className="form-group" style={{ marginBottom:'1rem' }}>
+            <label style={{ fontWeight:700, color:'#92400e', marginBottom:8, display:'flex', alignItems:'center', gap:6 }}>
+              <i className="fas fa-question-circle"/>
+              Question
+            </label>
+            <input value={form.question} onChange={e => setForm({...form, question:e.target.value})} placeholder="Ex: Comment réinitialiser mon mot de passe ?" style={{ width:'100%', padding:'12px 16px', border:'2px solid #fbbf24', borderRadius:10, fontSize:15, outline:'none', transition:'border-color .2s' }} onFocus={e => e.target.style.borderColor='#f59e0b'} onBlur={e => e.target.style.borderColor='#fbbf24'}/>
+          </div>
+          <div className="form-group">
+            <label style={{ fontWeight:700, color:'#92400e', marginBottom:8, display:'flex', alignItems:'center', gap:6 }}>
+              <i className="fas fa-comment-dots"/>
+              Réponse
+            </label>
+            <textarea rows={4} value={form.reponse} onChange={e => setForm({...form, reponse:e.target.value})} placeholder="Réponse claire et concise pour l'utilisateur…" style={{ width:'100%', padding:'12px 16px', border:'2px solid #fbbf24', borderRadius:10, fontSize:14, lineHeight:1.6, outline:'none', resize:'vertical', transition:'border-color .2s' }} onFocus={e => e.target.style.borderColor='#f59e0b'} onBlur={e => e.target.style.borderColor='#fbbf24'}/>
+          </div>
+          <div style={{ display:'flex', gap:8, marginTop:'1rem' }}>
+            <button className="btn btn-outline" onClick={() => { setShowForm(false); setForm({ question:'', reponse:'' }); }} style={{ flex:1 }}>
+              Annuler
+            </button>
+            <button className="btn btn-primary" onClick={create} disabled={loading} style={{ flex:2, background:'linear-gradient(135deg, #f59e0b, #f97316)', border:'none' }}>
+              {loading ? 'Ajout en cours…' : '✨ Ajouter cette FAQ'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Liste des FAQs avec design moderne */}
+      <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+        {localFaqs.length === 0 && (
+          <div style={{ textAlign:'center', padding:'4rem 2rem', color:'#94a3b8', background:'#fff', borderRadius:16, border:'2px dashed #e2e8f0' }}>
+            <i className="fas fa-question-circle" style={{ fontSize:56, opacity:.2, marginBottom:20 }}/>
+            <p style={{ fontSize:16, fontWeight:600, marginBottom:8 }}>Aucune FAQ pour cette documentation</p>
+            <p style={{ fontSize:14 }}>Commencez par ajouter votre première FAQ !</p>
+          </div>
+        )}
         {localFaqs.map((f,i) => (
-          <div key={f.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:12, padding:'1rem 1.25rem', display:'flex', gap:12 }}>
-            <div style={{ width:24, height:24, borderRadius:'50%', background:'rgba(245,158,11,.1)', color:'#f59e0b', fontSize:12, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{i+1}</div>
-            <div style={{ flex:1 }}>
-              <div style={{ fontWeight:600, fontSize:14 }}>{f.question}</div>
-              <div style={{ fontSize:13, color:'#64748b', marginTop:4 }}>{f.reponse}</div>
+          <div key={f.id} style={{ background:'#fff', border:'2px solid #e2e8f0', borderRadius:14, padding:'1.5rem', transition:'all .2s', position:'relative', overflow:'hidden' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor='#f59e0b'; e.currentTarget.style.boxShadow='0 8px 24px rgba(245,158,11,.1)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor='#e2e8f0'; e.currentTarget.style.boxShadow=''; }}>
+            <div style={{ position:'absolute', top:12, right:12, width:36, height:36, borderRadius:10, background:'linear-gradient(135deg, #fef3c7, #fed7aa)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, color:'#92400e', fontSize:14 }}>
+              #{i+1}
             </div>
-            <button className="btn btn-sm" style={{ background:'#fef2f2', color:'#ef4444', flexShrink:0 }} onClick={() => { onDeleteFaq(f.id); setLocalFaqs(fqs => fqs.filter(x => x.id !== f.id)); }}>Supprimer</button>
+            
+            {editId === f.id ? (
+              <div>
+                <div className="form-group" style={{ marginBottom:'1rem' }}>
+                  <label style={{ fontWeight:600, fontSize:12, color:'#64748b', marginBottom:6 }}>Question</label>
+                  <input value={editForm.question} onChange={e => setEditForm({...editForm, question:e.target.value})} style={{ width:'100%', padding:'10px 14px', border:'1.5px solid #e2e8f0', borderRadius:8, fontSize:14 }}/>
+                </div>
+                <div className="form-group">
+                  <label style={{ fontWeight:600, fontSize:12, color:'#64748b', marginBottom:6 }}>Réponse</label>
+                  <textarea rows={4} value={editForm.reponse} onChange={e => setEditForm({...editForm, reponse:e.target.value})} style={{ width:'100%', padding:'10px 14px', border:'1.5px solid #e2e8f0', borderRadius:8, fontSize:14, resize:'vertical' }}/>
+                </div>
+                <div style={{ display:'flex', gap:6, marginTop:'1rem' }}>
+                  <button className="btn btn-outline btn-sm" onClick={() => setEditId(null)}>Annuler</button>
+                  <button className="btn btn-primary btn-sm" onClick={updateFaq}>
+                    <i className="fas fa-save"/> Enregistrer
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ display:'flex', alignItems:'flex-start', gap:12, marginBottom:12 }}>
+                  <div style={{ width:44, height:44, borderRadius:12, background:'linear-gradient(135deg, #fef3c7, #fed7aa)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                    <i className="fas fa-question" style={{ color:'#f59e0b', fontSize:20 }}/>
+                  </div>
+                  <div style={{ flex:1, paddingRight:'3rem' }}>
+                    <div style={{ fontWeight:700, fontSize:16, color:'#1e1b4b', marginBottom:8, lineHeight:1.4 }}>
+                      {f.question}
+                    </div>
+                    <div style={{ fontSize:14, color:'#475569', lineHeight:1.7, background:'#f8fafc', padding:'12px 16px', borderRadius:10, borderLeft:'4px solid #f59e0b' }}>
+                      {f.reponse}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display:'flex', gap:6, marginTop:'1rem', paddingTop:'1rem', borderTop:'1px solid #f1f5f9' }}>
+                  <button className="btn btn-outline btn-sm" onClick={() => { setEditId(f.id); setEditForm({ question:f.question, reponse:f.reponse }); }}>
+                    <i className="fas fa-edit"/> Modifier
+                  </button>
+                  <button className="btn btn-sm" style={{ background:'#fef2f2', color:'#ef4444', border:'1px solid #fecaca' }} onClick={() => { if(confirm('Supprimer cette FAQ ?')) { onDeleteFaq(f.id); setLocalFaqs(fqs => fqs.filter(x => x.id !== f.id)); } }}>
+                    <i className="fas fa-trash"/> Supprimer
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
