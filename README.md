@@ -1,5 +1,5 @@
 # Support IA — Plateforme de support automatisé pour startups
-
+curl -fsSL https://raw.githubusercontent.com/koyeb/koyeb-cli/master/install.sh | sh
 Plateforme full-stack avec IA, 100% open source, déployable gratuitement en ~20 minutes.
 Le provider IA se configure directement depuis l'interface admin — aucune variable d'environnement requise pour l'IA.
 
