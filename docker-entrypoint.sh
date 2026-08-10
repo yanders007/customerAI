@@ -13,7 +13,9 @@ rm -f /etc/nginx/sites-enabled/000-default.conf 2>/dev/null || true
 cd /app/backend
 if [ ! -f ".env" ]; then cp .env.example .env; fi
 
-if grep -q "^APP_KEY=$" .env || grep -q "^APP_KEY=base64:CHANGE" .env; then
+APP_KEY_VALUE=$(grep -m1 "^APP_KEY=" .env | cut -d'=' -f2- | sed 's/#.*//' | xargs)
+if [ -z "$APP_KEY_VALUE" ] || [ "$APP_KEY_VALUE" = "base64:CHANGE" ]; then
+    echo "▶ APP_KEY manquante, génération..."
     php artisan key:generate --force
 fi
 
