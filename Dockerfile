@@ -17,9 +17,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # ── Backend Laravel ──────────────────────────────────────────────────────────
 WORKDIR /app/backend
 COPY backend/composer.json backend/composer.lock* ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 COPY backend/ .
+RUN composer run-script post-autoload-dump
 
 # ── Configs Nginx / Supervisor ───────────────────────────────────────────────
 COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
