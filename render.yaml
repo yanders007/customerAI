@@ -1,5 +1,5 @@
 # render.yaml — Infrastructure as Code pour Render.com
-# New > Blueprint dans le dashboard, puis sélectionner ce repo.
+# New > Web Service > connecter le repo > Environment: Docker > Dockerfile: ./Dockerfile
 
 services:
   - type: web
@@ -39,29 +39,29 @@ services:
       - key: FRONTEND_URL
         sync: false           # ⚠️ https://support-ia.vercel.app
 
-      # Mail (Resend — gratuit 3000/mois)
+      # Mail (Brevo — gratuit 300/jour)
       - key: MAIL_MAILER
         value: smtp
       - key: MAIL_HOST
-        value: smtp.resend.com
+        value: smtp-relay.brevo.com
       - key: MAIL_PORT
-        value: "465"
+        value: "587"
       - key: MAIL_USERNAME
-        value: resend
+        sync: false           # ⚠️ Ton email de compte Brevo
       - key: MAIL_PASSWORD
-        sync: false           # ⚠️ Clé API Resend (re_xxxxx)
+        sync: false           # ⚠️ Clé SMTP Brevo : dashboard Brevo → SMTP & API → onglet SMTP → Mot de passe SMTP
       - key: MAIL_ENCRYPTION
-        value: ssl
+        value: tls
       - key: MAIL_FROM_ADDRESS
-        sync: false           # ⚠️ noreply@tondomaine.com
+        sync: false           # ⚠️ Email vérifié sur Brevo
       - key: MAIL_FROM_NAME
         value: "Support IA"
       - key: SUPPORT_EMAIL
-        sync: false           # ⚠️ Email de support
+        sync: false           # ⚠️ Email qui reçoit les escalades
 
-      # Cohere (embeddings RAG)
+      # Cohere (embeddings RAG uniquement — gratuit)
       - key: COHERE_API_KEY
-        sync: false           # ⚠️ dashboard.cohere.com/api-keys (gratuit)
+        sync: false           # ⚠️ dashboard.cohere.com/api-keys
 
       # Drivers Laravel
       - key: QUEUE_CONNECTION
@@ -79,6 +79,5 @@ services:
       - key: LOG_LEVEL
         value: error
 
-      # La clé Gemini (et autres providers IA) est configurée
-      # directement depuis l'interface admin de l'application.
-      # Aucune variable d'env requise pour l'IA.
+      # La clé du provider IA (Gemini, Groq…) se configure
+      # depuis l'interface admin — aucune variable d'env requise.
