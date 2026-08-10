@@ -15,7 +15,8 @@ RUN docker-php-ext-install \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # ── Node.js + n8n ────────────────────────────────────────────────────────────
-RUN apt-get update && apt-get install -y nodejs npm && rm -rf /var/lib/apt/lists/* \
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/* \
     && npm install -g n8n
 
 # ── Backend Laravel ──────────────────────────────────────────────────────────
