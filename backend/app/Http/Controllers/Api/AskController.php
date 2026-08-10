@@ -10,7 +10,7 @@ use App\Models\Faq;
 use App\Models\Message;
 use App\Models\Projet;
 use App\Services\CohereEmbeddingService;
-use App\Services\N8nService;
+use App\Services\AiService;
 use App\Services\RetrievalService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -29,7 +29,7 @@ class AskController extends Controller
     private const FALLBACK_DOC_MAX_CHARS = 15000;  // Réduit de 50k à 15k
 
     public function __construct(
-        private N8nService $n8n,
+        private AiService $n8n,
         private RetrievalService $retrieval,
         private CohereEmbeddingService $embeddings,
     ) {}
@@ -213,7 +213,7 @@ class AskController extends Controller
         $history = $this->buildHistory($conversation, $userMessage->id);
 
         $chunksUsed  = isset($retrieved['chunks_count']) ? (int)$retrieved['chunks_count'] : 0;
-        $n8nResponse = $this->n8n->askAssistant(
+        $n8nResponse = $this->n8n->ask(
             question:      $question,
             documentation: trim($docTexte),
             faq:           trim($faqTexte),

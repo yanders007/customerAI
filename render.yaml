@@ -1,26 +1,15 @@
-# ════════════════════════════════════════════════════════════════════════════
-#  render.yaml — Infrastructure as Code pour Render.com
-#  Doc : https://render.com/docs/infrastructure-as-code
-#
-#  Déploiement : connecter ce repo sur https://dashboard.render.com
-#  puis "New > Blueprint" et sélectionner ce fichier.
-# ════════════════════════════════════════════════════════════════════════════
+# render.yaml — Infrastructure as Code pour Render.com
+# New > Blueprint dans le dashboard, puis sélectionner ce repo.
 
 services:
-  # ── Backend : Laravel + n8n dans un seul conteneur ─────────────────────────
   - type: web
     name: support-ia-backend
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
-
-    # Plan gratuit Render
     plan: free
 
-    # Variables d'environnement — à configurer dans le dashboard Render
-    # (ou via envVarGroups si tu veux les partager)
     envVars:
-      # ── Application ──────────────────────────────────────────────────────
       - key: APP_NAME
         value: "Support IA"
       - key: APP_ENV
@@ -28,15 +17,15 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        generateValue: true          # Render génère automatiquement
+        generateValue: true
       - key: APP_URL
-        sync: false                  # À remplir : https://support-ia-backend.onrender.com
+        sync: false           # ⚠️ https://support-ia-backend.onrender.com
 
-      # ── Supabase PostgreSQL ───────────────────────────────────────────────
+      # Supabase PostgreSQL
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        sync: false                  # db.[ref].supabase.co
+        sync: false           # ⚠️ db.XXXX.supabase.co
       - key: DB_PORT
         value: "5432"
       - key: DB_DATABASE
@@ -44,23 +33,13 @@ services:
       - key: DB_USERNAME
         value: postgres
       - key: DB_PASSWORD
-        sync: false                  # Mot de passe Supabase
+        sync: false           # ⚠️ Mot de passe Supabase
 
-      # ── n8n (interne, pas d'URL externe) ─────────────────────────────────
-      - key: N8N_WEBHOOK_URL
-        value: "http://localhost:5678/webhook/assistant"
-      - key: N8N_BASIC_AUTH_USER
-        value: admin
-      - key: N8N_BASIC_AUTH_PASSWORD
-        generateValue: true
+      # CORS / Frontend
+      - key: FRONTEND_URL
+        sync: false           # ⚠️ https://support-ia.vercel.app
 
-      # ── AI APIs ──────────────────────────────────────────────────────────
-      - key: GEMINI_API_KEY
-        sync: false
-      - key: COHERE_API_KEY
-        sync: false
-
-      # ── Mail (Resend — gratuit 3000/mois) ────────────────────────────────
+      # Mail (Resend — gratuit 3000/mois)
       - key: MAIL_MAILER
         value: smtp
       - key: MAIL_HOST
@@ -70,19 +49,21 @@ services:
       - key: MAIL_USERNAME
         value: resend
       - key: MAIL_PASSWORD
-        sync: false                  # Clé API Resend (re_xxxxxx)
+        sync: false           # ⚠️ Clé API Resend (re_xxxxx)
       - key: MAIL_ENCRYPTION
         value: ssl
       - key: MAIL_FROM_ADDRESS
-        sync: false                  # ex: noreply@tondomaine.com
+        sync: false           # ⚠️ noreply@tondomaine.com
       - key: MAIL_FROM_NAME
         value: "Support IA"
+      - key: SUPPORT_EMAIL
+        sync: false           # ⚠️ Email de support
 
-      # ── CORS / Frontend ───────────────────────────────────────────────────
-      - key: FRONTEND_URL
-        sync: false                  # https://support-ia.vercel.app
+      # Cohere (embeddings RAG)
+      - key: COHERE_API_KEY
+        sync: false           # ⚠️ dashboard.cohere.com/api-keys (gratuit)
 
-      # ── Drivers Laravel ───────────────────────────────────────────────────
+      # Drivers Laravel
       - key: QUEUE_CONNECTION
         value: database
       - key: CACHE_STORE
@@ -93,11 +74,11 @@ services:
         value: "true"
       - key: SESSION_SAME_SITE
         value: none
-      - key: FILESYSTEM_DISK
-        value: local
       - key: LOG_CHANNEL
         value: stderr
       - key: LOG_LEVEL
         value: error
-      - key: SUPPORT_EMAIL
-        sync: false
+
+      # La clé Gemini (et autres providers IA) est configurée
+      # directement depuis l'interface admin de l'application.
+      # Aucune variable d'env requise pour l'IA.

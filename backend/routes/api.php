@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AiConfigController;
 use App\Http\Controllers\Api\Admin\ClientController;
 use App\Http\Controllers\Api\Admin\DocsController;
 use App\Http\Controllers\Api\AdminAuthController;
@@ -40,6 +41,12 @@ Route::prefix('admin')->group(function () {
 
         // Conversations (liste pour l'admin)
         Route::get('/conversations', [AskController::class, 'adminList']);
+
+        // Configuration IA
+        Route::get('/ai-config',         [AiConfigController::class, 'show']);
+        Route::post('/ai-config',        [AiConfigController::class, 'store']);
+        Route::post('/ai-config/test',   [AiConfigController::class, 'test']);
+        Route::delete('/ai-config',      [AiConfigController::class, 'destroy']);
     });
 });
 
