@@ -39,12 +39,12 @@ class DashboardController extends Controller
                 COALESCE(SUM(tokens_input), 0) as input,
                 COALESCE(SUM(tokens_output), 0) as output,
                 COALESCE(SUM(tokens_input + tokens_output), 0) as total,
-                COALESCE(SUM(CASE WHEN retrieval_source = "chunks" THEN tokens_input ELSE 0 END), 0) as chunks_tokens,
-                COALESCE(SUM(CASE WHEN retrieval_source = "fallback" THEN tokens_input ELSE 0 END), 0) as fallback_tokens,
-                COALESCE(SUM(CASE WHEN retrieval_source = "faq" THEN tokens_input ELSE 0 END), 0) as faq_tokens,
-                COALESCE(SUM(CASE WHEN retrieval_source = "smalltalk" THEN tokens_input ELSE 0 END), 0) as smalltalk_tokens,
-                COUNT(CASE WHEN retrieval_source IN ("chunks", "faq") THEN 1 END) as efficient_count,
-                COUNT(CASE WHEN retrieval_source = "fallback" THEN 1 END) as fallback_count')
+                COALESCE(SUM(CASE WHEN retrieval_source = 'chunks' THEN tokens_input ELSE 0 END), 0) as chunks_tokens,
+                COALESCE(SUM(CASE WHEN retrieval_source = 'fallback' THEN tokens_input ELSE 0 END), 0) as fallback_tokens,
+                COALESCE(SUM(CASE WHEN retrieval_source = 'faq' THEN tokens_input ELSE 0 END), 0) as faq_tokens,
+                COALESCE(SUM(CASE WHEN retrieval_source = 'smalltalk' THEN tokens_input ELSE 0 END), 0) as smalltalk_tokens,
+                COUNT(CASE WHEN retrieval_source IN ('chunks', 'faq') THEN 1 END) as efficient_count,
+                COUNT(CASE WHEN retrieval_source = 'fallback' THEN 1 END) as fallback_count')
             ->groupBy('date')
             ->orderBy('date')
             ->get();
@@ -55,10 +55,10 @@ class DashboardController extends Controller
                 COALESCE(SUM(tokens_input), 0) as input,
                 COALESCE(SUM(tokens_output), 0) as output,
                 COALESCE(SUM(tokens_input + tokens_output), 0) as total,
-                COALESCE(SUM(CASE WHEN retrieval_source = "chunks" THEN tokens_input ELSE 0 END), 0) as chunks_tokens,
-                COALESCE(SUM(CASE WHEN retrieval_source = "fallback" THEN tokens_input ELSE 0 END), 0) as fallback_tokens,
-                COUNT(CASE WHEN retrieval_source IN ("chunks", "faq") THEN 1 END) as efficient_count,
-                COUNT(CASE WHEN retrieval_source = "fallback" THEN 1 END) as fallback_count')
+                COALESCE(SUM(CASE WHEN retrieval_source = 'chunks' THEN tokens_input ELSE 0 END), 0) as chunks_tokens,
+                COALESCE(SUM(CASE WHEN retrieval_source = 'fallback' THEN tokens_input ELSE 0 END), 0) as fallback_tokens,
+                COUNT(CASE WHEN retrieval_source IN ('chunks', 'faq') THEN 1 END) as efficient_count,
+                COUNT(CASE WHEN retrieval_source = 'fallback' THEN 1 END) as fallback_count')
             ->groupBy('date')
             ->orderBy('date')
             ->get();
