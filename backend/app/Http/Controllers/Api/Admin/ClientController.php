@@ -30,7 +30,8 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
-        \Log::info('=== Début création client ===', ['request' => $request->all()]);
+        error_log('=== DEBUT CREATION CLIENT ===');
+        error_log('Request: ' . json_encode($request->all()));
         
         try {
             $data = $request->validate([
@@ -38,16 +39,13 @@ class ClientController extends Controller
                 'email' => ['required', 'email', 'unique:clients,email'],
             ]);
             
-            \Log::info('Validation OK', $data);
+            error_log('✓ Validation OK: ' . json_encode($data));
 
             // ── Génération identifiants ───
             $plainPassword = $this->generateProPassword();
             $identifier    = 'CLIENT-' . strtoupper(Str::random(6));
             
-            \Log::info('Identifiants générés', [
-                'identifier' => $identifier,
-                'password_length' => strlen($plainPassword)
-            ]);
+            error_log('✓ Identifiants générés: ' . $identifier);
 
             // ── Création client ───
             $client = Client::create([
@@ -55,16 +53,19 @@ class ClientController extends Controller
                 'email'             => $data['email'],
                 'client_identifier' => $identifier,
                 'password'          => Hash::make($plainPassword),
-                'is_active'         => false, // Par défaut inactif
+                'is_active'         => false,
             ]);
 
-            \Log::info('Client créé en DB', ['client_id' => $client->id]);
+            error_log('✓ Client créé en DB avec ID: ' . $client->id);
 
             // ── Envoi email ───
             $emailStatus = 'Email non configuré';
             try {
                 $loginUrl = env('FRONTEND_URL', 'http://localhost:3000') . '/login-client';
-                \Log::info('Tentative envoi email', ['to' => $data['email'], 'url' => $loginUrl]);
+                error_log('→ Tentative envoi email à: ' . $data['email']);
+                error_log('→ Login URL: ' . $loginUrl);
+                error_log('→ MAIL_HOST: ' . env('MAIL_HOST'));
+                error_log('→ MAIL_FROM: ' . env('MAIL_FROM_ADDRESS'));
                 
                 Mail::to($data['email'])->send(new ClientCredentialsMail(
                     clientName: $data['name'],
@@ -74,15 +75,15 @@ class ClientController extends Controller
                 ));
                 
                 $emailStatus = 'Email envoyé avec succès';
-                \Log::info('Email envoyé avec succès');
+                error_log('✓✓✓ EMAIL ENVOYÉ AVEC SUCCÈS ✓✓✓');
             } catch (\Exception $mailError) {
-                \Log::warning('Échec envoi email', [
-                    'email' => $data['email'],
-                    'error' => $mailError->getMessage(),
-                    'trace' => $mailError->getTraceAsString()
-                ]);
-                $emailStatus = 'Client créé mais email non envoyé (config SMTP manquante)';
+                error_log('✗✗✗ ÉCHEC ENVOI EMAIL ✗✗✗');
+                error_log('Erreur: ' . $mailError->getMessage());
+                error_log('Fichier: ' . $mailError->getFile() . ':' . $mailError->getLine());
+                $emailStatus = 'Client créé mais email non envoyé';
             }
+
+            error_log('=== FIN CREATION CLIENT ===');
 
             return response()->json([
                 'success' => true,
@@ -97,19 +98,16 @@ class ClientController extends Controller
             ], 201);
             
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Erreur validation', ['errors' => $e->errors()]);
+            error_log('✗ Erreur validation: ' . json_encode($e->errors()));
             return response()->json([
                 'success' => false,
                 'error' => 'Validation échouée',
                 'details' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
-            \Log::error('Erreur création client', [
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            error_log('✗✗✗ ERREUR CRITIQUE ✗✗✗');
+            error_log('Message: ' . $e->getMessage());
+            error_log('Fichier: ' . $e->getFile() . ':' . $e->getLine());
             return response()->json([
                 'success' => false,
                 'error' => 'Erreur serveur : ' . $e->getMessage()
