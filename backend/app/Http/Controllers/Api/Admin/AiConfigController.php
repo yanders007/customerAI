@@ -51,14 +51,15 @@ class AiConfigController extends Controller
         // Désactiver toutes les configs précédentes
         AiConfig::where('is_active', true)->update(['is_active' => false]);
 
-        $config = AiConfig::create([
+        // Créer une nouvelle config (le mutateur chiffrera automatiquement api_key)
+        $config = new AiConfig([
             'provider'      => $data['provider'],
             'model'         => $data['model'],
             'is_active'     => true,
             'system_prompt' => $data['system_prompt'] ?? null,
         ]);
-
-        // Passer par le mutateur pour chiffrer
+        
+        // Le mutateur setApiKeyAttribute() va automatiquement chiffrer et stocker dans api_key_encrypted
         $config->api_key = $data['api_key'];
         $config->save();
 
