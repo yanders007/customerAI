@@ -15,12 +15,26 @@ while [ $RETRY -lt $MAX_RETRIES ]; do
         # Attendre encore un peu pour s'assurer que N8N est complètement prêt
         sleep 3
         
-        # Importer le workflow depuis le fichier JSON
+        # Importer le workflow via l'API REST (plus fiable que n8n import:workflow)
         if [ -f "/app/n8n/workflow.json" ]; then
-            echo "▶ Import du workflow N8N..."
-            n8n import:workflow --input=/app/n8n/workflow.json 2>/dev/null || echo "⚠ Import échoué (workflow déjà présent?)"
-            echo "⏳ Attente indexation workflow (5s)..."
-            sleep 5
+            echo "▶ Import du workflow via API N8N..."
+            
+            # Lire le contenu du workflow
+            WORKFLOW_CONTENT=$(cat /app/n8n/workflow.json)
+            
+            # Importer via POST /rest/workflows
+            IMPORT_RESULT=$(curl -s -X POST http://localhost:5678/rest/workflows \
+              -H "Content-Type: application/json" \
+              -d "$WORKFLOW_CONTENT" 2>/dev/null)
+            
+            if echo "$IMPORT_RESULT" | grep -q '"id"'; then
+                echo "✓ Workflow importé avec succès"
+            else
+                echo "⚠ Import échoué (peut-être déjà présent), tentative de récupération..."
+            fi
+            
+            echo "⏳ Attente indexation workflow (3s)..."
+            sleep 3
         fi
         
         # Récupérer la liste des workflows
