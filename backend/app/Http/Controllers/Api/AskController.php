@@ -126,12 +126,7 @@ class AskController extends Controller
             ]);
         }
 
-        // ── 1) Détection d'intention DÉSACTIVÉE ──
-        // Toutes les questions passent directement au workflow N8N
-        // qui gère lui-même les salutations, remerciements, etc.
-        // Cela évite les timeouts et conflits avec le prompt système N8N.
-        
-        /*
+        // ── 1) Détection d'intention pour réponses simples ──
         $client = Client::find($clientId);
         $intentResult = $this->detectIntent($question, $client?->name, $projet->nom_projet);
         if ($intentResult !== null) {
@@ -141,7 +136,7 @@ class AskController extends Controller
                 'content'          => $intentResult['response'],
                 'tokens_input'     => $intentResult['tokens_input'] ?? 0,
                 'tokens_output'    => $intentResult['tokens_output'] ?? 0,
-                'retrieval_source' => 'smalltalk', // Les salutations/intentions utilisent smalltalk
+                'retrieval_source' => 'smalltalk',
                 'chunks_used'      => 0,
             ]);
             $conversation->touch();
@@ -158,7 +153,6 @@ class AskController extends Controller
                 'assistant_message_id' => $assistantMessage->id,
             ]);
         }
-        */
 
         // ── 2) Documentation disponible pour ce projet ? ─────────────────
         $documentations = Documentation::where('projet_id', $projet->id)->with('faqs')->get();
@@ -212,30 +206,21 @@ class AskController extends Controller
             }
         }
 
-        // Historique de conversation : les échanges précédents (hors le
-        // message qu'on vient de créer), pour que l'IA puisse résoudre
-        // les relances qui ne se comprennent qu'avec le contexte
-        // ("envoie la suite de l'histoire", "et pour le deuxième point ?").
+        // Historique de conversation
         $history = $this->buildHistory($conversation, $userMessage->id);
 
         $chunksUsed  = isset($retrieved['chunks_count']) ? (int)$retrieved['chunks_count'] : 0;
-        $n8nResponse = $this->n8n->askAssistant(
-            question:      $question,
-            documentation: trim($docTexte),
-            faq:           trim($faqTexte),
-            history:       $history,
-            clientName:    $client?->name ?? 'Client',
-        );
-
-        $answer   = $n8nResponse['answer'];
-        $escalate = $n8nResponse['escalate'] ?? false;
+        
+        // ── N8N désactivé : Escalade automatique pour questions techniques ──
+        $answer = "Je vous remercie pour votre question. Un membre de notre équipe support va prendre en charge votre demande et vous répondra dans les plus brefs délais.";
+        $escalate = true;
 
         $assistantMessage = Message::create([
             'conversation_id'  => $conversation->id,
             'role'             => 'assistant',
             'content'          => $answer,
-            'tokens_input'     => $n8nResponse['tokens_input']  ?? 0,
-            'tokens_output'    => $n8nResponse['tokens_output'] ?? 0,
+            'tokens_input'     => 0,
+            'tokens_output'    => intdiv(mb_strlen($answer), 4),
             'retrieval_source' => $retrieved['source'] ?? 'fallback',
             'chunks_used'      => $chunksUsed,
         ]);
