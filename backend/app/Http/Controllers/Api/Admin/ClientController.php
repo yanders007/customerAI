@@ -30,59 +30,89 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'name'  => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email', 'unique:clients,email'],
-        ]);
-
+        \Log::info('=== Début création client ===', ['request' => $request->all()]);
+        
         try {
-            // ── Mot de passe généré automatiquement (système pro) ───
+            $data = $request->validate([
+                'name'  => ['required', 'string', 'max:100'],
+                'email' => ['required', 'email', 'unique:clients,email'],
+            ]);
+            
+            \Log::info('Validation OK', $data);
+
+            // ── Génération identifiants ───
             $plainPassword = $this->generateProPassword();
             $identifier    = 'CLIENT-' . strtoupper(Str::random(6));
+            
+            \Log::info('Identifiants générés', [
+                'identifier' => $identifier,
+                'password_length' => strlen($plainPassword)
+            ]);
 
+            // ── Création client ───
             $client = Client::create([
                 'name'              => $data['name'],
                 'email'             => $data['email'],
                 'client_identifier' => $identifier,
                 'password'          => Hash::make($plainPassword),
+                'is_active'         => false, // Par défaut inactif
             ]);
 
-            // ── Envoi des identifiants par email ────────────────────
+            \Log::info('Client créé en DB', ['client_id' => $client->id]);
+
+            // ── Envoi email ───
+            $emailStatus = 'Email non configuré';
             try {
-                $loginUrl = config('services.support.frontend_url', env('FRONTEND_URL')) . '/login-client';
+                $loginUrl = env('FRONTEND_URL', 'http://localhost:3000') . '/login-client';
+                \Log::info('Tentative envoi email', ['to' => $data['email'], 'url' => $loginUrl]);
+                
                 Mail::to($data['email'])->send(new ClientCredentialsMail(
                     clientName: $data['name'],
                     identifier: $identifier,
                     password:   $plainPassword,
                     loginUrl:   $loginUrl,
                 ));
-                $emailStatus = 'Email envoyé avec succès.';
+                
+                $emailStatus = 'Email envoyé avec succès';
+                \Log::info('Email envoyé avec succès');
             } catch (\Exception $mailError) {
-                // Si l'email échoue, on continue quand même (client créé)
-                \Log::warning('Échec envoi email client', [
+                \Log::warning('Échec envoi email', [
                     'email' => $data['email'],
-                    'error' => $mailError->getMessage()
+                    'error' => $mailError->getMessage(),
+                    'trace' => $mailError->getTraceAsString()
                 ]);
-                $emailStatus = 'Client créé mais email non envoyé. Vérifiez la configuration SMTP.';
+                $emailStatus = 'Client créé mais email non envoyé (config SMTP manquante)';
             }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Client créé. ' . $emailStatus,
+                'message' => $emailStatus,
                 'data'    => [
                     'id'                => $client->id,
                     'name'              => $client->name,
                     'email'             => $client->email,
                     'client_identifier' => $identifier,
-                    'password'          => $plainPassword, // Pour que l'admin puisse le noter
+                    'password'          => $plainPassword,
                 ],
             ], 201);
             
-        } catch (\Exception $e) {
-            \Log::error('Erreur création client', ['error' => $e->getMessage()]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Erreur validation', ['errors' => $e->errors()]);
             return response()->json([
                 'success' => false,
-                'error' => 'Erreur lors de la création : ' . $e->getMessage()
+                'error' => 'Validation échouée',
+                'details' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Erreur création client', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'error' => 'Erreur serveur : ' . $e->getMessage()
             ], 500);
         }
     }
