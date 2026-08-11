@@ -15,8 +15,16 @@ const PROVIDERS = [
   {
     id: 'gemini', name: 'Google Gemini', free: true,
     url: 'https://aistudio.google.com/apikey',
-    models: ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-thinking-exp'],
-    hint: 'Clé commence par AIza…',
+    models: [
+      'gemini-3.6-flash',
+      'gemini-3.5-flash', 
+      'gemini-3.5-flash-lite',
+      'gemini-3.1-flash-lite',
+      'gemini-2.5-flash',
+      'gemini-2.5-flash-lite',
+      'gemini-3.1-flash'
+    ],
+    hint: 'Clé commence par AIza… (Free tier - modèles 2026)',
   },
   {
     id: 'groq', name: 'Groq', free: true,
