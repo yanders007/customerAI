@@ -10,7 +10,7 @@ use App\Models\Faq;
 use App\Models\Message;
 use App\Models\Projet;
 use App\Services\CohereEmbeddingService;
-use App\Services\N8nService;
+use App\Services\AiService;
 use App\Services\RetrievalService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -29,7 +29,7 @@ class AskController extends Controller
     private const FALLBACK_DOC_MAX_CHARS = 15000;  // Réduit de 50k à 15k
 
     public function __construct(
-        private N8nService $n8n,
+        private AiService $ai,
         private RetrievalService $retrieval,
         private CohereEmbeddingService $embeddings,
     ) {}
@@ -211,16 +211,24 @@ class AskController extends Controller
 
         $chunksUsed  = isset($retrieved['chunks_count']) ? (int)$retrieved['chunks_count'] : 0;
         
-        // ── N8N désactivé : Escalade automatique pour questions techniques ──
-        $answer = "Je vous remercie pour votre question. Un membre de notre équipe support va prendre en charge votre demande et vous répondra dans les plus brefs délais.";
-        $escalate = true;
+        // ── Appel IA avec le prompt N8N ──
+        $aiResponse = $this->ai->ask(
+            question:      $question,
+            documentation: trim($docTexte),
+            faq:           trim($faqTexte),
+            history:       $history,
+            clientName:    $client?->name ?? 'Client',
+        );
+
+        $answer   = $aiResponse['answer'];
+        $escalate = $aiResponse['escalate'] ?? false;
 
         $assistantMessage = Message::create([
             'conversation_id'  => $conversation->id,
             'role'             => 'assistant',
             'content'          => $answer,
-            'tokens_input'     => 0,
-            'tokens_output'    => intdiv(mb_strlen($answer), 4),
+            'tokens_input'     => $aiResponse['tokens_input']  ?? 0,
+            'tokens_output'    => $aiResponse['tokens_output'] ?? 0,
             'retrieval_source' => $retrieved['source'] ?? 'fallback',
             'chunks_used'      => $chunksUsed,
         ]);

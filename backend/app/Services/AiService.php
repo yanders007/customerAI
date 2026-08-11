@@ -60,7 +60,7 @@ PROMPT;
         }
 
         $systemPrompt = $this->buildSystemPrompt($config, $documentation, $faq, $clientName);
-        $userMessage  = $this->buildUserMessage($question, $history);
+        $userMessage  = $this->buildUserMessage($question, $history, $documentation, $faq, $clientName);
 
         try {
             return match (true) {
@@ -190,35 +190,63 @@ PROMPT;
 
     private function buildSystemPrompt(AiConfig $config, string $documentation, string $faq, string $clientName): string
     {
-        $base = $config->system_prompt ?: self::DEFAULT_SYSTEM;
-
-        $parts = [$base];
-
-        if ($clientName) {
-            $parts[] = "\nTu t'adresses à : {$clientName}.";
+        // Utiliser le prompt N8N exact si pas de prompt custom
+        if (!$config->system_prompt) {
+            return "Tu es un assistant support pour une agence de développement.
+Tu réponds aux clients comme le ferait un membre de l'équipe — avec clarté, chaleur et concision.
+La documentation et la FAQ ci-dessous sont ta seule source de vérité. Ne jamais inventer un fait absent.";
         }
-        if ($documentation) {
-            $parts[] = "\n--- DOCUMENTATION ---\n{$documentation}";
-        }
-        if ($faq) {
-            $parts[] = "\n--- FAQ ---\n{$faq}";
-        }
-
-        return implode("\n", $parts);
+        
+        return $config->system_prompt;
     }
 
-    private function buildUserMessage(string $question, string $history): string
+    private function buildUserMessage(string $question, string $history, string $documentation, string $faq, string $clientName): string
     {
-        if (!$history) {
-            return $question;
-        }
-        return "Historique récent :\n{$history}\n\nQuestion actuelle : {$question}";
+        $historyBlock = $history ? "=== HISTORIQUE RÉCENT ===\n{$history}\n\n" : '';
+        
+        return "CLIENT : {$clientName}
+
+{$historyBlock}=== DOCUMENTATION (passages les plus pertinents) ===
+{$documentation}
+
+=== FAQ ===
+{$faq}
+
+=== QUESTION ===
+{$question}
+
+---
+
+RÈGLES DE RÉPONSE (priorité décroissante) :
+
+1. SALUTATION — si le message est uniquement une salutation, réponds chaleureusement et brièvement. Aucun diagnostic.
+
+2. PROBLÈME RÉSOLU — si le client dit que c'est réglé (\"c'est bon\", \"merci\", \"ça marche\"), réponds UNIQUEMENT par un message court de satisfaction. Rien d'autre.
+
+3. MESSAGE VAGUE — si le client manque de détails (\"j'ai un problème\", \"ça ne marche pas\"), pose UNE seule question de clarification. Ne jamais utiliser ESCALATION_NEEDED dans ce cas.
+
+4. AMBIGUÏTÉ — si plusieurs éléments de la documentation pourraient correspondre, liste brièvement les options et demande de préciser. Ne pas utiliser ESCALATION_NEEDED.
+
+5. RÉSUMÉ / EXPLICATION / REFORMULATION — si le contenu existe dans la documentation, traite la demande en t'appuyant dessus.
+
+6. CONTINUITÉ — si la question est liée à l'échange précédent, tiens-en compte. Sinon, réponds directement sans mentionner l'ancien sujet.
+
+7. QUESTION FONCTIONNELLE — cherche dans la documentation les fonctionnalités qui répondent au besoin, même indirectement.
+
+8. ESCALATION_NEEDED — à utiliser UNIQUEMENT si :
+   - c'est une vraie question factuelle
+   - le sujet n'est couvert nulle part dans la documentation ni la FAQ
+   - même en interprétant largement la question et l'historique
+   Dans ce cas, réponds UNIQUEMENT par ce texte exact, sans rien ajouter :
+   ESCALATION_NEEDED
+
+Réponds en français, de manière claire, chaleureuse et concise.";
     }
 
     private function formatResponse(string $rawAnswer, int $inputTokens, int $outputTokens): array
     {
-        $escalate = str_contains($rawAnswer, '[ESCALADE]');
-        $answer   = trim(str_replace('[ESCALADE]', '', $rawAnswer));
+        $escalate = str_contains($rawAnswer, 'ESCALATION_NEEDED');
+        $answer   = trim(str_replace('ESCALATION_NEEDED', '', $rawAnswer));
 
         return [
             'answer'        => $answer,
