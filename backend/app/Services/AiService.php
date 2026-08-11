@@ -194,28 +194,15 @@ PROMPT;
         if (!$config->system_prompt) {
             return "Tu es un assistant support pour une agence de développement.
 Tu réponds aux clients comme le ferait un membre de l'équipe — avec clarté, chaleur et concision.
-La documentation et la FAQ ci-dessous sont ta seule source de vérité. Ne jamais inventer un fait absent.";
-        }
-        
-        return $config->system_prompt;
-    }
+La documentation et la FAQ ci-dessous sont ta seule source de vérité. Ne jamais inventer un fait absent.
 
-    private function buildUserMessage(string $question, string $history, string $documentation, string $faq, string $clientName): string
-    {
-        $historyBlock = $history ? "=== HISTORIQUE RÉCENT ===\n{$history}\n\n" : '';
-        
-        return "CLIENT : {$clientName}
+CLIENT : {$clientName}
 
-{$historyBlock}=== DOCUMENTATION (passages les plus pertinents) ===
+=== DOCUMENTATION (passages les plus pertinents) ===
 {$documentation}
 
 === FAQ ===
 {$faq}
-
-=== QUESTION ===
-{$question}
-
----
 
 RÈGLES DE RÉPONSE (priorité décroissante) :
 
@@ -241,6 +228,22 @@ RÈGLES DE RÉPONSE (priorité décroissante) :
    ESCALATION_NEEDED
 
 Réponds en français, de manière claire, chaleureuse et concise.";
+        }
+        
+        return $config->system_prompt;
+    }
+
+    private function buildUserMessage(string $question, string $history, string $documentation, string $faq, string $clientName): string
+    {
+        if (!$history) {
+            return $question;
+        }
+        
+        return "=== HISTORIQUE RÉCENT ===
+{$history}
+
+=== QUESTION ACTUELLE ===
+{$question}";
     }
 
     private function formatResponse(string $rawAnswer, int $inputTokens, int $outputTokens): array
