@@ -15,7 +15,7 @@ function Spinner() {
     <div style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'100vh' }}>
       <div style={{ textAlign:'center' }}>
         <div style={{ width:40, height:40, border:'3px solid #e2e8f0', borderTop:'3px solid #6366f1', borderRadius:'50%', animation:'spin 0.7s linear infinite', margin:'0 auto 1rem' }}/>
-        <p style={{ color:'#6b7280' }}>Chargement…</p>
+        <p style={{ color:'#64748b' }}>Chargement…</p>
       </div>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
@@ -84,17 +84,17 @@ export function ClientLogin() {
     <div className="login-container">
       <div className="login-left">
         <div className="login-brand">
-          <div className="logo"><i className="fas fa-comments"/><span>Support Client</span></div>
-          <p>Plateforme de support client disponible 24h/24 pour répondre à toutes vos questions.</p>
+          <div className="logo"><i className="fas fa-robot"/><span>Support IA</span></div>
+          <p>Votre assistant IA intelligent disponible 24h/24 pour répondre à toutes vos questions.</p>
         </div>
         <div className="login-features">
           <div className="feature-item">
             <i className="fas fa-bolt"/>
-            <div><h4>Réponses Rapides</h4><p>Obtenez des réponses précises en quelques secondes.</p></div>
+            <div><h4>Réponses Instantanées</h4><p>Obtenez des réponses précises en moins d'une seconde.</p></div>
           </div>
           <div className="feature-item">
             <i className="fas fa-book"/>
-            <div><h4>Documentation Complète</h4><p>Accédez à toute la documentation de vos projets.</p></div>
+            <div><h4>Documentation Intégrée</h4><p>L'IA analyse vos docs et répond avec précision.</p></div>
           </div>
           <div className="feature-item">
             <i className="fas fa-shield-alt"/>
@@ -105,7 +105,7 @@ export function ClientLogin() {
       <div className="login-right">
         <div className="login-box">
           <h2>Espace Client</h2>
-          <p>Connectez-vous pour accéder à votre espace support</p>
+          <p>Connectez-vous pour accéder à votre assistant IA</p>
           {error && <div style={{ background:'#fef2f2', color:'#991b1b', padding:'10px 14px', borderRadius:8, marginBottom:16, fontSize:14 }}>{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -129,8 +129,8 @@ export function ClientLogin() {
               <i className="fas fa-sign-in-alt"/> {loading ? 'Connexion…' : 'Se connecter'}
             </button>
           </form>
-          <p style={{ textAlign:'center', marginTop:20, fontSize:13, color:'#6b7280' }}>
-            Espace administrateur ? <a href="/login-admin" style={{ color:'#2563eb', fontWeight:600 }}>Connexion Admin</a>
+          <p style={{ textAlign:'center', marginTop:20, fontSize:13, color:'#64748b' }}>
+            Espace administrateur ? <a href="/login-admin" style={{ color:'#6366f1', fontWeight:600 }}>Connexion Admin</a>
           </p>
         </div>
       </div>
@@ -196,13 +196,13 @@ export function AdminLogin() {
     <div className="login-container">
       <div className="login-left">
         <div className="login-brand">
-          <div className="logo"><i className="fas fa-comments"/><span>Support Client</span></div>
-          <p>Plateforme d'administration de votre support client.</p>
+          <div className="logo"><i className="fas fa-robot"/><span>Support IA</span></div>
+          <p>Plateforme d'administration de votre assistant IA support client.</p>
         </div>
         <div className="login-features">
           <div className="feature-item">
             <i className="fas fa-chart-line"/>
-            <div><h4>Statistiques Détaillées</h4><p>Suivez la consommation et l'efficacité de votre support.</p></div>
+            <div><h4>Analytics Avancés</h4><p>Suivez la consommation de tokens et l'efficacité du RAG.</p></div>
           </div>
           <div className="feature-item">
             <i className="fas fa-users"/>
@@ -241,8 +241,8 @@ export function AdminLogin() {
               <i className="fas fa-sign-in-alt"/> {loading ? 'Connexion…' : 'Se connecter'}
             </button>
           </form>
-          <p style={{ textAlign:'center', marginTop:20, fontSize:13, color:'#6b7280' }}>
-            Espace client ? <a href="/login-client" style={{ color:'#2563eb', fontWeight:600 }}>Connexion Client</a>
+          <p style={{ textAlign:'center', marginTop:20, fontSize:13, color:'#64748b' }}>
+            Espace client ? <a href="/login-client" style={{ color:'#6366f1', fontWeight:600 }}>Connexion Client</a>
           </p>
         </div>
       </div>
@@ -269,10 +269,10 @@ export function ForgotPassword() {
   };
 
   return (
-    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#f9fafb', padding:'2rem' }}>
+    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#f8fafc', padding:'2rem' }}>
       <div style={{ background:'#fff', borderRadius:16, padding:'2.5rem 2rem', width:'100%', maxWidth:420, boxShadow:'0 10px 30px rgba(0,0,0,.1)' }}>
         <div style={{ textAlign:'center', marginBottom:'1.5rem' }}>
-          <i className="fas fa-lock" style={{ fontSize:32, color:'#2563eb' }}/>
+          <i className="fas fa-robot" style={{ fontSize:32, color:'#6366f1' }}/>
           <h2 style={{ fontSize:24, fontWeight:800, marginTop:12 }}>Mot de passe oublié</h2>
         </div>
         {sent ? (
@@ -286,7 +286,7 @@ export function ForgotPassword() {
           </>
         ) : (
           <>
-            <p style={{ fontSize:14, color:'#6b7280', marginBottom:'1.5rem', textAlign:'center' }}>
+            <p style={{ fontSize:14, color:'#64748b', marginBottom:'1.5rem', textAlign:'center' }}>
               Entrez votre email pour recevoir un lien de réinitialisation.
             </p>
             {error && <div style={{ background:'#fef2f2', color:'#991b1b', padding:'10px', borderRadius:8, marginBottom:12, fontSize:14 }}>{error}</div>}
@@ -326,10 +326,10 @@ export function ResetPassword() {
   };
 
   return (
-    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#f9fafb', padding:'2rem' }}>
+    <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#f8fafc', padding:'2rem' }}>
       <div style={{ background:'#fff', borderRadius:16, padding:'2.5rem 2rem', width:'100%', maxWidth:420, boxShadow:'0 10px 30px rgba(0,0,0,.1)' }}>
         <div style={{ textAlign:'center', marginBottom:'1.5rem' }}>
-          <i className="fas fa-lock" style={{ fontSize:32, color:'#2563eb' }}/>
+          <i className="fas fa-lock" style={{ fontSize:32, color:'#6366f1' }}/>
           <h2 style={{ fontSize:24, fontWeight:800, marginTop:12 }}>Nouveau mot de passe</h2>
         </div>
         {done ? (
@@ -400,21 +400,21 @@ export function ProjectSelect() {
   if (loading) return <Spinner/>;
   return (
     <div className="sidebar" style={{ position:'static', width:'100%', height:'auto', border:'none' }}>
-      <div style={{ minHeight:'100vh', background:'#f9fafb' }}>
+      <div style={{ minHeight:'100vh', background:'#f8fafc' }}>
         <header style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 2rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <div className="logo"><i className="fas fa-comments"/><span>Support Client</span></div>
+          <div className="logo"><i className="fas fa-robot"/><span>Support IA</span></div>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-            <span style={{ fontSize:14, color:'#6b7280' }}>Bonjour, <strong>{client?.name}</strong></span>
+            <span style={{ fontSize:14, color:'#64748b' }}>Bonjour, <strong>{client?.name}</strong></span>
             <button className="logout-btn" onClick={async () => { await api.post('/client/logout'); clearSession(); navigate('/login-client'); }} style={{ width:'auto', padding:'8px 16px', background:'#fef2f2', color:'#ef4444', borderRadius:8, fontWeight:600, fontSize:13 }}>
               <i className="fas fa-sign-out-alt"/> Déconnexion
             </button>
           </div>
         </header>
         <main style={{ padding:'3rem 2rem', maxWidth:860, margin:'0 auto' }}>
-          <h1 style={{ fontSize:28, fontWeight:800, color:'#111827', marginBottom:8 }}>Vos projets</h1>
-          <p style={{ color:'#6b7280', marginBottom:'2rem' }}>Sélectionnez un projet pour démarrer avec votre assistant IA.</p>
+          <h1 style={{ fontSize:28, fontWeight:800, color:'#1e1b4b', marginBottom:8 }}>Vos projets</h1>
+          <p style={{ color:'#64748b', marginBottom:'2rem' }}>Sélectionnez un projet pour démarrer avec votre assistant IA.</p>
           {projects.length === 0 ? (
-            <div style={{ textAlign:'center', padding:'4rem', color:'#6b7280' }}>
+            <div style={{ textAlign:'center', padding:'4rem', color:'#64748b' }}>
               <i className="fas fa-folder-open" style={{ fontSize:48, marginBottom:16, opacity:.3 }}/>
               <p>Aucun projet disponible pour votre compte.</p>
             </div>
@@ -424,11 +424,11 @@ export function ProjectSelect() {
                 <button key={p.id} onClick={() => pick(p)} style={{ background:'#fff', border:'1.5px solid #e2e8f0', borderRadius:16, padding:'1.5rem', textAlign:'left', cursor:'pointer', transition:'all .2s' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor='#6366f1'; e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='0 10px 30px rgba(99,102,241,.15)'; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor='#e2e8f0'; e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow=''; }}>
-                  <div style={{ width:44, height:44, background:'#eff6ff', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:12 }}>
-                    <i className="fas fa-folder" style={{ color:'#2563eb', fontSize:20 }}/>
+                  <div style={{ width:44, height:44, background:'rgba(99,102,241,.1)', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:12 }}>
+                    <i className="fas fa-folder" style={{ color:'#6366f1', fontSize:20 }}/>
                   </div>
-                  <h3 style={{ fontWeight:700, color:'#111827', marginBottom:4, fontSize:15 }}>{p.nom_projet}</h3>
-                  <p style={{ fontSize:13, color:'#6b7280' }}>Cliquez pour accéder au support</p>
+                  <h3 style={{ fontWeight:700, color:'#1e1b4b', marginBottom:4, fontSize:15 }}>{p.nom_projet}</h3>
+                  <p style={{ fontSize:13, color:'#64748b' }}>Cliquez pour accéder à l'assistant</p>
                 </button>
               ))}
             </div>
@@ -625,11 +625,11 @@ export function Chat() {
   const roleCls = { user:'user', assistant:'assistant', human_support:'human_support' };
 
   return (
-    <div style={{ display:'flex', height:'100vh', overflow:'hidden', background:'#f9fafb' }}>
+    <div style={{ display:'flex', height:'100vh', overflow:'hidden', background:'#f8fafc' }}>
       {/* ─ Sidebar ─ */}
       <aside className={`sidebar ${sidebarOpen ? '' : 'collapsed'}`} style={{ position:'relative', height:'100vh', flexShrink:0 }}>
         <div className="sidebar-header">
-          <div className="logo"><i className="fas fa-comments"/><span>Support Client</span></div>
+          <div className="logo"><i className="fas fa-robot"/><span>Support IA</span></div>
           <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <i className="fas fa-chevron-left"/>
           </button>
@@ -695,7 +695,7 @@ export function Chat() {
             delete stored.project;
             localStorage.setItem('sia_session', JSON.stringify(stored));
             navigate('/projects'); 
-          }} style={{ width:'100%', padding:'8px 12px', marginBottom:8, fontSize:13, border:'1px solid #e5e7eb', background:'transparent', color:'#6b7280', borderRadius:8, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}>
+          }} style={{ width:'100%', padding:'8px 12px', marginBottom:8, fontSize:13, border:'1px solid #e2e8f0', background:'transparent', color:'#64748b', borderRadius:8, fontWeight:600, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}>
             <i className="fas fa-exchange-alt"/> <span>Changer de projet</span>
           </button>
           <button className="logout-btn" onClick={async () => { await api.post('/client/logout'); clearSession(); navigate('/login-client'); }}>
@@ -708,10 +708,10 @@ export function Chat() {
       <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
         <header style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 1.5rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
           <div>
-            <h1 style={{ fontSize:18, fontWeight:800, color:'#111827' }}>{project?.nom_projet || 'Assistant IA'}</h1>
-            <p style={{ fontSize:12, color:'#6b7280' }}>Assistant intelligent · Disponible 24h/24</p>
+            <h1 style={{ fontSize:18, fontWeight:800, color:'#1e1b4b' }}>{project?.nom_projet || 'Assistant IA'}</h1>
+            <p style={{ fontSize:12, color:'#64748b' }}>Assistant intelligent · Disponible 24h/24</p>
           </div>
-          <button onClick={() => startNewConversation()} style={{ background:'rgba(99,102,241,.1)', color:'#2563eb', border:'1.5px solid #6366f1', padding:'8px 16px', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+          <button onClick={() => startNewConversation()} style={{ background:'rgba(99,102,241,.1)', color:'#6366f1', border:'1.5px solid #6366f1', padding:'8px 16px', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
             <i className="fas fa-plus"/> Nouvelle conversation
           </button>
         </header>
@@ -726,12 +726,12 @@ export function Chat() {
           {messages.map((m, i) => (
             <div key={m.id ?? i} style={{ display:'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
               {m.role !== 'user' && (
-                <div style={{ width:32, height:32, borderRadius:'50%', background:'#eff6ff', display:'flex', alignItems:'center', justifyContent:'center', marginRight:8, flexShrink:0 }}>
-                  <i className={`fas fa-${m.role === 'human_support' ? 'user-tie' : 'headset'}`} style={{ color:'#2563eb', fontSize:14 }}/>
+                <div style={{ width:32, height:32, borderRadius:'50%', background: m.role === 'human_support' ? '#7c3aed' : '#6366f1', display:'flex', alignItems:'center', justifyContent:'center', marginRight:8, flexShrink:0 }}>
+                  <i className={`fas fa-${m.role === 'human_support' ? 'user-tie' : 'robot'}`} style={{ color:'#fff', fontSize:14 }}/>
                 </div>
               )}
-              <div style={{ maxWidth:'75%', padding:'10px 14px', borderRadius:16, background: m.role === 'user' ? '#2563eb' : m.role === 'human_support' ? '#059669' : '#fff', color: m.role === 'user' || m.role === 'human_support' ? '#fff' : '#1f2937', border: m.role === 'assistant' ? '1px solid #e5e7eb' : 'none', borderBottomRightRadius: m.role === 'user' ? 4 : 16, borderBottomLeftRadius: m.role !== 'user' ? 4 : 16, boxShadow:'0 2px 8px rgba(0,0,0,.06)' }}>
-                {m.role !== 'user' && <div style={{ fontSize:10, fontWeight:700, opacity:.6, marginBottom:4, textTransform:'uppercase', letterSpacing:'.05em' }}>{m.role === 'human_support' ? 'Support humain' : 'Assistant'}</div>}
+              <div style={{ maxWidth:'75%', padding:'10px 14px', borderRadius:16, background: m.role === 'user' ? '#6366f1' : m.role === 'human_support' ? '#7c3aed' : '#fff', color: m.role === 'user' || m.role === 'human_support' ? '#fff' : '#1e293b', border: m.role === 'assistant' ? '1px solid #e2e8f0' : 'none', borderBottomRightRadius: m.role === 'user' ? 4 : 16, borderBottomLeftRadius: m.role !== 'user' ? 4 : 16, boxShadow:'0 2px 8px rgba(0,0,0,.06)' }}>
+                {m.role !== 'user' && <div style={{ fontSize:10, fontWeight:700, opacity:.6, marginBottom:4, textTransform:'uppercase', letterSpacing:'.05em' }}>{m.role === 'human_support' ? 'Support humain' : 'Assistant IA'}</div>}
                 <div dangerouslySetInnerHTML={{ __html: renderMd(m.content) }} style={{ fontSize:14, lineHeight:1.6 }}/>
                 <div style={{ fontSize:10, opacity:.5, marginTop:4, textAlign:'right' }}>{formatTime(m.created_at)}</div>
               </div>
@@ -739,8 +739,8 @@ export function Chat() {
           ))}
           {sending && (
             <div style={{ display:'flex' }}>
-              <div style={{ width:32, height:32, borderRadius:'50%', background:'#eff6ff', display:'flex', alignItems:'center', justifyContent:'center', marginRight:8 }}><i className="fas fa-headset" style={{ color:'#2563eb', fontSize:14 }}/></div>
-              <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:16, borderBottomLeftRadius:4, padding:'12px 16px' }}>
+              <div style={{ width:32, height:32, borderRadius:'50%', background:'#6366f1', display:'flex', alignItems:'center', justifyContent:'center', marginRight:8 }}><i className="fas fa-robot" style={{ color:'#fff', fontSize:14 }}/></div>
+              <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:16, borderBottomLeftRadius:4, padding:'12px 16px' }}>
                 <div style={{ display:'flex', gap:4 }}>
                   {[0,1,2].map(i => <div key={i} style={{ width:8, height:8, borderRadius:'50%', background:'#94a3b8', animation:'bounce 1.2s infinite', animationDelay:`${i*.2}s` }}/>)}
                 </div>
@@ -770,7 +770,7 @@ export function Chat() {
             onFocus={e => { if (!escalated) e.target.style.borderColor='#6366f1'; }}
             onBlur={e => e.target.style.borderColor='#e2e8f0'}
             disabled={sending || escalated}/>
-          <button onClick={send} disabled={sending || !input.trim() || escalated} style={{ width:44, height:44, background: (sending||!input.trim()||escalated) ? '#e5e7eb' : '#2563eb', color:'#fff', border:'none', borderRadius:10, cursor: (sending||!input.trim()||escalated) ? 'not-allowed' : 'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, transition:'background .15s' }}>
+          <button onClick={send} disabled={sending || !input.trim() || escalated} style={{ width:44, height:44, background: (sending||!input.trim()||escalated) ? '#e2e8f0' : '#6366f1', color:'#fff', border:'none', borderRadius:10, cursor: (sending||!input.trim()||escalated) ? 'not-allowed' : 'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, transition:'background .15s' }}>
             <i className="fas fa-paper-plane" style={{ fontSize:16 }}/>
           </button>
         </div>
@@ -823,11 +823,11 @@ export function SupportConversation() {
   const isResolved = conv.status === 'resolved';
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', height:'100vh', background:'#f9fafb' }}>
+    <div style={{ display:'flex', flexDirection:'column', height:'100vh', background:'#f8fafc' }}>
       <header style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 1.5rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
-        <div className="logo"><i className="fas fa-headset"/><span>Assistance humaine</span></div>
+        <div className="logo"><i className="fas fa-robot"/><span>Assistance humaine</span></div>
         <div>
-          <span style={{ fontSize:14, color:'#6b7280' }}>{conv.client} — {conv.projet}</span>
+          <span style={{ fontSize:14, color:'#64748b' }}>{conv.client} — {conv.projet}</span>
           <span style={{ marginLeft:12, padding:'4px 10px', borderRadius:20, fontSize:12, fontWeight:700, background: isResolved ? '#ecfdf5' : '#fef2f2', color: isResolved ? '#065f46' : '#991b1b' }}>
             {isResolved ? 'Résolue' : 'En attente'}
           </span>
@@ -849,8 +849,8 @@ export function SupportConversation() {
       <div style={{ background:'#fff', borderTop:'1px solid #e2e8f0', padding:'1.25rem 1.5rem', flexShrink:0 }}>
         {error && <div style={{ background:'#fef2f2', color:'#991b1b', padding:'8px 12px', borderRadius:8, marginBottom:12, fontSize:13 }}>{error}</div>}
         {isResolved && <div style={{ background:'#ecfdf5', color:'#065f46', padding:'8px 12px', borderRadius:8, marginBottom:12, fontSize:13 }}>Conversation résolue. Vous pouvez tout de même répondre si le client relance.</div>}
-        <div style={{ background:'#d1fae5', color:'#065f46', fontSize:12, marginBottom:10, display:'flex', alignItems:'center', gap:6 }}>
-          <i className="fas fa-info-circle"/> Cette réponse sera ajoutée à la FAQ pour améliorer le support.
+        <div style={{ background:'#ecfdf5', color:'#065f46', fontSize:12, marginBottom:10, display:'flex', alignItems:'center', gap:6 }}>
+          <i className="fas fa-graduation-cap"/> Cette réponse sera ajoutée à la FAQ — l'IA saura répondre seule la prochaine fois.
         </div>
         <textarea rows={3} style={{ width:'100%', padding:'10px 14px', border:'1.5px solid #e2e8f0', borderRadius:10, fontSize:14, fontFamily:'inherit', outline:'none', resize:'vertical', marginBottom:10 }}
           placeholder="Répondez au client ici…" value={reply} onChange={e => setReply(e.target.value)}/>
@@ -961,9 +961,9 @@ export function AdminPanel() {
     { key:'dashboard', icon:'chart-pie',   label:'Dashboard' },
     { key:'clients',   icon:'users',        label:'Clients' },
     { key:'convs',     icon:'comments',     label:'Conversations', badge: escalatedCount },
-    { key:'tokens',    icon:'chart-bar',        label:'Statistiques' },
-    { key:'faqs-global', icon:'book',       label:'FAQ' },
-    { key:'ai-config', icon:'cog',          label:'Configuration' },
+    { key:'tokens',    icon:'coins',        label:'Tokens & RAG' },
+    { key:'faqs-global', icon:'book',       label:'FAQ enregistrées' },
+    { key:'ai-config', icon:'cog',          label:'Configuration API' },
   ];
 
   if (loading) return <Spinner/>;
@@ -973,7 +973,7 @@ export function AdminPanel() {
       {/* ─ Sidebar ─ */}
       <aside className={`admin-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
         <div className="sidebar-header">
-          <div className="logo"><i className="fas fa-comments"/><span>Support Client</span></div>
+          <div className="logo"><i className="fas fa-robot"/><span>Support IA</span></div>
           <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <i className="fas fa-chevron-left"/>
           </button>
@@ -1002,7 +1002,7 @@ export function AdminPanel() {
         <header className="admin-header">
           <div className="header-title">
             <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}><i className="fas fa-bars"/></button>
-            <h1 id="pageTitle">{{ dashboard:'Tableau de bord', clients:'Clients', convs:'Conversations', tokens:'Statistiques', 'faqs-global':'FAQ', 'ai-config':'Configuration', panel:'Détail client' }[section] || 'Admin'}</h1>
+            <h1 id="pageTitle">{{ dashboard:'Tableau de bord', clients:'Clients', convs:'Conversations', tokens:'Tokens & RAG', 'faqs-global':'FAQ enregistrées', 'ai-config':'Configuration API', panel:'Détail client' }[section] || 'Admin'}</h1>
           </div>
           <div className="header-actions">
             <div className="header-user">
@@ -1024,11 +1024,11 @@ export function AdminPanel() {
               {/* 6 stat cards */}
               <div className="stats-grid-6">
                 {[
-                  { icon:'chart-bar',      color:'blue', value: (tokenStats?.today||0).toLocaleString(), label:'Aujourd\'hui' },
+                  { icon:'coins',      color:'purple', value: (tokenStats?.today||0).toLocaleString(), label:'Tokens aujourd\'hui' },
                   { icon:'users',      color:'blue',   value: dashStats.clients,                       label:'Clients' },
                   { icon:'file-alt',   color:'green',  value: dashStats.documentations,                label:'Documentations' },
                   { icon:'question-circle', color:'orange', value: dashStats.faqs,                    label:'FAQ' },
-                  { icon:'check-circle', color:'green', value: `${tokenStats?.rag_efficiency||0}%`,    label:'Efficacité' },
+                  { icon:'check-circle', color:'teal', value: `${tokenStats?.rag_efficiency||0}%`,    label:'Efficacité RAG' },
                   { icon:'exclamation-triangle', color:'pink', value: dashStats.escalated,            label:'En escalade' },
                 ].map(({ icon, color, value, label }) => (
                   <div key={label} className="stat-card-large">
@@ -1068,16 +1068,16 @@ export function AdminPanel() {
               </div>
 
               {/* Graphique en ligne - Évolution tokens */}
-              <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e5e7eb', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
+              <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e2e8f0', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1.5rem' }}>
                   <div>
                     <h3 style={{ fontWeight:700, fontSize:18, marginBottom:4, display:'flex', alignItems:'center', gap:8 }}>
                       <div style={{ width:32, height:32, borderRadius:10, background:'rgba(99,102,241,.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                        <i className="fas fa-chart-line" style={{ color:'#2563eb', fontSize:14 }}/>
+                        <i className="fas fa-chart-line" style={{ color:'#6366f1', fontSize:14 }}/>
                       </div>
                       Évolution des Tokens (Graphique en ligne)
                     </h3>
-                    <p style={{ fontSize:13, color:'#6b7280' }}>Tendance de consommation sur {tokenPeriod === 'week' ? '7 jours' : '30 jours'}</p>
+                    <p style={{ fontSize:13, color:'#64748b' }}>Tendance de consommation sur {tokenPeriod === 'week' ? '7 jours' : '30 jours'}</p>
                   </div>
                 </div>
                 <div style={{ height:220 }}>
@@ -1093,23 +1093,23 @@ export function AdminPanel() {
 
               {/* Tableau détaillé de consommation par jour */}
               {tokenStats && tokenStats.month30_data && (
-                <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e5e7eb', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
+                <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e2e8f0', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
                   <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1.5rem' }}>
                     <div>
                       <h3 style={{ fontWeight:700, fontSize:18, marginBottom:4 }}>Consommation Détaillée par Jour</h3>
-                      <p style={{ fontSize:13, color:'#6b7280' }}>Analyse complète des tokens sur les 30 derniers jours</p>
+                      <p style={{ fontSize:13, color:'#64748b' }}>Analyse complète des tokens sur les 30 derniers jours</p>
                     </div>
                     <div style={{ display:'flex', gap:8, fontSize:12 }}>
-                      <div style={{ padding:'6px 12px', background:'#f9fafb', borderRadius:8, border:'1px solid #e5e7eb' }}>
-                        <span style={{ color:'#6b7280', marginRight:6 }}>Moyenne/jour:</span>
-                        <strong style={{ color:'#111827' }}>{tokenStats.avg_per_day?.toLocaleString() || 0}</strong>
+                      <div style={{ padding:'6px 12px', background:'#f8fafc', borderRadius:8, border:'1px solid #e2e8f0' }}>
+                        <span style={{ color:'#64748b', marginRight:6 }}>Moyenne/jour:</span>
+                        <strong style={{ color:'#1e1b4b' }}>{tokenStats.avg_per_day?.toLocaleString() || 0}</strong>
                       </div>
-                      <div style={{ padding:'6px 12px', background:'#f9fafb', borderRadius:8, border:'1px solid #e5e7eb' }}>
-                        <span style={{ color:'#6b7280', marginRight:6 }}>Max:</span>
+                      <div style={{ padding:'6px 12px', background:'#f8fafc', borderRadius:8, border:'1px solid #e2e8f0' }}>
+                        <span style={{ color:'#64748b', marginRight:6 }}>Max:</span>
                         <strong style={{ color:'#10b981' }}>{tokenStats.max_day?.toLocaleString() || 0}</strong>
                       </div>
-                      <div style={{ padding:'6px 12px', background:'#f9fafb', borderRadius:8, border:'1px solid #e5e7eb' }}>
-                        <span style={{ color:'#6b7280', marginRight:6 }}>Min:</span>
+                      <div style={{ padding:'6px 12px', background:'#f8fafc', borderRadius:8, border:'1px solid #e2e8f0' }}>
+                        <span style={{ color:'#64748b', marginRight:6 }}>Min:</span>
                         <strong style={{ color:'#f59e0b' }}>{tokenStats.min_day?.toLocaleString() || 0}</strong>
                       </div>
                     </div>
@@ -1118,13 +1118,13 @@ export function AdminPanel() {
                   <div style={{ overflowX:'auto' }}>
                     <table style={{ width:'100%', fontSize:13, borderCollapse:'collapse' }}>
                       <thead>
-                        <tr style={{ background:'#f9fafb', borderBottom:'2px solid #e2e8f0' }}>
-                          <th style={{ padding:'12px 16px', textAlign:'left', fontWeight:700, color:'#111827' }}>Date</th>
-                          <th style={{ padding:'12px 16px', textAlign:'right', fontWeight:700, color:'#111827' }}>Input</th>
-                          <th style={{ padding:'12px 16px', textAlign:'right', fontWeight:700, color:'#111827' }}>Output</th>
-                          <th style={{ padding:'12px 16px', textAlign:'right', fontWeight:700, color:'#111827' }}>Total</th>
-                          <th style={{ padding:'12px 16px', textAlign:'center', fontWeight:700, color:'#111827' }}>Source Dominante</th>
-                          <th style={{ padding:'12px 16px', textAlign:'right', fontWeight:700, color:'#111827' }}>Variation</th>
+                        <tr style={{ background:'#f8fafc', borderBottom:'2px solid #e2e8f0' }}>
+                          <th style={{ padding:'12px 16px', textAlign:'left', fontWeight:700, color:'#1e1b4b' }}>Date</th>
+                          <th style={{ padding:'12px 16px', textAlign:'right', fontWeight:700, color:'#1e1b4b' }}>Input</th>
+                          <th style={{ padding:'12px 16px', textAlign:'right', fontWeight:700, color:'#1e1b4b' }}>Output</th>
+                          <th style={{ padding:'12px 16px', textAlign:'right', fontWeight:700, color:'#1e1b4b' }}>Total</th>
+                          <th style={{ padding:'12px 16px', textAlign:'center', fontWeight:700, color:'#1e1b4b' }}>Source Dominante</th>
+                          <th style={{ padding:'12px 16px', textAlign:'right', fontWeight:700, color:'#1e1b4b' }}>Variation</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1147,13 +1147,13 @@ export function AdminPanel() {
                               <td style={{ padding:'12px 16px', fontWeight:600, color:'#334155' }}>
                                 {new Date(day.date).toLocaleDateString('fr-FR', { weekday:'short', day:'numeric', month:'short' })}
                               </td>
-                              <td style={{ padding:'12px 16px', textAlign:'right', color:'#2563eb', fontWeight:600 }}>
+                              <td style={{ padding:'12px 16px', textAlign:'right', color:'#6366f1', fontWeight:600 }}>
                                 {(day.input || 0).toLocaleString()}
                               </td>
                               <td style={{ padding:'12px 16px', textAlign:'right', color:'#10b981', fontWeight:600 }}>
                                 {(day.output || 0).toLocaleString()}
                               </td>
-                              <td style={{ padding:'12px 16px', textAlign:'right', color:'#111827', fontWeight:700, fontSize:14 }}>
+                              <td style={{ padding:'12px 16px', textAlign:'right', color:'#1e1b4b', fontWeight:700, fontSize:14 }}>
                                 {(day.total || 0).toLocaleString()}
                               </td>
                               <td style={{ padding:'12px 16px', textAlign:'center' }}>
@@ -1194,23 +1194,23 @@ export function AdminPanel() {
                   </div>
 
                   {/* Légende */}
-                  <div style={{ marginTop:'1.5rem', padding:'1rem', background:'#f9fafb', borderRadius:10, display:'flex', flexWrap:'wrap', gap:16, alignItems:'center', fontSize:12 }}>
+                  <div style={{ marginTop:'1.5rem', padding:'1rem', background:'#f8fafc', borderRadius:10, display:'flex', flexWrap:'wrap', gap:16, alignItems:'center', fontSize:12 }}>
                     <div style={{ fontWeight:700, color:'#475569' }}>Légende des sources :</div>
                     <div style={{ display:'flex', alignItems:'center', gap:6 }}>
                       <div style={{ width:12, height:12, borderRadius:'50%', background:'#3b82f6' }}/>
-                      <span style={{ color:'#6b7280' }}>Chunks RAG = Efficace (segments pertinents)</span>
+                      <span style={{ color:'#64748b' }}>Chunks RAG = Efficace (segments pertinents)</span>
                     </div>
                     <div style={{ display:'flex', alignItems:'center', gap:6 }}>
                       <div style={{ width:12, height:12, borderRadius:'50%', background:'#10b981' }}/>
-                      <span style={{ color:'#6b7280' }}>FAQ = Optimal (réponse directe)</span>
+                      <span style={{ color:'#64748b' }}>FAQ = Optimal (réponse directe)</span>
                     </div>
                     <div style={{ display:'flex', alignItems:'center', gap:6 }}>
                       <div style={{ width:12, height:12, borderRadius:'50%', background:'#f59e0b' }}/>
-                      <span style={{ color:'#6b7280' }}>Fallback = Coûteux (doc complète)</span>
+                      <span style={{ color:'#64748b' }}>Fallback = Coûteux (doc complète)</span>
                     </div>
                     <div style={{ display:'flex', alignItems:'center', gap:6 }}>
                       <div style={{ width:12, height:12, borderRadius:'50%', background:'#94a3b8' }}/>
-                      <span style={{ color:'#6b7280' }}>Small-talk = 0 token</span>
+                      <span style={{ color:'#64748b' }}>Small-talk = 0 token</span>
                     </div>
                   </div>
                 </div>
@@ -1222,7 +1222,7 @@ export function AdminPanel() {
                   <h3 style={{ fontWeight:700 }}>Clients récents</h3>
                   <button className="btn btn-primary btn-sm" onClick={() => setSection('clients')}>Voir tous →</button>
                 </div>
-                <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e5e7eb', overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
+                <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e2e8f0', overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
                   <table className="data-table" style={{ width:'100%' }}>
                     <thead><tr><th>Client</th><th>Projets</th><th>Statut</th><th>Actions</th></tr></thead>
                     <tbody>
@@ -1249,7 +1249,7 @@ export function AdminPanel() {
           {section === 'tokens' && tokenStats && (
             <div>
               <div className="section-header">
-                <div><h2>Statistiques & Efficacité</h2><p>Analyse détaillée de votre support</p></div>
+                <div><h2>Tokens & Efficacité RAG</h2><p>Analyse détaillée de votre consommation</p></div>
                 <div style={{ display:'flex', gap:8 }}>
                   {['week','month'].map(p => (
                     <button key={p} onClick={() => setTokenPeriod(p)} className={`btn ${tokenPeriod===p ? 'btn-primary' : 'btn-outline btn-sm'}`}>
@@ -1262,12 +1262,12 @@ export function AdminPanel() {
               {/* KPIs tokens */}
               <div className="stats-grid-6">
                 {[
-                  { icon:'chart-bar',     color:'blue', value:(tokenStats.today||0).toLocaleString(),  label:"Aujourd'hui" },
-                  { icon:'calendar',  color:'blue',   value:(tokenStats.month||0).toLocaleString(),  label:'Ce mois' },
-                  { icon:'check',     color:'green',  value:`${tokenStats.rag_efficiency||0}%`,      label:'Efficacité' },
-                  { icon:'times',     color:'orange', value:tokenStats.by_source?.fallback||0,       label:'Fallback' },
-                  { icon:'chart-line',color:'green',   value:(tokenStats.avg_per_day||0).toLocaleString(), label:'Moyenne/jour' },
-                  { icon:'database',  color:'pink',   value:tokenStats.by_source?.faq||0,            label:'FAQ directes' },
+                  { icon:'coins',     color:'purple', value:(tokenStats.today||0).toLocaleString(),  label:"Tokens aujourd'hui" },
+                  { icon:'calendar',  color:'blue',   value:(tokenStats.month||0).toLocaleString(),  label:'Tokens ce mois' },
+                  { icon:'check',     color:'green',  value:`${tokenStats.rag_efficiency||0}%`,      label:'Efficacité RAG' },
+                  { icon:'times',     color:'orange', value:tokenStats.by_source?.fallback||0,       label:'Réponses fallback' },
+                  { icon:'chart-line',color:'teal',   value:(tokenStats.avg_per_day||0).toLocaleString(), label:'Moyenne par jour' },
+                  { icon:'database',  color:'pink',   value:tokenStats.by_source?.faq||0,            label:'Réponses FAQ directes' },
                 ].map(({ icon, color, value, label }) => (
                   <div key={label} className="stat-card-large">
                     <div className={`stat-icon-bg ${color}`}><i className={`fas fa-${icon}`}/></div>
@@ -1288,7 +1288,7 @@ export function AdminPanel() {
               </div>
 
               {/* Graphique en ligne dans la section Tokens */}
-              <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e5e7eb', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
+              <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e2e8f0', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1.5rem' }}>
                   <div>
                     <h3 style={{ fontWeight:700, fontSize:18, marginBottom:4, display:'flex', alignItems:'center', gap:8 }}>
@@ -1297,11 +1297,11 @@ export function AdminPanel() {
                       </div>
                       Tendance en Temps Réel
                     </h3>
-                    <p style={{ fontSize:13, color:'#6b7280' }}>Suivi continu de la consommation de tokens</p>
+                    <p style={{ fontSize:13, color:'#64748b' }}>Suivi continu de la consommation de tokens</p>
                   </div>
-                  <div style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 12px', background:'#f9fafb', borderRadius:8, border:'1px solid #e5e7eb' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 12px', background:'#f8fafc', borderRadius:8, border:'1px solid #e2e8f0' }}>
                     <div style={{ width:8, height:8, borderRadius:'50%', background:'#10b981', animation:'pulse 2s infinite' }}/>
-                    <span style={{ fontSize:12, fontWeight:600, color:'#6b7280' }}>Mise à jour en direct</span>
+                    <span style={{ fontSize:12, fontWeight:600, color:'#64748b' }}>Mise à jour en direct</span>
                   </div>
                 </div>
                 <div style={{ height:240 }}>
@@ -1317,18 +1317,18 @@ export function AdminPanel() {
               
               <style>{`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }`}</style>
 
-              <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e5e7eb', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
+              <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e2e8f0', padding:'1.5rem', marginTop:24, boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
                 <h3 style={{ fontWeight:700, marginBottom:'1rem' }}>Comment lire ces données ?</h3>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:16 }}>
                   {[
-                    { color:'#2563eb', label:'Chunks RAG', desc:'L\'IA a reçu uniquement les passages pertinents (efficace)' },
+                    { color:'#6366f1', label:'Chunks RAG', desc:'L\'IA a reçu uniquement les passages pertinents (efficace)' },
                     { color:'#10b981', label:'FAQ directe', desc:'La réponse était dans la FAQ — zéro token d\'input doc' },
                     { color:'#f59e0b', label:'Fallback',    desc:'Toute la documentation a été envoyée (coûteux)' },
                     { color:'#94a3b8', label:'Small-talk',  desc:'Salutation ou message hors doc — aucun token consommé' },
                   ].map(({ color, label, desc }) => (
-                    <div key={label} style={{ padding:'1rem', background:'#f9fafb', borderRadius:10, borderLeft:`4px solid ${color}` }}>
+                    <div key={label} style={{ padding:'1rem', background:'#f8fafc', borderRadius:10, borderLeft:`4px solid ${color}` }}>
                       <div style={{ fontWeight:700, color, marginBottom:4 }}>{label}</div>
-                      <div style={{ fontSize:13, color:'#6b7280' }}>{desc}</div>
+                      <div style={{ fontSize:13, color:'#64748b' }}>{desc}</div>
                     </div>
                   ))}
                 </div>
@@ -1372,14 +1372,14 @@ export function AdminPanel() {
                       <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:12 }}>
                         <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=6366f1&color=fff`} alt="" style={{ width:40, height:40, borderRadius:'50%' }}/>
                         <div style={{ flex:1, minWidth:0 }}>
-                          <div style={{ fontWeight:700, fontSize:14, color:'#111827', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.name}</div>
-                          <div style={{ fontSize:12, color:'#6b7280' }}>{c.email}</div>
+                          <div style={{ fontWeight:700, fontSize:14, color:'#1e1b4b', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.name}</div>
+                          <div style={{ fontSize:12, color:'#64748b' }}>{c.email}</div>
                         </div>
                       </div>
                       <div style={{ display:'flex', gap:8, marginTop:8 }}>
                         <div style={{ flex:1, background:'#f1f5f9', borderRadius:8, padding:'6px 10px', textAlign:'center' }}>
-                          <div style={{ fontSize:18, fontWeight:800, color:'#111827' }}>{clientConvs.length}</div>
-                          <div style={{ fontSize:10, color:'#6b7280', textTransform:'uppercase', letterSpacing:'.05em', fontWeight:600 }}>Conversations</div>
+                          <div style={{ fontSize:18, fontWeight:800, color:'#1e1b4b' }}>{clientConvs.length}</div>
+                          <div style={{ fontSize:10, color:'#64748b', textTransform:'uppercase', letterSpacing:'.05em', fontWeight:600 }}>Conversations</div>
                         </div>
                         {escalated > 0 && (
                           <div style={{ flex:1, background:'#fef2f2', borderRadius:8, padding:'6px 10px', textAlign:'center' }}>
@@ -1397,19 +1397,19 @@ export function AdminPanel() {
               <div id="client-conversations-section">
                 {selected ? (
                   <div>
-                    <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:'1.5rem', padding:'1rem', background:'#f9fafb', borderRadius:12, border:'1px solid #e5e7eb' }}>
-                      <button onClick={() => setSelected(null)} style={{ background:'transparent', border:'none', color:'#2563eb', cursor:'pointer', fontSize:20 }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:'1.5rem', padding:'1rem', background:'#f8fafc', borderRadius:12, border:'1px solid #e2e8f0' }}>
+                      <button onClick={() => setSelected(null)} style={{ background:'transparent', border:'none', color:'#6366f1', cursor:'pointer', fontSize:20 }}>
                         <i className="fas fa-arrow-left"/>
                       </button>
                       <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(selected.name)}&background=6366f1&color=fff`} alt="" style={{ width:48, height:48, borderRadius:'50%' }}/>
                       <div style={{ flex:1 }}>
-                        <h3 style={{ fontWeight:700, fontSize:16, color:'#111827', marginBottom:4 }}>Conversations de {selected.name}</h3>
-                        <p style={{ fontSize:13, color:'#6b7280' }}>{convs.filter(c => c.client_name === selected.name).length} conversation(s) au total</p>
+                        <h3 style={{ fontWeight:700, fontSize:16, color:'#1e1b4b', marginBottom:4 }}>Conversations de {selected.name}</h3>
+                        <p style={{ fontSize:13, color:'#64748b' }}>{convs.filter(c => c.client_name === selected.name).length} conversation(s) au total</p>
                       </div>
                     </div>
 
                     {convs.filter(c => c.client_name === selected.name).length === 0 ? (
-                      <div style={{ textAlign:'center', padding:'3rem', color:'#94a3b8', background:'#fff', borderRadius:12, border:'1px solid #e5e7eb' }}>
+                      <div style={{ textAlign:'center', padding:'3rem', color:'#94a3b8', background:'#fff', borderRadius:12, border:'1px solid #e2e8f0' }}>
                         <i className="fas fa-comments" style={{ fontSize:48, opacity:.3, marginBottom:16 }}/>
                         <p>Aucune conversation pour ce client</p>
                       </div>
@@ -1420,13 +1420,13 @@ export function AdminPanel() {
                             <div style={{ width:10, height:10, borderRadius:'50%', background: c.status==='escalated'?'#ef4444':c.status==='open'?'#10b981':'#94a3b8', flexShrink:0, boxShadow: c.status==='escalated'?'0 0 8px #ef4444':'' }}/>
                             <div style={{ flex:1, minWidth:0 }}>
                               <strong style={{ fontSize:14 }}>{c.projet_name||'Projet'} — Conv. #{c.id}</strong>
-                              <p style={{ fontSize:12, color:'#6b7280', marginTop:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.last_message||'Aucun message'}</p>
+                              <p style={{ fontSize:12, color:'#64748b', marginTop:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.last_message||'Aucun message'}</p>
                             </div>
                             <div style={{ fontSize:12, color:'#94a3b8', textAlign:'right', flexShrink:0, display:'flex', flexDirection:'column', alignItems:'flex-end', gap:6 }}>
                               <span style={{ padding:'3px 10px', borderRadius:20, fontSize:11, fontWeight:700, background: c.status==='escalated'?'#fef2f2':c.status==='open'?'#ecfdf5':'#f1f5f9', color: c.status==='escalated'?'#991b1b':c.status==='open'?'#065f46':'#475569' }}>{c.status}</span>
                               <div style={{ marginTop:4 }}>{new Date(c.updated_at).toLocaleDateString('fr-FR')}</div>
                               <div style={{ display:'flex', gap:6 }}>
-                                {c.uuid && <a href={`/support/conversation/${c.uuid}`} target="_blank" rel="noreferrer" style={{ display:'inline-block', padding:'4px 10px', border:'1px solid #e5e7eb', borderRadius:6, color:'#2563eb', fontSize:11, fontWeight:600, textDecoration:'none' }}>Ouvrir →</a>}
+                                {c.uuid && <a href={`/support/conversation/${c.uuid}`} target="_blank" rel="noreferrer" style={{ display:'inline-block', padding:'4px 10px', border:'1px solid #e2e8f0', borderRadius:6, color:'#6366f1', fontSize:11, fontWeight:600, textDecoration:'none' }}>Ouvrir →</a>}
                                 {c.status === 'escalated' && (
                                   <button onClick={async () => {
                                     if (!confirm(`Supprimer la conversation escaladée #${c.id} ?`)) return;
@@ -1450,7 +1450,7 @@ export function AdminPanel() {
                     )}
                   </div>
                 ) : (
-                  <div style={{ textAlign:'center', padding:'3rem', color:'#94a3b8', background:'#fff', borderRadius:12, border:'1px solid #e5e7eb' }}>
+                  <div style={{ textAlign:'center', padding:'3rem', color:'#94a3b8', background:'#fff', borderRadius:12, border:'1px solid #e2e8f0' }}>
                     <i className="fas fa-users" style={{ fontSize:48, opacity:.3, marginBottom:16 }}/>
                     <p>Sélectionnez un client ci-dessus pour voir ses conversations</p>
                   </div>
@@ -1734,8 +1734,8 @@ function RagPieChart({ data }) {
     <div style={{ position:'relative', height:180 }}>
       <canvas ref={canvasRef}/>
       <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%, -50%)', textAlign:'center', pointerEvents:'none' }}>
-        <div style={{ fontSize:32, fontWeight:800, color:'#111827', lineHeight:1 }}>{total}</div>
-        <div style={{ fontSize:11, color:'#6b7280', fontWeight:600, marginTop:4 }}>Total</div>
+        <div style={{ fontSize:32, fontWeight:800, color:'#1e1b4b', lineHeight:1 }}>{total}</div>
+        <div style={{ fontSize:11, color:'#64748b', fontWeight:600, marginTop:4 }}>Total</div>
       </div>
     </div>
   );
@@ -1768,16 +1768,16 @@ function ClientsSection({ clients, onPickClient, onCreated, onError, onSuccess, 
       {/* Aide navigation */}
       {clients.length > 0 && (
         <div style={{ background:'linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%)', border:'1px solid #c7d2fe', borderRadius:12, padding:'12px 16px', marginBottom:'1rem', display:'flex', alignItems:'center', gap:12 }}>
-          <i className="fas fa-lightbulb" style={{ color:'#2563eb', fontSize:18 }}/>
+          <i className="fas fa-lightbulb" style={{ color:'#6366f1', fontSize:18 }}/>
           <div style={{ fontSize:13, color:'#4338ca', lineHeight:1.5, flex:1 }}>
             <strong>Astuce :</strong> Double-cliquez sur un client pour accéder directement à sa gestion
           </div>
         </div>
       )}
       
-      <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e5e7eb', overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
+      <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e2e8f0', overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
         <div style={{ padding:'1rem 1.5rem', borderBottom:'1px solid #f1f5f9' }}>
-          <input placeholder="🔍 Rechercher un client…" value={search} onChange={e => setSearch(e.target.value)} style={{ width:'100%', maxWidth:360, padding:'8px 14px', border:'1px solid #e5e7eb', borderRadius:8, fontSize:14, outline:'none' }}/>
+          <input placeholder="🔍 Rechercher un client…" value={search} onChange={e => setSearch(e.target.value)} style={{ width:'100%', maxWidth:360, padding:'8px 14px', border:'1px solid #e2e8f0', borderRadius:8, fontSize:14, outline:'none' }}/>
         </div>
         <table className="data-table" style={{ width:'100%' }}>
           <thead><tr><th>Client</th><th>Email</th><th>Identifiant</th><th>Statut</th><th>Actions</th></tr></thead>
@@ -1790,8 +1790,8 @@ function ClientsSection({ clients, onPickClient, onCreated, onError, onSuccess, 
                 title="Double-cliquez pour gérer ce client"
               >
                 <td><div className="user-cell"><img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=6366f1&color=fff`} alt=""/><span>{c.name}</span></div></td>
-                <td style={{ color:'#6b7280', fontSize:14 }}>{c.email}</td>
-                <td><span style={{ fontFamily:'monospace', background:'rgba(99,102,241,.1)', color:'#2563eb', padding:'2px 8px', borderRadius:6, fontSize:13 }}>{c.client_identifier}</span></td>
+                <td style={{ color:'#64748b', fontSize:14 }}>{c.email}</td>
+                <td><span style={{ fontFamily:'monospace', background:'rgba(99,102,241,.1)', color:'#6366f1', padding:'2px 8px', borderRadius:6, fontSize:13 }}>{c.client_identifier}</span></td>
                 <td>
                   <span 
                     className={`status-badge ${c.is_active ? 'success' : 'inactive'}`}
@@ -1852,7 +1852,7 @@ function NewClientForm({ onCreated, onError, onSuccess }) {
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.5)', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={() => !loading && setOpen(false)}>
       <div style={{ background:'#fff', borderRadius:16, padding:'2rem', width:'100%', maxWidth:560, boxShadow:'0 25px 60px rgba(0,0,0,.2)' }} onClick={e => e.stopPropagation()}>
         <h3 style={{ fontWeight:800, marginBottom:4 }}>Nouveau client</h3>
-        <p style={{ fontSize:13, color:'#6b7280', marginBottom:'1.5rem' }}>
+        <p style={{ fontSize:13, color:'#64748b', marginBottom:'1.5rem' }}>
           Les identifiants seront générés automatiquement et envoyés par email.
         </p>
         <div style={{ background:'#eff6ff', border:'1px solid #bfdbfe', borderRadius:10, padding:'12px 16px', marginBottom:'1.5rem', display:'flex', gap:10 }}>
@@ -1872,7 +1872,7 @@ function NewClientForm({ onCreated, onError, onSuccess }) {
         <div className="form-group">
           <label>Email support (escalades) <span style={{ fontSize:11, color:'#94a3b8', fontWeight:400 }}>optionnel</span></label>
           <input type="email" value={form.support_email} onChange={e => setForm({...form,support_email:e.target.value})} placeholder="support@votreagence.com" disabled={loading}/>
-          <small style={{ fontSize:11, color:'#6b7280', marginTop:4, display:'block' }}>
+          <small style={{ fontSize:11, color:'#64748b', marginTop:4, display:'block' }}>
             Cet email recevra les demandes d'escalade vers un humain
           </small>
         </div>
@@ -1914,14 +1914,14 @@ function FaqGlobalSection({ onNotify }) {
   return (
     <div>
       <div className="section-header"><div><h2>FAQ enregistrées</h2><p>{faqs.length} entrées</p></div></div>
-      <input placeholder="🔍 Rechercher une FAQ…" value={search} onChange={e => setSearch(e.target.value)} style={{ marginBottom:16, maxWidth:400, padding:'8px 14px', border:'1px solid #e5e7eb', borderRadius:8, fontSize:14, outline:'none', width:'100%' }}/>
+      <input placeholder="🔍 Rechercher une FAQ…" value={search} onChange={e => setSearch(e.target.value)} style={{ marginBottom:16, maxWidth:400, padding:'8px 14px', border:'1px solid #e2e8f0', borderRadius:8, fontSize:14, outline:'none', width:'100%' }}/>
       <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
         {filtered.map((f,i) => (
-          <div key={f.id} style={{ background:'#fff', borderRadius:12, border:'1px solid #e5e7eb', padding:'1rem 1.25rem', boxShadow:'0 1px 4px rgba(0,0,0,.04)' }}>
+          <div key={f.id} style={{ background:'#fff', borderRadius:12, border:'1px solid #e2e8f0', padding:'1rem 1.25rem', boxShadow:'0 1px 4px rgba(0,0,0,.04)' }}>
             {editId === f.id ? (
               <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                <div className="form-group" style={{ margin:0 }}><label style={{ fontSize:12 }}>Question</label><input value={editForm.question} onChange={e => setEditForm({...editForm,question:e.target.value})} style={{ padding:'8px 12px', border:'1px solid #e5e7eb', borderRadius:8, width:'100%', fontSize:14, outline:'none' }}/></div>
-                <div className="form-group" style={{ margin:0 }}><label style={{ fontSize:12 }}>Réponse</label><textarea rows={3} value={editForm.reponse} onChange={e => setEditForm({...editForm,reponse:e.target.value})} style={{ padding:'8px 12px', border:'1px solid #e5e7eb', borderRadius:8, width:'100%', fontSize:14, outline:'none', resize:'vertical' }}/></div>
+                <div className="form-group" style={{ margin:0 }}><label style={{ fontSize:12 }}>Question</label><input value={editForm.question} onChange={e => setEditForm({...editForm,question:e.target.value})} style={{ padding:'8px 12px', border:'1px solid #e2e8f0', borderRadius:8, width:'100%', fontSize:14, outline:'none' }}/></div>
+                <div className="form-group" style={{ margin:0 }}><label style={{ fontSize:12 }}>Réponse</label><textarea rows={3} value={editForm.reponse} onChange={e => setEditForm({...editForm,reponse:e.target.value})} style={{ padding:'8px 12px', border:'1px solid #e2e8f0', borderRadius:8, width:'100%', fontSize:14, outline:'none', resize:'vertical' }}/></div>
                 <div style={{ display:'flex', gap:8 }}>
                   <button className="btn btn-primary btn-sm" onClick={update}>Enregistrer</button>
                   <button className="btn btn-outline btn-sm" onClick={() => setEditId(null)}>Annuler</button>
@@ -1929,11 +1929,11 @@ function FaqGlobalSection({ onNotify }) {
               </div>
             ) : (
               <div style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
-                <div style={{ width:24, height:24, borderRadius:'50%', background:'rgba(99,102,241,.1)', color:'#2563eb', fontSize:12, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{i+1}</div>
+                <div style={{ width:24, height:24, borderRadius:'50%', background:'rgba(99,102,241,.1)', color:'#6366f1', fontSize:12, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{i+1}</div>
                 <div style={{ flex:1 }}>
                   <div style={{ fontWeight:600, fontSize:14, color:'#1e293b' }}>{f.question}</div>
-                  <div style={{ fontSize:13, color:'#6b7280', marginTop:4 }}>{f.reponse}</div>
-                  {f.projet_name && <span style={{ display:'inline-block', marginTop:4, fontSize:11, background:'rgba(99,102,241,.1)', color:'#2563eb', padding:'2px 8px', borderRadius:6 }}>📁 {f.projet_name}</span>}
+                  <div style={{ fontSize:13, color:'#64748b', marginTop:4 }}>{f.reponse}</div>
+                  {f.projet_name && <span style={{ display:'inline-block', marginTop:4, fontSize:11, background:'rgba(99,102,241,.1)', color:'#6366f1', padding:'2px 8px', borderRadius:6 }}>📁 {f.projet_name}</span>}
                 </div>
                 <div style={{ display:'flex', gap:6, flexShrink:0 }}>
                   <button className="btn btn-outline btn-sm" onClick={() => { setEditId(f.id); setEditForm({ question:f.question, reponse:f.reponse }); }}>Modifier</button>
@@ -1952,7 +1952,7 @@ function FaqGlobalSection({ onNotify }) {
 function ClientPanel({ client, clientStats, projets, docs, faqs, selProjet, selDoc, subTab, setSubTab, setSelProjet, setSelDoc, onPickProjet, onPickDoc, onDeleteProjet, onDeleteDoc, onDeleteFaq, onBack, onNewProjet, onNotify }) {
   return (
     <div>
-      <button onClick={onBack} style={{ color:'#2563eb', background:'none', border:'none', cursor:'pointer', fontSize:14, fontWeight:600, marginBottom:16, display:'flex', alignItems:'center', gap:6 }}>
+      <button onClick={onBack} style={{ color:'#6366f1', background:'none', border:'none', cursor:'pointer', fontSize:14, fontWeight:600, marginBottom:16, display:'flex', alignItems:'center', gap:6 }}>
         <i className="fas fa-arrow-left"/> Retour clients
       </button>
       <div style={{ background:'linear-gradient(135deg,#6366f1,#4f46e5)', borderRadius:16, padding:'1.5rem 2rem', marginBottom:24, color:'#fff', display:'flex', alignItems:'center', gap:16 }}>
@@ -1969,12 +1969,12 @@ function ClientPanel({ client, clientStats, projets, docs, faqs, selProjet, selD
       {clientStats && (
         <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:12, marginBottom:24 }}>
           {[['Projets',clientStats.projets,'folder','#6366f1'],['Docs',clientStats.documentations,'file-alt','#10b981'],['FAQ',clientStats.faqs,'question-circle','#f59e0b'],['Conversations',clientStats.conversations,'comments','#3b82f6'],['Tokens',clientStats.tokens_total?.toLocaleString()||0,'coins','#8b5cf6']].map(([label,val,icon,color]) => (
-            <div key={label} style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:12, padding:'1rem', textAlign:'center', boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
+            <div key={label} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:12, padding:'1rem', textAlign:'center', boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
               <div style={{ width:36, height:36, borderRadius:10, background:`${color}20`, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 8px' }}>
                 <i className={`fas fa-${icon}`} style={{ color, fontSize:16 }}/>
               </div>
               <div style={{ fontWeight:800, fontSize:20 }}>{val}</div>
-              <div style={{ fontSize:12, color:'#6b7280' }}>{label}</div>
+              <div style={{ fontSize:12, color:'#64748b' }}>{label}</div>
             </div>
           ))}
         </div>
@@ -1992,9 +1992,9 @@ function ClientPanel({ client, clientStats, projets, docs, faqs, selProjet, selD
         <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
           {projets.length === 0 && <div style={{ textAlign:'center', padding:'3rem', color:'#94a3b8' }}><i className="fas fa-folder-open" style={{ fontSize:36, marginBottom:12, opacity:.3 }}/><p>Aucun projet.</p><button className="btn btn-primary btn-sm" onClick={onNewProjet} style={{ marginTop:12 }}>Créer le premier projet</button></div>}
           {projets.map(p => (
-            <div key={p.id} style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:12, padding:'1rem 1.25rem', display:'flex', alignItems:'center', gap:12 }}>
-              <div style={{ width:36, height:36, background:'rgba(99,102,241,.1)', borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center' }}><i className="fas fa-folder" style={{ color:'#2563eb', fontSize:16 }}/></div>
-              <div style={{ flex:1 }}><strong style={{ fontSize:14 }}>{p.nom_projet}</strong><div style={{ fontSize:12, color:'#6b7280' }}>{new Date(p.updated_at).toLocaleDateString('fr-FR')}</div></div>
+            <div key={p.id} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:12, padding:'1rem 1.25rem', display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{ width:36, height:36, background:'rgba(99,102,241,.1)', borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center' }}><i className="fas fa-folder" style={{ color:'#6366f1', fontSize:16 }}/></div>
+              <div style={{ flex:1 }}><strong style={{ fontSize:14 }}>{p.nom_projet}</strong><div style={{ fontSize:12, color:'#64748b' }}>{new Date(p.updated_at).toLocaleDateString('fr-FR')}</div></div>
               <div style={{ display:'flex', gap:6 }}>
                 <button className="btn btn-outline btn-sm" onClick={() => onPickProjet(p)}>Docs →</button>
                 <button className="btn btn-sm" style={{ background:'#fef2f2', color:'#ef4444' }} onClick={() => onDeleteProjet(p.id)}>Supprimer</button>
@@ -2073,20 +2073,20 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
           <div style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:900, maxHeight:'90vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.3)' }} onClick={e => e.stopPropagation()}>
             <div style={{ padding:'1.5rem 2rem', borderBottom:'2px solid #e2e8f0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <div>
-                <h3 style={{ fontSize:20, fontWeight:800, color:'#111827', marginBottom:4 }}>{viewDoc.titre}</h3>
-                <p style={{ fontSize:13, color:'#6b7280' }}>Projet: {viewDoc.projet?.nom_projet}</p>
+                <h3 style={{ fontSize:20, fontWeight:800, color:'#1e1b4b', marginBottom:4 }}>{viewDoc.titre}</h3>
+                <p style={{ fontSize:13, color:'#64748b' }}>Projet: {viewDoc.projet?.nom_projet}</p>
               </div>
               <div style={{ display:'flex', gap:8 }}>
                 <button className="btn btn-primary btn-sm" onClick={() => startEdit(viewDoc)}>
                   <i className="fas fa-edit"/> Modifier
                 </button>
-                <button onClick={() => setViewDoc(null)} style={{ width:32, height:32, borderRadius:8, border:'none', background:'#f1f5f9', color:'#6b7280', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <button onClick={() => setViewDoc(null)} style={{ width:32, height:32, borderRadius:8, border:'none', background:'#f1f5f9', color:'#64748b', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
                   <i className="fas fa-times"/>
                 </button>
               </div>
             </div>
             <div style={{ flex:1, overflowY:'auto', padding:'2rem' }}>
-              <div style={{ background:'#f9fafb', borderRadius:12, padding:'1.5rem', fontFamily:'Georgia, serif', fontSize:15, lineHeight:1.8, color:'#1e293b', whiteSpace:'pre-wrap' }}>
+              <div style={{ background:'#f8fafc', borderRadius:12, padding:'1.5rem', fontFamily:'Georgia, serif', fontSize:15, lineHeight:1.8, color:'#1e293b', whiteSpace:'pre-wrap' }}>
                 {viewDoc.contenu}
               </div>
               {viewDoc.file_path && (
@@ -2096,8 +2096,8 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
                 </div>
               )}
             </div>
-            <div style={{ padding:'1rem 2rem', borderTop:'1px solid #e2e8f0', display:'flex', justifyContent:'space-between', alignItems:'center', background:'#f9fafb' }}>
-              <span style={{ fontSize:12, color:'#6b7280' }}>
+            <div style={{ padding:'1rem 2rem', borderTop:'1px solid #e2e8f0', display:'flex', justifyContent:'space-between', alignItems:'center', background:'#f8fafc' }}>
+              <span style={{ fontSize:12, color:'#64748b' }}>
                 Mis à jour le {new Date(viewDoc.updated_at).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' })}
               </span>
               <button className="btn btn-outline btn-sm" onClick={() => setViewDoc(null)}>Fermer</button>
@@ -2111,7 +2111,7 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.6)', zIndex:700, display:'flex', alignItems:'center', justifyContent:'center', padding:'2rem' }} onClick={() => setEditDoc(null)}>
           <div style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:900, maxHeight:'90vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.3)' }} onClick={e => e.stopPropagation()}>
             <div style={{ padding:'1.5rem 2rem', borderBottom:'2px solid #e2e8f0' }}>
-              <h3 style={{ fontSize:20, fontWeight:800, color:'#111827' }}>Modifier le document</h3>
+              <h3 style={{ fontSize:20, fontWeight:800, color:'#1e1b4b' }}>Modifier le document</h3>
             </div>
             <div style={{ flex:1, overflowY:'auto', padding:'2rem' }}>
               <div className="form-group">
@@ -2123,7 +2123,7 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
                 <textarea rows={15} value={editForm.contenu} onChange={e => setEditForm({...editForm, contenu:e.target.value})} style={{ width:'100%', padding:'12px 14px', border:'1.5px solid #e2e8f0', borderRadius:8, fontSize:14, fontFamily:'monospace', lineHeight:1.6, resize:'vertical' }}/>
               </div>
             </div>
-            <div style={{ padding:'1rem 2rem', borderTop:'1px solid #e2e8f0', display:'flex', gap:8, justifyContent:'flex-end', background:'#f9fafb' }}>
+            <div style={{ padding:'1rem 2rem', borderTop:'1px solid #e2e8f0', display:'flex', gap:8, justifyContent:'flex-end', background:'#f8fafc' }}>
               <button className="btn btn-outline" onClick={() => setEditDoc(null)}>Annuler</button>
               <button className="btn btn-primary" onClick={saveEdit}>
                 <i className="fas fa-save"/> Enregistrer les modifications
@@ -2133,7 +2133,7 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
         </div>
       )}
 
-      <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:16, padding:'1.5rem', marginBottom:16 }}>
+      <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:16, padding:'1.5rem', marginBottom:16 }}>
         <h3 style={{ fontWeight:700, marginBottom:'1rem', display:'flex', alignItems:'center', gap:8 }}>
           <div style={{ width:32, height:32, borderRadius:10, background:'rgba(16,185,129,.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
             <i className="fas fa-plus" style={{ color:'#10b981', fontSize:14 }}/>
@@ -2142,12 +2142,12 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
         </h3>
         <div className="form-group"><label>Titre</label><input value={form.titre} onChange={e => setForm({...form,titre:e.target.value})} placeholder="Titre du document"/></div>
         <div className="form-group"><label>Contenu texte</label><textarea rows={5} value={form.contenu} onChange={e => setForm({...form,contenu:e.target.value})} placeholder="Collez le contenu de la documentation…"/></div>
-        <div className="form-group"><label>Ou importer (PDF/TXT)</label><input type="file" accept=".pdf,.txt" onChange={e => setFile(e.target.files[0])}/>{file && <span style={{ fontSize:12, color:'#2563eb' }}>📎 {file.name}</span>}</div>
+        <div className="form-group"><label>Ou importer (PDF/TXT)</label><input type="file" accept=".pdf,.txt" onChange={e => setFile(e.target.files[0])}/>{file && <span style={{ fontSize:12, color:'#6366f1' }}>📎 {file.name}</span>}</div>
         <button className="btn btn-primary btn-sm" disabled={loading} onClick={create}>{loading ? 'Indexation en cours…' : 'Ajouter la documentation'}</button>
       </div>
 
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:12 }}>
-        {localDocs.length === 0 && <div style={{ gridColumn:'1/-1', textAlign:'center', padding:'3rem', color:'#94a3b8', background:'#fff', borderRadius:12, border:'1px solid #e5e7eb' }}><i className="fas fa-file-alt" style={{ fontSize:48, opacity:.2, marginBottom:16 }}/><p>Aucune documentation.</p></div>}
+        {localDocs.length === 0 && <div style={{ gridColumn:'1/-1', textAlign:'center', padding:'3rem', color:'#94a3b8', background:'#fff', borderRadius:12, border:'1px solid #e2e8f0' }}><i className="fas fa-file-alt" style={{ fontSize:48, opacity:.2, marginBottom:16 }}/><p>Aucune documentation.</p></div>}
         {localDocs.map(d => (
           <div key={d.id} style={{ background:'#fff', border:'1.5px solid #e2e8f0', borderRadius:14, padding:'1.25rem', transition:'all .2s', cursor:'pointer' }}
             onMouseEnter={e => { e.currentTarget.style.borderColor='#10b981'; e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='0 12px 30px rgba(16,185,129,.15)'; }}
@@ -2157,11 +2157,11 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
                 <i className="fas fa-file-alt" style={{ color:'#10b981', fontSize:18 }}/>
               </div>
               <div style={{ flex:1, minWidth:0 }}>
-                <strong style={{ fontSize:15, fontWeight:700, color:'#111827', display:'block', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{d.titre}</strong>
+                <strong style={{ fontSize:15, fontWeight:700, color:'#1e1b4b', display:'block', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{d.titre}</strong>
                 <div style={{ fontSize:12, color:'#94a3b8', marginTop:2 }}>{new Date(d.updated_at).toLocaleDateString('fr-FR')}</div>
               </div>
             </div>
-            <div style={{ fontSize:13, color:'#6b7280', lineHeight:1.5, marginBottom:12, overflow:'hidden', textOverflow:'ellipsis', display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical' }}>
+            <div style={{ fontSize:13, color:'#64748b', lineHeight:1.5, marginBottom:12, overflow:'hidden', textOverflow:'ellipsis', display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical' }}>
               {d.contenu?.slice(0, 150)}{(d.contenu?.length || 0) > 150 ? '…' : ''}
             </div>
             <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
@@ -2289,11 +2289,11 @@ function FaqTabPanel({ docId, faqs, onDeleteFaq, onNotify }) {
             {editId === f.id ? (
               <div>
                 <div className="form-group" style={{ marginBottom:'1rem' }}>
-                  <label style={{ fontWeight:600, fontSize:12, color:'#6b7280', marginBottom:6 }}>Question</label>
+                  <label style={{ fontWeight:600, fontSize:12, color:'#64748b', marginBottom:6 }}>Question</label>
                   <input value={editForm.question} onChange={e => setEditForm({...editForm, question:e.target.value})} style={{ width:'100%', padding:'10px 14px', border:'1.5px solid #e2e8f0', borderRadius:8, fontSize:14 }}/>
                 </div>
                 <div className="form-group">
-                  <label style={{ fontWeight:600, fontSize:12, color:'#6b7280', marginBottom:6 }}>Réponse</label>
+                  <label style={{ fontWeight:600, fontSize:12, color:'#64748b', marginBottom:6 }}>Réponse</label>
                   <textarea rows={4} value={editForm.reponse} onChange={e => setEditForm({...editForm, reponse:e.target.value})} style={{ width:'100%', padding:'10px 14px', border:'1.5px solid #e2e8f0', borderRadius:8, fontSize:14, resize:'vertical' }}/>
                 </div>
                 <div style={{ display:'flex', gap:6, marginTop:'1rem' }}>
@@ -2310,10 +2310,10 @@ function FaqTabPanel({ docId, faqs, onDeleteFaq, onNotify }) {
                     <i className="fas fa-question" style={{ color:'#f59e0b', fontSize:20 }}/>
                   </div>
                   <div style={{ flex:1, paddingRight:'3rem' }}>
-                    <div style={{ fontWeight:700, fontSize:16, color:'#111827', marginBottom:8, lineHeight:1.4 }}>
+                    <div style={{ fontWeight:700, fontSize:16, color:'#1e1b4b', marginBottom:8, lineHeight:1.4 }}>
                       {f.question}
                     </div>
-                    <div style={{ fontSize:14, color:'#475569', lineHeight:1.7, background:'#f9fafb', padding:'12px 16px', borderRadius:10, borderLeft:'4px solid #f59e0b' }}>
+                    <div style={{ fontSize:14, color:'#475569', lineHeight:1.7, background:'#f8fafc', padding:'12px 16px', borderRadius:10, borderLeft:'4px solid #f59e0b' }}>
                       {f.reponse}
                     </div>
                   </div>
@@ -2429,7 +2429,7 @@ function WizardModal({ client, onDone, onCancel, onError }) {
             <div>
               <div className="form-group"><label>Titre</label><input value={form.titre} onChange={e => setForm({...form,titre:e.target.value})} placeholder="Documentation technique, Guide utilisateur…" autoFocus/></div>
               <div className="form-group"><label>Contenu texte</label><textarea rows={5} value={form.contenu} onChange={e => setForm({...form,contenu:e.target.value})} placeholder="Collez le contenu…"/></div>
-              <div className="form-group"><label>Ou importer (PDF/TXT)</label><input type="file" accept=".pdf,.txt" onChange={e => setFile(e.target.files[0])}/>{file && <span style={{ fontSize:12, color:'#2563eb' }}>📎 {file.name}</span>}</div>
+              <div className="form-group"><label>Ou importer (PDF/TXT)</label><input type="file" accept=".pdf,.txt" onChange={e => setFile(e.target.files[0])}/>{file && <span style={{ fontSize:12, color:'#6366f1' }}>📎 {file.name}</span>}</div>
               <div style={{ display:'flex', gap:8, marginTop:'1rem' }}>
                 <button className="btn btn-outline" style={{ flex:1 }} onClick={() => setStep(1)}>← Retour</button>
                 <button className="btn btn-primary" style={{ flex:1 }} onClick={nextStep2}>Suivant →</button>
@@ -2438,9 +2438,9 @@ function WizardModal({ client, onDone, onCancel, onError }) {
           )}
           {step === 3 && (
             <div>
-              <p style={{ fontSize:14, color:'#6b7280', marginBottom:'1rem' }}>Optionnel — les FAQs permettent à l'IA de répondre directement sans chercher dans la documentation.</p>
+              <p style={{ fontSize:14, color:'#64748b', marginBottom:'1rem' }}>Optionnel — les FAQs permettent à l'IA de répondre directement sans chercher dans la documentation.</p>
               {faqs.length > 0 && (
-                <div style={{ background:'#f9fafb', borderRadius:10, padding:'0.75rem 1rem', marginBottom:'1rem' }}>
+                <div style={{ background:'#f8fafc', borderRadius:10, padding:'0.75rem 1rem', marginBottom:'1rem' }}>
                   {faqs.map((f,i) => <div key={i} style={{ fontSize:13, borderBottom:'1px solid #e2e8f0', paddingBottom:6, marginBottom:6 }}><strong>Q :</strong> {f.question}</div>)}
                 </div>
               )}
