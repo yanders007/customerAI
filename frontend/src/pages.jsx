@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { api, clearSession, saveProject, saveSession } from './api';
+import AiConfigPage from './AiConfigPage';
 import DOMPurify from 'dompurify';
 import './styles/login.css';
 import './styles/admin.css';
@@ -918,6 +919,7 @@ export function AdminPanel() {
     { key:'convs',     icon:'comments',     label:'Conversations', badge: escalatedCount },
     { key:'tokens',    icon:'coins',        label:'Tokens & RAG' },
     { key:'faqs-global', icon:'book',       label:'FAQ enregistrées' },
+    { key:'ai-config', icon:'cog',          label:'Configuration API' },
   ];
 
   if (loading) return <Spinner/>;
@@ -956,7 +958,7 @@ export function AdminPanel() {
         <header className="admin-header">
           <div className="header-title">
             <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}><i className="fas fa-bars"/></button>
-            <h1 id="pageTitle">{{ dashboard:'Tableau de bord', clients:'Clients', convs:'Conversations', tokens:'Tokens & RAG', 'faqs-global':'FAQ enregistrées', panel:'Détail client' }[section] || 'Admin'}</h1>
+            <h1 id="pageTitle">{{ dashboard:'Tableau de bord', clients:'Clients', convs:'Conversations', tokens:'Tokens & RAG', 'faqs-global':'FAQ enregistrées', 'ai-config':'Configuration API', panel:'Détail client' }[section] || 'Admin'}</h1>
           </div>
           <div className="header-actions">
             <div className="header-user">
@@ -1399,6 +1401,9 @@ export function AdminPanel() {
           {/* ══ FAQ GLOBALE ══ */}
           {section === 'faqs-global' && <FaqGlobalSection onNotify={notify}/>}
 
+          {/* ══ CONFIGURATION API ══ */}
+          {section === 'ai-config' && <AiConfigPage api={api}/>}
+
           {/* ══ PANEL CLIENT ══ */}
           {section === 'panel' && selected && (
             <ClientPanel client={selected} clientStats={clientStats} projets={projets} docs={docs} faqs={faqs} selProjet={selProjet} selDoc={selDoc} subTab={subTab}
@@ -1755,7 +1760,7 @@ function ClientsSection({ clients, onPickClient, onCreated, onError, onSuccess, 
 
 function NewClientForm({ onCreated, onError, onSuccess }) {
   const [open, setOpen]       = useState(false);
-  const [form, setForm]       = useState({ name:'', email:'' });
+  const [form, setForm]       = useState({ name:'', email:'', support_email:'' });
   const [loading, setLoading] = useState(false);
 
   const handleCreate = async () => {
@@ -1767,7 +1772,7 @@ function NewClientForm({ onCreated, onError, onSuccess }) {
     setLoading(true);
     try { 
       await api.post('/admin/clients', form);
-      setForm({ name:'', email:'' }); 
+      setForm({ name:'', email:'', support_email:'' }); 
       setOpen(false);
       onCreated(); // Rafraîchir la liste
       onSuccess(`Client "${form.name}" créé ! Les identifiants ont été envoyés par email à ${form.email}`);
@@ -1784,7 +1789,7 @@ function NewClientForm({ onCreated, onError, onSuccess }) {
     <button className="btn btn-primary" onClick={() => setOpen(true)}><i className="fas fa-plus"/> Ajouter un Client</button>
   ) : (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.5)', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={() => !loading && setOpen(false)}>
-      <div style={{ background:'#fff', borderRadius:16, padding:'2rem', width:'100%', maxWidth:520, boxShadow:'0 25px 60px rgba(0,0,0,.2)' }} onClick={e => e.stopPropagation()}>
+      <div style={{ background:'#fff', borderRadius:16, padding:'2rem', width:'100%', maxWidth:560, boxShadow:'0 25px 60px rgba(0,0,0,.2)' }} onClick={e => e.stopPropagation()}>
         <h3 style={{ fontWeight:800, marginBottom:4 }}>Nouveau client</h3>
         <p style={{ fontSize:13, color:'#64748b', marginBottom:'1.5rem' }}>
           Les identifiants seront générés automatiquement et envoyés par email.
@@ -1796,12 +1801,19 @@ function NewClientForm({ onCreated, onError, onSuccess }) {
           </div>
         </div>
         <div className="form-group">
-          <label>Nom complet</label>
+          <label>Nom complet <span style={{ color:'#ef4444' }}>*</span></label>
           <input value={form.name} onChange={e => setForm({...form,name:e.target.value})} placeholder="Nom du client" autoFocus disabled={loading}/>
         </div>
         <div className="form-group">
-          <label>Email</label>
-          <input type="email" value={form.email} onChange={e => setForm({...form,email:e.target.value})} placeholder="email@client.com" disabled={loading}/>
+          <label>Email du client <span style={{ color:'#ef4444' }}>*</span></label>
+          <input type="email" value={form.email} onChange={e => setForm({...form,email:e.target.value})} placeholder="client@entreprise.com" disabled={loading}/>
+        </div>
+        <div className="form-group">
+          <label>Email support (escalades) <span style={{ fontSize:11, color:'#94a3b8', fontWeight:400 }}>optionnel</span></label>
+          <input type="email" value={form.support_email} onChange={e => setForm({...form,support_email:e.target.value})} placeholder="support@votreagence.com" disabled={loading}/>
+          <small style={{ fontSize:11, color:'#64748b', marginTop:4, display:'block' }}>
+            Cet email recevra les demandes d'escalade vers un humain
+          </small>
         </div>
         <div style={{ display:'flex', gap:8, marginTop:'1rem' }}>
           <button className="btn btn-outline" style={{ flex:1 }} onClick={() => setOpen(false)} disabled={loading}>Annuler</button>

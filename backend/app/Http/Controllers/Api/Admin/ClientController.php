@@ -14,13 +14,17 @@ class ClientController extends Controller
     public function index()
     {
         $clients = Client::orderBy('name')->get()->map(function ($client) {
+            // Calculer si le client est actif (connecté dans les 30 derniers jours)
+            $isActive = $client->last_login && $client->last_login->gte(now()->subDays(30));
+            
             return [
                 'id' => $client->id,
                 'name' => $client->name,
                 'email' => $client->email,
+                'support_email' => $client->support_email,
                 'client_identifier' => $client->client_identifier,
                 'last_login' => $client->last_login?->toIso8601String(),
-                'is_active' => $client->is_active,
+                'is_active' => $isActive,
                 'projets_count' => $client->projets()->count(),
             ];
         });
@@ -37,6 +41,7 @@ class ClientController extends Controller
             $data = $request->validate([
                 'name'  => ['required', 'string', 'max:100'],
                 'email' => ['required', 'email', 'unique:clients,email'],
+                'support_email' => ['nullable', 'email'],
             ]);
             
             error_log('✓ Validation OK: ' . json_encode($data));
@@ -51,6 +56,7 @@ class ClientController extends Controller
             $client = Client::create([
                 'name'              => $data['name'],
                 'email'             => $data['email'],
+                'support_email'     => $data['support_email'] ?? null,
                 'client_identifier' => $identifier,
                 'password'          => Hash::make($plainPassword),
                 'is_active'         => false,
@@ -151,9 +157,14 @@ class ClientController extends Controller
             'id'    => ['required', 'integer'],
             'name'  => ['required', 'string', 'max:100'],
             'email' => ['required', 'email'],
+            'support_email' => ['nullable', 'email'],
         ]);
         $client = Client::findOrFail($data['id']);
-        $client->update(['name' => $data['name'], 'email' => $data['email']]);
+        $client->update([
+            'name' => $data['name'], 
+            'email' => $data['email'],
+            'support_email' => $data['support_email'] ?? null,
+        ]);
         return response()->json(['success' => true, 'message' => 'Client mis à jour.']);
     }
 
