@@ -416,14 +416,23 @@ export function ProjectSelect() {
     })();
   }, [navigate]);
 
-  const pick = async p => { 
+  const pick = async p => {
+    console.log('[ProjectSelect] Sélection projet:', p.nom_projet, p.id);
     saveProject(p); 
+    
+    // Vérifier que le projet est bien sauvegardé
+    const stored = JSON.parse(localStorage.getItem('sia_session') || '{}');
+    console.log('[ProjectSelect] Projet sauvegardé dans localStorage:', stored.project);
+    
     // Également sélectionner le projet côté backend (session)
     try {
       await api.post('/client/select-project', { project_id: p.id });
+      console.log('[ProjectSelect] Projet sélectionné côté backend');
     } catch (err) {
       console.error('Erreur sélection projet backend:', err);
     }
+    
+    console.log('[ProjectSelect] Navigation vers /chat...');
     navigate('/chat'); 
   };
 
@@ -491,19 +500,34 @@ export function Chat() {
   useEffect(() => {
     (async () => {
       console.log('[Chat] Initialisation...');
+      console.log('[Chat] localStorage sia_session:', localStorage.getItem('sia_session'));
+      
       try {
         const me = await api.get('/client/me');
         console.log('[Chat] Authentifié:', me.data.client.name);
+        
+        // Lire le projet AVANT de sauvegarder la session
+        const storedBefore = JSON.parse(localStorage.getItem('sia_session') || '{}');
+        console.log('[Chat] Session avant saveSession:', storedBefore);
+        
+        // Sauvegarder la session (préserve le projet normalement)
         saveSession('client', me.data.client);
         setClient(me.data.client);
+        
+        // Relire pour vérifier
         const stored = JSON.parse(localStorage.getItem('sia_session') || '{}');
+        console.log('[Chat] Session après saveSession:', stored);
+        console.log('[Chat] Projet dans session:', stored.project);
+        
         if (!stored.project) { 
-          console.log('[Chat] Aucun projet sélectionné, redirection');
+          console.log('[Chat] ❌ Aucun projet sélectionné, redirection vers /projects');
           navigate('/projects', { replace: true }); 
           return; 
         }
-        console.log('[Chat] Projet:', stored.project.nom_projet);
+        
+        console.log('[Chat] ✅ Projet trouvé:', stored.project.nom_projet);
         setProject(stored.project);
+        
         const convRes = await api.get('/client/conversations');
         const convs = convRes.data.data || [];
         // Dédupliquer par UUID pour éviter les doublons
@@ -513,7 +537,7 @@ export function Chat() {
         if (last) await loadConversation(last.id);
         else await startNewConversation(stored.project);
       } catch (err) { 
-        console.error('Erreur lors de l\'initialisation:', err);
+        console.error('[Chat] Erreur lors de l\'initialisation:', err);
         clearSession(); 
         navigate('/login-client', { replace: true }); 
       }
