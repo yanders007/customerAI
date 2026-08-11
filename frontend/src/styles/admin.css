@@ -611,6 +611,29 @@ html {
     position: relative;
     overflow: hidden;
     animation: slideInUp 0.5s ease-out backwards;
+    cursor: pointer;
+}
+
+.stat-card-large::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.02) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.stat-card-large:hover::before {
+    opacity: 1;
+}
+
+.stat-card-large:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    border-color: rgba(99, 102, 241, 0.2);
 }
 
 .stat-card-large:nth-child(1) { animation-delay: 0.05s; }
@@ -729,6 +752,23 @@ html {
     padding: 28px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     animation: slideInUp 0.6s ease-out backwards;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.chart-card:hover::before {
+    left: 100%;
 }
 
 .chart-card:hover {
@@ -972,10 +1012,19 @@ html {
     align-items: center;
     justify-content: center;
     color: var(--gray-400);
-    transition: var(--transition);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
 }
 
-.action-btn:hover { background: var(--gray-100); color: var(--primary); }
+.action-btn:hover { 
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05)); 
+    color: var(--primary);
+    transform: scale(1.1);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}
 
 /* ===== CONVERSATIONS ===== */
 .conversations-metrics {
@@ -1124,6 +1173,20 @@ html {
     border-radius: var(--radius-sm);
     font-size: 14px;
     width: 160px;
+    transition: all 0.2s ease;
+    background: var(--white);
+}
+
+.form-row select:hover,
+.form-row input[type="number"]:hover {
+    border-color: var(--gray-300);
+}
+
+.form-row select:focus,
+.form-row input[type="number"]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    outline: none;
 }
 
 .form-row input[type="range"] { width: 160px; }
@@ -1202,4 +1265,289 @@ html {
     .admin-header { padding: 0 16px; }
     .table-filters { flex-direction: column; width: 100%; }
     .table-filters input, .table-filters select { width: 100%; }
+}
+
+/* ===== PREMIUM ENHANCEMENTS ===== */
+
+/* Loading spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(99, 102, 241, 0.2);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+/* Glow effect for important elements */
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(99, 102, 241, 0.2), 0 0 10px rgba(99, 102, 241, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.4), 0 0 20px rgba(99, 102, 241, 0.2);
+    }
+}
+
+.glow {
+    animation: glow 2s ease-in-out infinite;
+}
+
+/* Skeleton loader */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, var(--gray-100) 0%, var(--gray-200) 50%, var(--gray-100) 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+    border-radius: var(--radius-sm);
+}
+
+/* Tooltip */
+.tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    padding: 8px 12px;
+    background: var(--gray-800);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: 115%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--gray-800);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+.tooltip:hover::before,
+.tooltip:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
+
+/* Floating action button */
+.fab {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.fab:hover {
+    transform: scale(1.1) translateY(-4px);
+    box-shadow: 0 12px 32px rgba(99, 102, 241, 0.5);
+}
+
+.fab:active {
+    transform: scale(1.05);
+}
+
+/* Empty state */
+.empty-state {
+    padding: 80px 32px;
+    text-align: center;
+    color: var(--gray-400);
+}
+
+.empty-state i {
+    font-size: 64px;
+    margin-bottom: 20px;
+    display: block;
+    color: var(--gray-300);
+}
+
+.empty-state h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-600);
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    font-size: 14px;
+    color: var(--gray-400);
+    max-width: 400px;
+    margin: 0 auto 24px;
+}
+
+/* Progress bar */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--gray-100);
+    border-radius: 100px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    border-radius: 100px;
+    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite linear;
+}
+
+/* Notification badge pulse */
+@keyframes badge-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.9;
+    }
+}
+
+.badge.pulse {
+    animation: badge-pulse 2s ease-in-out infinite;
+}
+
+/* Hover lift effect for cards */
+.lift-on-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lift-on-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Glass morphism effect */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+}
+
+/* Smooth transitions for all interactive elements */
+button, a, input, select, textarea, .card, .stat-card-large, .chart-card {
+    will-change: transform;
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Premium shadow variations */
+.shadow-premium {
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.12), 0 2px 8px rgba(99, 102, 241, 0.08);
+}
+
+.shadow-premium-lg {
+    box-shadow: 0 16px 48px rgba(99, 102, 241, 0.15), 0 4px 16px rgba(99, 102, 241, 0.1);
+}
+
+/* Ripple effect */
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    transform: scale(0);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ripple:active::after {
+    animation: ripple 0.6s ease-out;
 }
