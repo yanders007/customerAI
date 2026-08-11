@@ -10,7 +10,7 @@ use App\Models\Faq;
 use App\Models\Message;
 use App\Models\Projet;
 use App\Services\CohereEmbeddingService;
-use App\Services\AiService;
+use App\Services\N8nService;
 use App\Services\RetrievalService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
