@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script pour activer automatiquement le workflow N8N au démarrage
+# Script pour importer et activer automatiquement le workflow N8N au démarrage
 
 echo "⏳ Attente démarrage N8N (15s)..."
 sleep 15
@@ -15,16 +15,26 @@ while [ $RETRY -lt $MAX_RETRIES ]; do
         # Attendre encore un peu pour s'assurer que N8N est complètement prêt
         sleep 3
         
+        # Importer le workflow depuis le fichier JSON
+        if [ -f "/app/n8n/workflow.json" ]; then
+            echo "▶ Import du workflow N8N..."
+            n8n import:workflow --input=/app/n8n/workflow.json 2>/dev/null || echo "⚠ Import échoué (workflow déjà présent?)"
+            sleep 2
+        fi
+        
         # Récupérer la liste des workflows
         WORKFLOWS=$(curl -s http://localhost:5678/rest/workflows 2>/dev/null)
         
-        if [ ! -z "$WORKFLOWS" ] && [ "$WORKFLOWS" != "null" ]; then
+        if [ ! -z "$WORKFLOWS" ] && [ "$WORKFLOWS" != "null" ] && [ "$WORKFLOWS" != "[]" ]; then
             # Extraire tous les IDs de workflows
             WORKFLOW_IDS=$(echo "$WORKFLOWS" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
             
             if [ -z "$WORKFLOW_IDS" ]; then
-                echo "⚠ Aucun workflow trouvé"
-                exit 0
+                echo "⚠ Aucun workflow trouvé après import"
+                RETRY=$((RETRY+1))
+                echo "⏳ Tentative $RETRY/$MAX_RETRIES..."
+                sleep 3
+                continue
             fi
             
             for WF_ID in $WORKFLOW_IDS; do
@@ -40,7 +50,7 @@ while [ $RETRY -lt $MAX_RETRIES ]; do
                 fi
             done
             
-            echo "✓ Activation des workflows terminée"
+            echo "✓ Import et activation des workflows terminés"
             exit 0
         fi
     fi
