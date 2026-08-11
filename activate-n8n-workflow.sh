@@ -22,8 +22,8 @@ while [ $RETRY -lt $MAX_RETRIES ]; do
             # Lire le contenu du workflow
             WORKFLOW_CONTENT=$(cat /app/n8n/workflow.json)
             
-            # Importer via POST /rest/workflows
-            IMPORT_RESULT=$(curl -s -X POST http://localhost:5678/rest/workflows \
+            # Importer via POST /api/v1/workflows
+            IMPORT_RESULT=$(curl -s -X POST http://localhost:5678/api/v1/workflows \
               -H "Content-Type: application/json" \
               -d "$WORKFLOW_CONTENT" 2>/dev/null)
             
@@ -38,7 +38,7 @@ while [ $RETRY -lt $MAX_RETRIES ]; do
         fi
         
         # Récupérer la liste des workflows
-        WORKFLOWS=$(curl -s http://localhost:5678/rest/workflows 2>/dev/null)
+        WORKFLOWS=$(curl -s http://localhost:5678/api/v1/workflows 2>/dev/null)
         
         # Debug : afficher ce que l'API retourne
         echo "DEBUG: API response = $WORKFLOWS"
@@ -56,7 +56,7 @@ while [ $RETRY -lt $MAX_RETRIES ]; do
             
             for WF_ID in $WORKFLOW_IDS; do
                 echo "▶ Activation du workflow $WF_ID..."
-                RESULT=$(curl -s -X PATCH http://localhost:5678/rest/workflows/$WF_ID \
+                RESULT=$(curl -s -X PATCH http://localhost:5678/api/v1/workflows/$WF_ID \
                   -H "Content-Type: application/json" \
                   -d '{"active": true}' 2>/dev/null)
                 
