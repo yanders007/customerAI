@@ -867,10 +867,16 @@ html {
 
 .data-table tbody tr {
     transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .data-table tbody tr:hover { 
-    background: linear-gradient(to right, rgba(99, 102, 241, 0.03), transparent);
+    background: linear-gradient(to right, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.03));
+    transform: translateX(2px);
+}
+
+.data-table tbody tr:active {
+    transform: scale(0.995);
 }
 
 .user-cell {

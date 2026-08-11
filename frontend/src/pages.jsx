@@ -1698,6 +1698,17 @@ function ClientsSection({ clients, onPickClient, onCreated, onError, onSuccess, 
         <div><h2>Gestion des Clients</h2><p>{clients.length} clients enregistrés</p></div>
         <NewClientForm onCreated={onCreated} onError={onError} onSuccess={onSuccess}/>
       </div>
+      
+      {/* Aide navigation */}
+      {clients.length > 0 && (
+        <div style={{ background:'linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%)', border:'1px solid #c7d2fe', borderRadius:12, padding:'12px 16px', marginBottom:'1rem', display:'flex', alignItems:'center', gap:12 }}>
+          <i className="fas fa-lightbulb" style={{ color:'#6366f1', fontSize:18 }}/>
+          <div style={{ fontSize:13, color:'#4338ca', lineHeight:1.5, flex:1 }}>
+            <strong>Astuce :</strong> Double-cliquez sur un client pour accéder directement à sa gestion
+          </div>
+        </div>
+      )}
+      
       <div style={{ background:'#fff', borderRadius:16, border:'1px solid #e2e8f0', overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
         <div style={{ padding:'1rem 1.5rem', borderBottom:'1px solid #f1f5f9' }}>
           <input placeholder="🔍 Rechercher un client…" value={search} onChange={e => setSearch(e.target.value)} style={{ width:'100%', maxWidth:360, padding:'8px 14px', border:'1px solid #e2e8f0', borderRadius:8, fontSize:14, outline:'none' }}/>
@@ -1706,7 +1717,12 @@ function ClientsSection({ clients, onPickClient, onCreated, onError, onSuccess, 
           <thead><tr><th>Client</th><th>Email</th><th>Identifiant</th><th>Statut</th><th>Actions</th></tr></thead>
           <tbody>
             {filtered.map(c => (
-              <tr key={c.id}>
+              <tr 
+                key={c.id}
+                onDoubleClick={() => onPickClient(c)}
+                style={{ cursor: 'pointer', transition: 'background 0.2s' }}
+                title="Double-cliquez pour gérer ce client"
+              >
                 <td><div className="user-cell"><img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=6366f1&color=fff`} alt=""/><span>{c.name}</span></div></td>
                 <td style={{ color:'#64748b', fontSize:14 }}>{c.email}</td>
                 <td><span style={{ fontFamily:'monospace', background:'rgba(99,102,241,.1)', color:'#6366f1', padding:'2px 8px', borderRadius:6, fontSize:13 }}>{c.client_identifier}</span></td>
