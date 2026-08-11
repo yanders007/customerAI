@@ -33,6 +33,8 @@ COPY supervisord.conf /etc/supervisor/conf.d/app.conf
 
 # ── Workflow n8n ─────────────────────────────────────────────────────────────
 COPY final-client.json /app/n8n/workflow.json
+COPY activate-n8n-workflow.sh /app/activate-n8n-workflow.sh
+RUN chmod +x /app/activate-n8n-workflow.sh
 
 # ── Script de démarrage ──────────────────────────────────────────────────────
 COPY docker-entrypoint.sh /usr/local/bin/entrypoint.sh
