@@ -64,18 +64,24 @@ class ClientController extends Controller
                 $loginUrl = env('FRONTEND_URL', 'http://localhost:3000') . '/login-client';
                 error_log('→ Tentative envoi email à: ' . $data['email']);
                 error_log('→ Login URL: ' . $loginUrl);
-                error_log('→ MAIL_HOST: ' . env('MAIL_HOST'));
-                error_log('→ MAIL_FROM: ' . env('MAIL_FROM_ADDRESS'));
                 
-                Mail::to($data['email'])->send(new ClientCredentialsMail(
-                    clientName: $data['name'],
+                // Utiliser l'API Brevo au lieu de SMTP (Render bloque le port 587)
+                $brevoService = new \App\Services\BrevoMailService();
+                $sent = $brevoService->sendClientCredentials(
+                    toEmail: $data['email'],
+                    toName: $data['name'],
                     identifier: $identifier,
-                    password:   $plainPassword,
-                    loginUrl:   $loginUrl,
-                ));
+                    password: $plainPassword,
+                    loginUrl: $loginUrl
+                );
                 
-                $emailStatus = 'Email envoyé avec succès';
-                error_log('✓✓✓ EMAIL ENVOYÉ AVEC SUCCÈS ✓✓✓');
+                if ($sent) {
+                    $emailStatus = 'Email envoyé avec succès';
+                    error_log('✓✓✓ EMAIL ENVOYÉ VIA API BREVO ✓✓✓');
+                } else {
+                    $emailStatus = 'Client créé mais email non envoyé (vérifiez BREVO_API_KEY)';
+                    error_log('⚠️ Email non envoyé - vérifiez les logs');
+                }
             } catch (\Exception $mailError) {
                 error_log('✗✗✗ ÉCHEC ENVOI EMAIL ✗✗✗');
                 error_log('Erreur: ' . $mailError->getMessage());
