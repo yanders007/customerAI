@@ -1,0 +1,129 @@
+{
+  "name": "final client",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "assistant",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "068cf0fb-492b-4bd9-88e1-f46e59b4d8d1",
+      "name": "Webhook1",
+      "webhookId": "4fd34179-a283-4f0d-b4b0-416f1bea45f0"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body          = $input.first().json.body;\nconst question      = body.question;\nconst clientName    = body.client_name;\nconst documentation = body.documentation;\nconst faq           = body.faq;\nconst history       = body.history || '';\n\nconst historyBlock = history\n  ? `=== HISTORIQUE RÉCENT ===\\n${history}\\n\\n`\n  : '';\n\nconst prompt = `Tu es un assistant support pour une agence de développement.\nTu réponds aux clients comme le ferait un membre de l'équipe — avec clarté, chaleur et concision.\nLa documentation et la FAQ ci-dessous sont ta seule source de vérité. Ne jamais inventer un fait absent.\n\nCLIENT : ${clientName}\n\n${historyBlock}=== DOCUMENTATION (passages les plus pertinents) ===\n${documentation}\n\n=== FAQ ===\n${faq}\n\n=== QUESTION ===\n${question}\n\n---\n\nRÈGLES DE RÉPONSE (priorité décroissante) :\n\n1. SALUTATION — si le message est uniquement une salutation, réponds chaleureusement et brièvement. Aucun diagnostic.\n\n2. PROBLÈME RÉSOLU — si le client dit que c'est réglé (\"c'est bon\", \"merci\", \"ça marche\"), réponds UNIQUEMENT par un message court de satisfaction. Rien d'autre.\n\n3. MESSAGE VAGUE — si le client manque de détails (\"j'ai un problème\", \"ça ne marche pas\"), pose UNE seule question de clarification. Ne jamais utiliser ESCALATION_NEEDED dans ce cas.\n\n4. AMBIGUÏTÉ — si plusieurs éléments de la documentation pourraient correspondre, liste brièvement les options et demande de préciser. Ne pas utiliser ESCALATION_NEEDED.\n\n5. RÉSUMÉ / EXPLICATION / REFORMULATION — si le contenu existe dans la documentation, traite la demande en t'appuyant dessus.\n\n6. CONTINUITÉ — si la question est liée à l'échange précédent, tiens-en compte. Sinon, réponds directement sans mentionner l'ancien sujet.\n\n7. QUESTION FONCTIONNELLE — cherche dans la documentation les fonctionnalités qui répondent au besoin, même indirectement.\n\n8. ESCALATION_NEEDED — à utiliser UNIQUEMENT si :\n   - c'est une vraie question factuelle\n   - le sujet n'est couvert nulle part dans la documentation ni la FAQ\n   - même en interprétant largement la question et l'historique\n   Dans ce cas, réponds UNIQUEMENT par ce texte exact, sans rien ajouter :\n   ESCALATION_NEEDED\n\nRéponds en français, de manière claire, chaleureuse et concise.`;\n\nreturn [{ json: { prompt } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        0
+      ],
+      "id": "5bb4fa71-8979-42e2-b864-d1cdf834843d",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\"answer\":$json.content.parts[0].text})}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "b6d6e067-5f0d-42c4-b8b7-1951ab263d1f",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.prompt}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        368,
+        0
+      ],
+      "id": "af072008-8c5f-4432-91e5-68e967a24597",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zil0DSWGh4arr16Z",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fab068b1-3f30-401f-90be-24ab0659c7cb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ac846c3686af991e04eead00e6f0d3ed2984fc05a43329dd410bbd184be51a23"
+  },
+  "id": "EvadRKgkppDfatxz",
+  "tags": []
+}
