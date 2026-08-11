@@ -45,18 +45,37 @@ export function ClientLogin() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('[ClientLogin] Vérification session existante...');
     api.get('/client/me').then(r => {
+      console.log('[ClientLogin] Session trouvée, redirection');
       saveSession('client', r.data.client);
       navigate(r.data.project ? '/chat' : '/projects', { replace: true });
-    }).catch(() => clearSession()).finally(() => setChecking(false));
+    }).catch((err) => {
+      console.log('[ClientLogin] Pas de session active', err.response?.status);
+      clearSession();
+    }).finally(() => setChecking(false));
   }, [navigate]);
 
   const handleSubmit = async e => {
-    e.preventDefault(); setLoading(true); setError('');
+    e.preventDefault(); 
+    setLoading(true); 
+    setError('');
+    
+    console.log('[ClientLogin] Tentative de connexion...', { identifier });
+    
     try {
       const r = await api.post('/client/login', { client_identifier: identifier, password });
-      if (r.data.success) { saveSession('client', r.data.client); navigate('/projects'); }
-    } catch (err) { setError(err.response?.data?.error || 'Identifiants incorrects.'); }
+      console.log('[ClientLogin] Réponse reçue:', r.data);
+      
+      if (r.data.success) { 
+        console.log('[ClientLogin] Connexion réussie');
+        saveSession('client', r.data.client); 
+        navigate('/projects'); 
+      }
+    } catch (err) { 
+      console.error('[ClientLogin] Erreur:', err);
+      setError(err.response?.data?.error || 'Identifiants incorrects.'); 
+    }
     finally { setLoading(false); }
   };
 
@@ -350,12 +369,19 @@ export function ProjectSelect() {
 
   useEffect(() => {
     (async () => {
+      console.log('[ProjectSelect] Chargement projets...');
       try {
         const [me, pr] = await Promise.all([api.get('/client/me'), api.get('/client/projets')]);
+        console.log('[ProjectSelect] Authentifié:', me.data.client.name);
+        console.log('[ProjectSelect] Projets:', pr.data.data?.length);
         saveSession('client', me.data.client);
         setClient(me.data.client);
         setProjects(pr.data.data || []);
-      } catch { clearSession(); navigate('/login-client', { replace: true }); }
+      } catch (err) { 
+        console.error('[ProjectSelect] Erreur:', err.response?.status);
+        clearSession(); 
+        navigate('/login-client', { replace: true }); 
+      }
       finally { setLoading(false); }
     })();
   }, [navigate]);
@@ -434,12 +460,19 @@ export function Chat() {
 
   useEffect(() => {
     (async () => {
+      console.log('[Chat] Initialisation...');
       try {
         const me = await api.get('/client/me');
+        console.log('[Chat] Authentifié:', me.data.client.name);
         saveSession('client', me.data.client);
         setClient(me.data.client);
         const stored = JSON.parse(localStorage.getItem('sia_session') || '{}');
-        if (!stored.project) { navigate('/projects', { replace: true }); return; }
+        if (!stored.project) { 
+          console.log('[Chat] Aucun projet sélectionné, redirection');
+          navigate('/projects', { replace: true }); 
+          return; 
+        }
+        console.log('[Chat] Projet:', stored.project.nom_projet);
         setProject(stored.project);
         const convRes = await api.get('/client/conversations');
         const convs = convRes.data.data || [];
