@@ -1011,3 +1011,156 @@ input, textarea, select { font-family: inherit; outline: none; }
 .nav-item .delete-conv-btn:hover {
     color: #dc2626 !important;
 }
+
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Container full-width optimization */
+.main-content {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px 32px;
+}
+
+/* Large screens - optimize spacing */
+@media (min-width: 1600px) {
+    .main-content {
+        max-width: 1800px;
+        padding: 32px 48px;
+    }
+}
+
+/* Medium laptops */
+@media (max-width: 1400px) {
+    .main-content {
+        padding: 24px;
+    }
+}
+
+/* Tablets and small laptops */
+@media (max-width: 1024px) {
+    .sidebar {
+        transform: translateX(-100%);
+        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px 16px;
+    }
+    
+    .mobile-menu-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius);
+        color: var(--gray-700);
+        transition: all 0.2s ease;
+    }
+    
+    .mobile-menu-btn:hover {
+        background: var(--gray-100);
+        color: var(--primary);
+    }
+}
+
+/* Mobile landscape */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 16px 12px;
+    }
+    
+    .chat-container {
+        max-width: 100%;
+    }
+    
+    .message-bubble {
+        max-width: 85%;
+    }
+    
+    .input-container {
+        padding: 12px;
+        gap: 8px;
+    }
+    
+    textarea {
+        font-size: 15px;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Mobile portrait */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 12px 8px;
+    }
+    
+    .sidebar-header {
+        padding: 16px 12px;
+    }
+    
+    .logo {
+        font-size: 18px;
+    }
+    
+    .nav-item {
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+    
+    .message-bubble {
+        max-width: 90%;
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+    
+    .input-container {
+        padding: 10px;
+    }
+    
+    textarea {
+        font-size: 14px;
+        min-height: 40px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .sidebar,
+    .input-container,
+    .mobile-menu-btn {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .nav-item,
+    .btn,
+    button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .sidebar-toggle {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
