@@ -26,14 +26,22 @@ export DB_POSTGRESDB_PASSWORD="${DB_PASSWORD}"
 export DB_POSTGRESDB_SCHEMA="${DB_POSTGRESDB_SCHEMA:-n8n}"
 ```
 
-### 2. Schéma séparé pour N8N
+### 2. Désactivation de l'authentification API N8N (supervisord.conf)
+
+N8N nécessitait une API Key pour l'import des workflows. Comme N8N tourne en **localhost uniquement** (non exposé publiquement), l'authentification API a été désactivée :
+
+```bash
+N8N_API_KEY_AUTH_DISABLED="true"
+```
+
+Ceci permet au script `activate-n8n-workflow.sh` d'importer et activer les workflows sans clé API.
 
 N8N utilise **la même base PostgreSQL** que Laravel, mais dans un **schéma différent** (`n8n`) :
 - ✅ Pas besoin de créer une nouvelle base de données
 - ✅ Pas de coûts supplémentaires
 - ✅ Les données sont isolées (pas de conflit)
 
-### 3. Clé de chiffrement N8N
+### 4. Clé de chiffrement N8N
 
 Si vous voulez que vos workflows N8N **survivent aux redéploiements**, ajoutez cette variable dans Render :
 
@@ -102,7 +110,16 @@ N8N_ENCRYPTION_KEY=<générez avec: openssl rand -hex 32>
 ✅ **Une seule base PostgreSQL** (gratuit Supabase)  
 ✅ **Isolation des données** (schémas séparés)  
 ✅ **Compatible service Render gratuit**  
-✅ **Fonctionne out-of-the-box** après push
+✅ **Fonctionne out-of-the-box** après push  
+✅ **Pas d'API Key nécessaire** (N8N en localhost uniquement)
+
+## Note de sécurité
+
+⚠️ **N8N_API_KEY_AUTH_DISABLED="true"** est sécurisé dans ce contexte car :
+- N8N écoute uniquement sur `localhost:5678` (non exposé publiquement)
+- Accessible uniquement depuis l'intérieur du conteneur Render
+- Aucun accès externe possible via internet
+- L'authentification Basic Auth reste active pour l'UI N8N (si configurée)
 
 ## Troubleshooting
 
