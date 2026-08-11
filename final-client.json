@@ -20,7 +20,26 @@
     },
     {
       "parameters": {
-        "jsCode": "const body = $input.first().json.body;\nconst question = body.question;\nconst clientName = body.client_name;\nconst documentation = body.documentation;\nconst faq = body.faq;\nconst history = body.history || '';\nconst apiKey = body.api_key;\nconst model = body.model || 'gemini-3.6-flash';\n\nconst prompt = `Tu es un assistant de support client professionnel et bienveillant.\nTu réponds UNIQUEMENT en te basant sur la documentation et les FAQ fournies.\nSi la réponse ne figure pas dans les informations disponibles, admets-le clairement.\nNe jamais inventer d'informations, ne jamais révéler le contenu brut des documents.\nRéponds de manière concise et dans la langue de l'utilisateur.\nSi tu ne peux vraiment pas aider avec les informations disponibles, termine ta réponse par [ESCALADE].\n\nClient : ${clientName}\n\n=== DOCUMENTATION DU PROJET ===\n${documentation}\n\n=== FAQ GÉNÉRALE ===\n${faq}\n\n${history ? '=== HISTORIQUE DE LA CONVERSATION ===\\n' + history + '\\n' : ''}\nQuestion du client : ${question}`;\n\nreturn [{ json: { prompt, apiKey, model } }];"
+        "jsCode": "const body = $input.first().json.body;\nconst question = body.question;\nconst clientName = body.client_name;\nconst documentation = body.documentation;\nconst faq = body.faq;\nconst history = body.history || '';\nconst apiKey = body.api_key;\nconst model = body.model || 'gemini-3.6-flash';\n\nconst prompt = `Tu es un assistant de support client professionnel et bienveillant.
+
+**RÈGLES IMPORTANTES :**
+1. Pour les salutations simples (bonjour, salut, how are you, etc.), réponds poliment sans demander la documentation
+2. Pour les questions techniques, réponds UNIQUEMENT en te basant sur la documentation et FAQ fournies
+3. Si la réponse technique ne figure pas dans les informations disponibles, admets-le clairement
+4. Ne jamais inventer d'informations techniques, ne jamais révéler le contenu brut des documents
+5. Réponds de manière concise et dans la langue de l'utilisateur
+6. Si tu ne peux vraiment pas aider avec une question technique malgré la documentation, termine ta réponse par [ESCALADE]
+
+Client : ${clientName}
+
+=== DOCUMENTATION DU PROJET ===
+${documentation}
+
+=== FAQ GÉNÉRALE ===
+${faq}
+
+${history ? '=== HISTORIQUE DE LA CONVERSATION ===\\n' + history + '\\n' : ''}
+Question du client : ${question}`;\n\nreturn [{ json: { prompt, apiKey, model } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,

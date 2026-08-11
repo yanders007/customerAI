@@ -126,7 +126,12 @@ class AskController extends Controller
             ]);
         }
 
-        // ── 1) Détection d'intention par IA (salutation, inapproprié, etc.) ──
+        // ── 1) Détection d'intention DÉSACTIVÉE ──
+        // Toutes les questions passent directement au workflow N8N
+        // qui gère lui-même les salutations, remerciements, etc.
+        // Cela évite les timeouts et conflits avec le prompt système N8N.
+        
+        /*
         $client = Client::find($clientId);
         $intentResult = $this->detectIntent($question, $client?->name, $projet->nom_projet);
         if ($intentResult !== null) {
@@ -153,6 +158,7 @@ class AskController extends Controller
                 'assistant_message_id' => $assistantMessage->id,
             ]);
         }
+        */
 
         // ── 2) Documentation disponible pour ce projet ? ─────────────────
         $documentations = Documentation::where('projet_id', $projet->id)->with('faqs')->get();
@@ -318,16 +324,12 @@ class AskController extends Controller
     // ── Détection d'intention intelligente avec IA ─────────────────────
     private function detectIntent(string $question, ?string $clientName, string $projetName): ?array
     {
-        \Log::info("[INTENT-DETECTION] Début détection pour: '{$question}'");
-        
         // Messages très courts et évidents (optimisation)
         $quickPatterns = $this->quickIntentPatterns($question, $clientName, $projetName);
         if ($quickPatterns !== null) {
-            \Log::info("[INTENT-DETECTION] ✓ Réponse directe: " . $quickPatterns['source']);
             return $quickPatterns;
         }
 
-        \Log::info("[INTENT-DETECTION] → Passage à l'IA detection");
         // Détection par IA pour intentions plus complexes
         return $this->aiIntentDetection($question, $clientName, $projetName);
     }
@@ -338,27 +340,8 @@ class AskController extends Controller
         $normalized = preg_replace('/[^\p{L}\s]/u', '', $normalized);
         $name = $clientName ? $clientName : '';
 
-        \Log::info("[INTENT-DEBUG] Question: '{$question}' → Normalized: '{$normalized}'");
-
         // Salutations évidentes et courtes
         if (preg_match('/^(hello+|hi+|salut+|yo+|hey+|bonjour+|bonsoir+|cc+|coucou+)$/', $normalized)) {
-            \Log::info("[INTENT-DEBUG] ✓ Salutation détectée!");
-            return [
-                'response' => trim("Bonjour {$name} ! Comment puis-je vous aider concernant « {$projetName} » ?"),
-                'source' => 'greeting',
-                'tokens_input' => 0,
-                'tokens_output' => 0
-            ];
-        }
-
-        \Log::info("[INTENT-DEBUG] ✗ Salutation NON détectée");
-
-        // Salutations avec "comment" (comment ça va, comment allez-vous, etc.)
-        if (preg_match('/^comment\s+(ca|ça)\s+va\s*\?*$/', $normalized) ||
-            preg_match('/^comment\s+(allez\s*vous|vas\s*tu|tu\s+vas)\s*\?*$/', $normalized) ||
-            preg_match('/^(ca|ça)\s+va\s*(bien)?\s*\?*$/', $normalized) ||
-            preg_match('/^how\s+are\s+you(\s+doing)?\s*\?*$/', $normalized) ||
-            preg_match('/^whats?\s+up\s*\?*$/', $normalized)) {
             return [
                 'response' => trim("Bonjour {$name} ! Comment puis-je vous aider concernant « {$projetName} » ?"),
                 'source' => 'greeting',
