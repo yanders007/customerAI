@@ -45,10 +45,12 @@ Route::prefix('admin')->group(function () {
         Route::delete('/conversations/{id}', [AskController::class, 'adminDeleteConversation']);
 
         // Configuration IA
-        Route::get('/ai-config',         [AiConfigController::class, 'show']);
-        Route::post('/ai-config',        [AiConfigController::class, 'store']);
-        Route::post('/ai-config/test',   [AiConfigController::class, 'test']);
-        Route::delete('/ai-config',      [AiConfigController::class, 'destroy']);
+        Route::get('/ai-config',                [AiConfigController::class, 'index']);
+        Route::get('/ai-config/active',         [AiConfigController::class, 'show']);
+        Route::post('/ai-config',               [AiConfigController::class, 'store']);
+        Route::post('/ai-config/activate/{id}', [AiConfigController::class, 'activate']);
+        Route::post('/ai-config/test',          [AiConfigController::class, 'test']);
+        Route::delete('/ai-config/{id}',        [AiConfigController::class, 'destroy']);
     });
 });
 

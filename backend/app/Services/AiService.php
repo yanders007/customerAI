@@ -59,6 +59,14 @@ PROMPT;
             );
         }
 
+        // Vérifier que la clé API est valide
+        $apiKey = $config->api_key;
+        if (empty($apiKey) || strlen($apiKey) < 10) {
+            return $this->errorResponse(
+                "Clé API invalide ou manquante pour {$config->provider}. Vérifiez la configuration dans l'admin."
+            );
+        }
+
         $systemPrompt = $this->buildSystemPrompt($config, $documentation, $faq, $clientName);
         $userMessage  = $this->buildUserMessage($question, $history, $documentation, $faq, $clientName);
 

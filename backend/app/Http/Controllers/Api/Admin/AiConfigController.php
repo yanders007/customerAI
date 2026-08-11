@@ -13,7 +13,26 @@ class AiConfigController extends Controller
     public function __construct(private AiService $aiService) {}
 
     // ── GET /admin/ai-config ──────────────────────────────────────────────
-    // Renvoie la config active (sans la clé API en clair)
+    // Renvoie toutes les configs (pour permettre de basculer entre plusieurs)
+    public function index(): JsonResponse
+    {
+        $configs = AiConfig::orderBy('is_active', 'desc')
+            ->orderBy('updated_at', 'desc')
+            ->get()
+            ->map(fn($c) => [
+                'id'            => $c->id,
+                'provider'      => $c->provider,
+                'model'         => $c->model,
+                'is_active'     => $c->is_active,
+                'api_key_hint'  => $this->maskKey($c->api_key),
+                'updated_at'    => $c->updated_at,
+            ]);
+
+        return response()->json(['success' => true, 'data' => $configs]);
+    }
+
+    // ── GET /admin/ai-config/active ───────────────────────────────────────
+    // Renvoie uniquement la config active
     public function show(): JsonResponse
     {
         $config = AiConfig::where('is_active', true)->latest()->first();
@@ -30,10 +49,28 @@ class AiConfigController extends Controller
                 'model'         => $config->model,
                 'is_active'     => $config->is_active,
                 'system_prompt' => $config->system_prompt,
-                // On masque la clé : on retourne juste les 8 premiers chars + ***
                 'api_key_hint'  => $this->maskKey($config->api_key),
+                'has_key'       => !empty($config->api_key),
                 'updated_at'    => $config->updated_at,
             ],
+        ]);
+    }
+
+    // ── POST /admin/ai-config/activate/{id} ───────────────────────────────
+    // Activer une config existante
+    public function activate(int $id): JsonResponse
+    {
+        $config = AiConfig::findOrFail($id);
+        
+        // Désactiver toutes les autres
+        AiConfig::where('is_active', true)->update(['is_active' => false]);
+        
+        // Activer celle-ci
+        $config->update(['is_active' => true]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Configuration {$config->provider} activée.",
         ]);
     }
 
@@ -103,10 +140,12 @@ class AiConfigController extends Controller
         ], 422);
     }
 
-    // ── DELETE /admin/ai-config ───────────────────────────────────────────
-    public function destroy(): JsonResponse
+    // ── DELETE /admin/ai-config/{id} ──────────────────────────────────────
+    public function destroy(int $id): JsonResponse
     {
-        AiConfig::where('is_active', true)->delete();
+        $config = AiConfig::findOrFail($id);
+        $config->delete();
+        
         return response()->json(['success' => true, 'message' => 'Configuration supprimée.']);
     }
 
