@@ -89,6 +89,12 @@ class N8nService
 
             $data = $response->json();
 
+            // Log de la réponse N8N pour debug
+            Log::info('[N8N-RESPONSE]', [
+                'answer' => $data['answer'] ?? 'NO ANSWER',
+                'raw_data' => $data,
+            ]);
+
             if (!$data || !isset($data['answer'])) {
                 Log::error('N8nService: champ answer manquant', ['body' => $response->body()]);
                 
