@@ -1272,7 +1272,13 @@ export function AdminPanel() {
 
           {/* ══ CLIENTS ══ */}
           {section === 'clients' && (
-            <ClientsSection clients={clients} onPickClient={pickClient} onCreated={() => { fetchClients(); fetchDashboard(); notify('Client créé — identifiants envoyés par email !'); }} onError={e => notify(e, 'error')}/>
+            <ClientsSection 
+              clients={clients} 
+              onPickClient={pickClient} 
+              onCreated={() => { fetchClients(); fetchDashboard(); notify('Client créé avec succès !'); }} 
+              onError={e => notify(e, 'error')}
+              onDeleteClient={(id) => { setClients(clients.filter(c => c.id !== id)); notify('Client supprimé'); }}
+            />
           )}
 
           {/* ══ CONVERSATIONS ══ */}
@@ -1648,9 +1654,21 @@ function RagPieChart({ data }) {
   );
 }
 
-function ClientsSection({ clients, onPickClient, onCreated, onError }) {
+function ClientsSection({ clients, onPickClient, onCreated, onError, onDeleteClient }) {
   const [search, setSearch] = useState('');
   const filtered = clients.filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || c.email.toLowerCase().includes(search.toLowerCase()));
+
+  const handleDelete = async (client) => {
+    if (!confirm(`⚠️ Supprimer le client "${client.name}" ?\n\nCette action supprimera également:\n- Tous ses projets\n- Toutes ses documentations\n- Toutes ses FAQs\n- Toutes ses conversations\n\nCette action est irréversible !`)) return;
+    
+    try {
+      await api.delete('/admin/clients', { data: { id: client.id } });
+      onDeleteClient(client.id);
+      onCreated(); // Rafraîchir la liste
+    } catch (e) {
+      onError(e.response?.data?.error || 'Erreur lors de la suppression');
+    }
+  };
 
   return (
     <div>
@@ -1680,7 +1698,12 @@ function ClientsSection({ clients, onPickClient, onCreated, onError }) {
                   </span>
                 </td>
                 <td style={{ display:'flex', gap:6 }}>
-                  <button className="btn btn-sm btn-outline" onClick={() => onPickClient(c)}>Gérer →</button>
+                  <button className="btn btn-sm btn-outline" onClick={() => onPickClient(c)}>
+                    <i className="fas fa-cog"/> Gérer
+                  </button>
+                  <button className="btn btn-sm" style={{ background:'#fef2f2', color:'#ef4444', border:'1px solid #fecaca' }} onClick={() => handleDelete(c)} title="Supprimer ce client">
+                    <i className="fas fa-trash"/>
+                  </button>
                 </td>
               </tr>
             ))}
@@ -1696,6 +1719,7 @@ function NewClientForm({ onCreated, onError }) {
   const [open, setOpen]       = useState(false);
   const [form, setForm]       = useState({ name:'', email:'' });
   const [loading, setLoading] = useState(false);
+  const [created, setCreated] = useState(null); // Pour afficher le mot de passe
 
   const handleCreate = async () => {
     if (!form.name.trim() || !form.email.trim()) {
@@ -1705,44 +1729,103 @@ function NewClientForm({ onCreated, onError }) {
     
     setLoading(true);
     try { 
-      await api.post('/admin/clients', form); 
+      const res = await api.post('/admin/clients', form);
+      setCreated(res.data.data); // Stocker les données incluant le mot de passe
       setForm({ name:'', email:'' }); 
-      setOpen(false); 
-      onCreated(); 
     }
-    catch (e) { onError(e.response?.data?.error || 'Erreur lors de la création.'); }
-    finally { setLoading(false); }
+    catch (e) { 
+      onError(e.response?.data?.error || 'Erreur lors de la création.'); 
+      setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setCreated(null);
+    setLoading(false);
+    if (created) onCreated(); // Rafraîchir la liste seulement si client créé
   };
 
   return !open ? (
     <button className="btn btn-primary" onClick={() => setOpen(true)}><i className="fas fa-plus"/> Ajouter un Client</button>
   ) : (
-    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.5)', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div style={{ background:'#fff', borderRadius:16, padding:'2rem', width:'100%', maxWidth:460, boxShadow:'0 25px 60px rgba(0,0,0,.2)' }}>
-        <h3 style={{ fontWeight:800, marginBottom:4 }}>Nouveau client</h3>
-        <p style={{ fontSize:13, color:'#64748b', marginBottom:'1.5rem' }}>
-          Un mot de passe sécurisé sera généré automatiquement et envoyé par email.
-        </p>
-        <div style={{ background:'#eff6ff', border:'1px solid #bfdbfe', borderRadius:10, padding:'12px 16px', marginBottom:'1.5rem', display:'flex', gap:10 }}>
-          <i className="fas fa-info-circle" style={{ color:'#3b82f6', fontSize:18, flexShrink:0, marginTop:2 }}/>
-          <div style={{ fontSize:13, color:'#1e40af', lineHeight:1.5 }}>
-            <strong>Génération automatique :</strong> Le système créera un mot de passe professionnel de type "Secure@Network47" pour une sécurité optimale.
-          </div>
-        </div>
-        <div className="form-group">
-          <label>Nom complet</label>
-          <input value={form.name} onChange={e => setForm({...form,name:e.target.value})} placeholder="Nom du client" autoFocus/>
-        </div>
-        <div className="form-group">
-          <label>Email</label>
-          <input type="email" value={form.email} onChange={e => setForm({...form,email:e.target.value})} placeholder="email@client.com"/>
-        </div>
-        <div style={{ display:'flex', gap:8, marginTop:'1rem' }}>
-          <button className="btn btn-outline" style={{ flex:1 }} onClick={() => setOpen(false)}>Annuler</button>
-          <button className="btn btn-primary" style={{ flex:1 }} disabled={loading} onClick={handleCreate}>
-            {loading ? 'Création…' : '✨ Créer et envoyer'}
-          </button>
-        </div>
+    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.5)', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={handleClose}>
+      <div style={{ background:'#fff', borderRadius:16, padding:'2rem', width:'100%', maxWidth:520, boxShadow:'0 25px 60px rgba(0,0,0,.2)' }} onClick={e => e.stopPropagation()}>
+        {!created ? (
+          <>
+            <h3 style={{ fontWeight:800, marginBottom:4 }}>Nouveau client</h3>
+            <p style={{ fontSize:13, color:'#64748b', marginBottom:'1.5rem' }}>
+              Un mot de passe sécurisé sera généré automatiquement.
+            </p>
+            <div style={{ background:'#eff6ff', border:'1px solid #bfdbfe', borderRadius:10, padding:'12px 16px', marginBottom:'1.5rem', display:'flex', gap:10 }}>
+              <i className="fas fa-info-circle" style={{ color:'#3b82f6', fontSize:18, flexShrink:0, marginTop:2 }}/>
+              <div style={{ fontSize:13, color:'#1e40af', lineHeight:1.5 }}>
+                <strong>Génération automatique :</strong> Le système créera un mot de passe professionnel de type "Secure@Network47".
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Nom complet</label>
+              <input value={form.name} onChange={e => setForm({...form,name:e.target.value})} placeholder="Nom du client" autoFocus disabled={loading}/>
+            </div>
+            <div className="form-group">
+              <label>Email</label>
+              <input type="email" value={form.email} onChange={e => setForm({...form,email:e.target.value})} placeholder="email@client.com" disabled={loading}/>
+            </div>
+            <div style={{ display:'flex', gap:8, marginTop:'1rem' }}>
+              <button className="btn btn-outline" style={{ flex:1 }} onClick={handleClose} disabled={loading}>Annuler</button>
+              <button className="btn btn-primary" style={{ flex:1 }} disabled={loading} onClick={handleCreate}>
+                {loading ? 'Création…' : '✨ Créer'}
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ textAlign:'center', marginBottom:'1.5rem' }}>
+              <div style={{ width:64, height:64, borderRadius:'50%', background:'#d1fae5', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 1rem' }}>
+                <i className="fas fa-check" style={{ fontSize:32, color:'#059669' }}/>
+              </div>
+              <h3 style={{ fontWeight:800, color:'#065f46', marginBottom:4 }}>Client créé avec succès !</h3>
+            </div>
+            
+            <div style={{ background:'#fef3c7', border:'2px solid #f59e0b', borderRadius:12, padding:'1.5rem', marginBottom:'1.5rem' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:'1rem' }}>
+                <i className="fas fa-exclamation-triangle" style={{ color:'#f59e0b', fontSize:20 }}/>
+                <strong style={{ color:'#92400e' }}>IMPORTANT : Notez ces identifiants</strong>
+              </div>
+              <div style={{ background:'#fff', borderRadius:8, padding:'1rem', marginBottom:'0.5rem' }}>
+                <div style={{ fontSize:12, color:'#64748b', marginBottom:4 }}>Identifiant</div>
+                <div style={{ fontFamily:'monospace', fontSize:16, fontWeight:700, color:'#1e1b4b', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  {created.client_identifier}
+                  <button onClick={() => navigator.clipboard.writeText(created.client_identifier)} style={{ padding:'4px 8px', border:'1px solid #e2e8f0', borderRadius:6, background:'transparent', cursor:'pointer', fontSize:11 }}>
+                    <i className="fas fa-copy"/> Copier
+                  </button>
+                </div>
+              </div>
+              <div style={{ background:'#fff', borderRadius:8, padding:'1rem' }}>
+                <div style={{ fontSize:12, color:'#64748b', marginBottom:4 }}>Mot de passe</div>
+                <div style={{ fontFamily:'monospace', fontSize:16, fontWeight:700, color:'#1e1b4b', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  {created.password}
+                  <button onClick={() => navigator.clipboard.writeText(created.password)} style={{ padding:'4px 8px', border:'1px solid #e2e8f0', borderRadius:6, background:'transparent', cursor:'pointer', fontSize:11 }}>
+                    <i className="fas fa-copy"/> Copier
+                  </button>
+                </div>
+              </div>
+              <p style={{ fontSize:12, color:'#92400e', marginTop:'0.75rem', marginBottom:0 }}>
+                ⚠️ Le mot de passe ne sera plus affiché. Envoyez-le au client ou notez-le.
+              </p>
+            </div>
+
+            <div style={{ background:'#eff6ff', border:'1px solid #bfdbfe', borderRadius:10, padding:'12px 16px', marginBottom:'1rem' }}>
+              <div style={{ fontSize:13, color:'#1e40af', lineHeight:1.5 }}>
+                <strong>Email :</strong> {created.email}
+              </div>
+            </div>
+
+            <button className="btn btn-primary" style={{ width:'100%' }} onClick={handleClose}>
+              <i className="fas fa-check"/> Terminé
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

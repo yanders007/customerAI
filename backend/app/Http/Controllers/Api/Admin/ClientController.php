@@ -35,39 +35,56 @@ class ClientController extends Controller
             'email' => ['required', 'email', 'unique:clients,email'],
         ]);
 
-        // ── Mot de passe généré automatiquement (système pro) ───
-        // Format : 3 mots + 2 chiffres + 1 caractère spécial
-        // Exemple : Secure@Network47, Digital!System92
-        // Plus mémorisable qu'une suite aléatoire mais sécurisé
-        $plainPassword = $this->generateProPassword();
-        $identifier    = 'CLIENT-' . strtoupper(Str::random(6));
+        try {
+            // ── Mot de passe généré automatiquement (système pro) ───
+            $plainPassword = $this->generateProPassword();
+            $identifier    = 'CLIENT-' . strtoupper(Str::random(6));
 
-        $client = Client::create([
-            'name'              => $data['name'],
-            'email'             => $data['email'],
-            'client_identifier' => $identifier,
-            'password'          => Hash::make($plainPassword),
-        ]);
-
-        // ── Envoi des identifiants par email ────────────────────
-        $loginUrl = config('services.support.frontend_url', env('FRONTEND_URL')) . '/login-client';
-        Mail::to($data['email'])->send(new ClientCredentialsMail(
-            clientName: $data['name'],
-            identifier: $identifier,
-            password:   $plainPassword,
-            loginUrl:   $loginUrl,
-        ));
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Client créé et identifiants envoyés par email.',
-            'data'    => [
-                'id'                => $client->id,
-                'name'              => $client->name,
-                'email'             => $client->email,
+            $client = Client::create([
+                'name'              => $data['name'],
+                'email'             => $data['email'],
                 'client_identifier' => $identifier,
-            ],
-        ], 201);
+                'password'          => Hash::make($plainPassword),
+            ]);
+
+            // ── Envoi des identifiants par email ────────────────────
+            try {
+                $loginUrl = config('services.support.frontend_url', env('FRONTEND_URL')) . '/login-client';
+                Mail::to($data['email'])->send(new ClientCredentialsMail(
+                    clientName: $data['name'],
+                    identifier: $identifier,
+                    password:   $plainPassword,
+                    loginUrl:   $loginUrl,
+                ));
+                $emailStatus = 'Email envoyé avec succès.';
+            } catch (\Exception $mailError) {
+                // Si l'email échoue, on continue quand même (client créé)
+                \Log::warning('Échec envoi email client', [
+                    'email' => $data['email'],
+                    'error' => $mailError->getMessage()
+                ]);
+                $emailStatus = 'Client créé mais email non envoyé. Vérifiez la configuration SMTP.';
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Client créé. ' . $emailStatus,
+                'data'    => [
+                    'id'                => $client->id,
+                    'name'              => $client->name,
+                    'email'             => $client->email,
+                    'client_identifier' => $identifier,
+                    'password'          => $plainPassword, // Pour que l'admin puisse le noter
+                ],
+            ], 201);
+            
+        } catch (\Exception $e) {
+            \Log::error('Erreur création client', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'error' => 'Erreur lors de la création : ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
