@@ -132,10 +132,15 @@ export function AdminLogin() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('[AdminLogin] Vérification session existante...');
     api.get('/admin/me').then(r => {
+      console.log('[AdminLogin] Session trouvée, redirection vers /admin');
       saveSession('admin', r.data.admin);
       navigate('/admin', { replace: true });
-    }).catch(() => clearSession()).finally(() => setChecking(false));
+    }).catch((err) => {
+      console.log('[AdminLogin] Pas de session active', err.response?.status);
+      clearSession();
+    }).finally(() => setChecking(false));
   }, [navigate]);
 
   const handleSubmit = async e => {
@@ -860,12 +865,18 @@ export function AdminPanel() {
 
   useEffect(() => {
     (async () => {
+      console.log('[AdminPanel] Vérification authentification...');
       try {
         const r = await api.get('/admin/me');
+        console.log('[AdminPanel] Authentifié:', r.data.admin.email);
         saveSession('admin', r.data.admin);
         setAdmin(r.data.admin);
         await Promise.all([fetchDashboard(), fetchClients(), fetchConvs()]);
-      } catch { clearSession(); navigate('/login-admin', { replace: true }); }
+      } catch (err) { 
+        console.error('[AdminPanel] Non authentifié, redirection...', err.response?.status);
+        clearSession(); 
+        navigate('/login-admin', { replace: true }); 
+      }
       finally { setLoading(false); }
     })();
   }, [navigate]);

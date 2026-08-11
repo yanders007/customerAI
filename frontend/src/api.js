@@ -17,75 +17,31 @@ export const api = axios.create({
   },
 });
 
-// ✅ Interceptor CSRF — récupère le token et l'ajoute aux requêtes mutantes
-let csrfToken = null;
-let csrfPromise = null;
-
-async function ensureCsrfToken() {
-  // Si déjà en cours de récupération, attendre
-  if (csrfPromise) return csrfPromise;
-  
-  // Si déjà récupéré, retourner
-  if (csrfToken) return Promise.resolve(csrfToken);
-  
-  // Lancer la récupération
-  csrfPromise = (async () => {
-    try {
-      await axios.get(`${BASE_URL}/sanctum/csrf-cookie`, { 
-        withCredentials: true,
-        timeout: 15000 // Timeout spécifique pour CSRF
-      });
-      
-      const xsrfCookie = document.cookie
-        .split('; ')
-        .find(c => c.startsWith('XSRF-TOKEN='));
-      
-      if (xsrfCookie) {
-        csrfToken = decodeURIComponent(xsrfCookie.split('=')[1]);
-        console.log('✓ CSRF token récupéré');
-        return csrfToken;
-      }
-      
-      console.warn('⚠️ Cookie XSRF-TOKEN introuvable');
-      return null;
-    } catch (e) {
-      console.error('✗ Erreur récupération CSRF:', e.message);
-      return null;
-    } finally {
-      csrfPromise = null;
-    }
-  })();
-  
-  return csrfPromise;
-}
-
-api.interceptors.request.use(async (config) => {
-  const isMutation = ['post', 'put', 'patch', 'delete']
-    .includes(config.method?.toLowerCase() || '');
-
-  if (isMutation) {
-    await ensureCsrfToken();
-    if (csrfToken) {
-      config.headers['X-XSRF-TOKEN'] = csrfToken;
-    }
-  }
-
+// Logging des requêtes pour debug
+api.interceptors.request.use((config) => {
+  console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`, {
+    withCredentials: config.withCredentials,
+    baseURL: config.baseURL
+  });
   return config;
-}, (error) => Promise.reject(error));
+});
 
-// Interceptor pour gérer les erreurs 419 (CSRF token mismatch)
 api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 419) {
-      console.warn('⚠️ CSRF token expiré, renouvellement...');
-      csrfToken = null;
-      // Réessayer la requête
-      return api.request(error.config);
-    }
+  (response) => {
+    console.log(`[API] ✓ ${response.config.method?.toUpperCase()} ${response.config.url}`, response.status);
+    return response;
+  },
+  (error) => {
+    console.error(`[API] ✗ ${error.config?.method?.toUpperCase()} ${error.config?.url}`, {
+      status: error.response?.status,
+      data: error.response?.data
+    });
     return Promise.reject(error);
   }
 );
+
+// Note: Laravel sessions fonctionnent avec cookies PHPSESSID
+// CSRF token géré automatiquement par Laravel (pas besoin de Sanctum)
 
 // ── Session locale (1 heure) ────────────────────────────────
 const SESSION_KEY = 'sia_session';
