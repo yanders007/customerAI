@@ -10,6 +10,7 @@ const BASE_URL = import.meta.env.VITE_API_URL
 export const api = axios.create({
   baseURL: `${BASE_URL}/api`,
   withCredentials: true,
+  timeout: 30000, // 30 secondes (important pour mobile/3G)
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
@@ -18,31 +19,73 @@ export const api = axios.create({
 
 // ✅ Interceptor CSRF — récupère le token et l'ajoute aux requêtes mutantes
 let csrfToken = null;
+let csrfPromise = null;
+
+async function ensureCsrfToken() {
+  // Si déjà en cours de récupération, attendre
+  if (csrfPromise) return csrfPromise;
+  
+  // Si déjà récupéré, retourner
+  if (csrfToken) return Promise.resolve(csrfToken);
+  
+  // Lancer la récupération
+  csrfPromise = (async () => {
+    try {
+      await axios.get(`${BASE_URL}/sanctum/csrf-cookie`, { 
+        withCredentials: true,
+        timeout: 15000 // Timeout spécifique pour CSRF
+      });
+      
+      const xsrfCookie = document.cookie
+        .split('; ')
+        .find(c => c.startsWith('XSRF-TOKEN='));
+      
+      if (xsrfCookie) {
+        csrfToken = decodeURIComponent(xsrfCookie.split('=')[1]);
+        console.log('✓ CSRF token récupéré');
+        return csrfToken;
+      }
+      
+      console.warn('⚠️ Cookie XSRF-TOKEN introuvable');
+      return null;
+    } catch (e) {
+      console.error('✗ Erreur récupération CSRF:', e.message);
+      return null;
+    } finally {
+      csrfPromise = null;
+    }
+  })();
+  
+  return csrfPromise;
+}
 
 api.interceptors.request.use(async (config) => {
   const isMutation = ['post', 'put', 'patch', 'delete']
     .includes(config.method?.toLowerCase() || '');
 
-  if (isMutation && !csrfToken) {
-    try {
-      await axios.get(`${BASE_URL}/sanctum/csrf-cookie`, { withCredentials: true });
-      const xsrfCookie = document.cookie
-        .split('; ')
-        .find(c => c.startsWith('XSRF-TOKEN='));
-      if (xsrfCookie) {
-        csrfToken = decodeURIComponent(xsrfCookie.split('=')[1]);
-      }
-    } catch (e) {
-      console.warn('Impossible de récupérer le token CSRF', e);
+  if (isMutation) {
+    await ensureCsrfToken();
+    if (csrfToken) {
+      config.headers['X-XSRF-TOKEN'] = csrfToken;
     }
-  }
-
-  if (csrfToken && isMutation) {
-    config.headers['X-XSRF-TOKEN'] = csrfToken;
   }
 
   return config;
 }, (error) => Promise.reject(error));
+
+// Interceptor pour gérer les erreurs 419 (CSRF token mismatch)
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 419) {
+      console.warn('⚠️ CSRF token expiré, renouvellement...');
+      csrfToken = null;
+      // Réessayer la requête
+      return api.request(error.config);
+    }
+    return Promise.reject(error);
+  }
+);
 
 // ── Session locale (1 heure) ────────────────────────────────
 const SESSION_KEY = 'sia_session';

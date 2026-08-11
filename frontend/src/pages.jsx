@@ -138,11 +138,31 @@ export function AdminLogin() {
   }, [navigate]);
 
   const handleSubmit = async e => {
-    e.preventDefault(); setLoading(true); setError('');
+    e.preventDefault(); 
+    setLoading(true); 
+    setError('');
+    
+    console.log('[AdminLogin] Tentative de connexion...', { email });
+    
     try {
       const r = await api.post('/admin/login', { email, password });
-      if (r.data.success) { saveSession('admin', r.data.admin); navigate('/admin'); }
-    } catch (err) { setError(err.response?.data?.error || 'Identifiants incorrects.'); }
+      console.log('[AdminLogin] Réponse reçue:', r.data);
+      
+      if (r.data.success) { 
+        console.log('[AdminLogin] Connexion réussie');
+        saveSession('admin', r.data.admin); 
+        navigate('/admin'); 
+      }
+    } catch (err) { 
+      console.error('[AdminLogin] Erreur:', err);
+      const errorMsg = err.response?.data?.error || err.message || 'Identifiants incorrects.';
+      setError(errorMsg);
+      
+      // Timeout spécifique pour mobile
+      if (err.code === 'ECONNABORTED') {
+        setError('Connexion trop lente. Vérifiez votre connexion internet.');
+      }
+    }
     finally { setLoading(false); }
   };
 
