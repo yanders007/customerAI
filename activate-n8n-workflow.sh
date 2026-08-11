@@ -19,20 +19,23 @@ while [ $RETRY -lt $MAX_RETRIES ]; do
         if [ -f "/app/n8n/workflow.json" ]; then
             echo "▶ Import du workflow N8N..."
             n8n import:workflow --input=/app/n8n/workflow.json 2>/dev/null || echo "⚠ Import échoué (workflow déjà présent?)"
-            sleep 2
+            echo "⏳ Attente indexation workflow (5s)..."
+            sleep 5
         fi
         
         # Récupérer la liste des workflows
         WORKFLOWS=$(curl -s http://localhost:5678/rest/workflows 2>/dev/null)
+        
+        # Debug : afficher ce que l'API retourne
+        echo "DEBUG: API response = $WORKFLOWS"
         
         if [ ! -z "$WORKFLOWS" ] && [ "$WORKFLOWS" != "null" ] && [ "$WORKFLOWS" != "[]" ]; then
             # Extraire tous les IDs de workflows
             WORKFLOW_IDS=$(echo "$WORKFLOWS" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
             
             if [ -z "$WORKFLOW_IDS" ]; then
-                echo "⚠ Aucun workflow trouvé après import"
+                echo "⚠ Aucun workflow trouvé après import (tentative $RETRY/$MAX_RETRIES)"
                 RETRY=$((RETRY+1))
-                echo "⏳ Tentative $RETRY/$MAX_RETRIES..."
                 sleep 3
                 continue
             fi
