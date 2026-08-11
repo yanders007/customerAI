@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Models\AiConfig;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -35,8 +36,22 @@ class N8nService
             ];
         }
 
+        // Récupérer la configuration IA active (modèle + clé API)
+        $aiConfig = AiConfig::getActive();
+        
+        if (!$aiConfig) {
+            return [
+                'answer'        => 'Aucune configuration IA active. L\'administrateur doit configurer une clé API depuis le tableau de bord.',
+                'tokens_input'  => 0,
+                'tokens_output' => 0,
+                'escalate'      => true,
+            ];
+        }
+
         // Log de la taille du contexte envoyé pour optimisation
         Log::debug('N8nService: envoi à n8n/Gemini', [
+            'provider'        => $aiConfig->provider,
+            'model'           => $aiConfig->model,
             'question_length' => mb_strlen($question),
             'doc_length'      => mb_strlen($documentation),
             'faq_length'      => mb_strlen($faq),
@@ -52,6 +67,10 @@ class N8nService
                     'faq'           => $faq,
                     'history'       => $history,
                     'client_name'   => $clientName,
+                    // Passer la config IA à N8N
+                    'provider'      => $aiConfig->provider,
+                    'model'         => $aiConfig->model,
+                    'api_key'       => $aiConfig->api_key, // Déchiffré automatiquement par l'accesseur
                 ]);
 
             if (!$response->successful()) {

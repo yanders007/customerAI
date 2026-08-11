@@ -46,9 +46,12 @@ class RetrievalService
     // considérés comme redondants → le 2e est écarté
     private const DIVERSITY_THRESHOLD = 0.85;  // Réduit pour permettre un peu plus de variété
 
-    // Nombre maximum de chunks retournés après déduplication
-    // Augmenté pour capturer plus de contexte et éviter de rater des infos importantes
-    private const MAX_CHUNKS = 5;  // Augmenté de 3 à 5 pour meilleure couverture
+    // Pourcentage des meilleurs chunks à retourner après scoring
+    // On prend les 30% les plus pertinents pour optimiser la qualité/coût
+    private const TOP_PERCENT = 0.30;  // 30%
+    
+    // Limite absolue de chunks (même si 30% dépasse cette valeur)
+    private const MAX_CHUNKS = 10;  // Maximum absolu
 
     public function __construct(
         private CohereEmbeddingService $embeddings,
@@ -182,7 +185,7 @@ class RetrievalService
 
     /**
      * Retourne les chunks avec un score ≥ CHUNK_THRESHOLD,
-     * triés par score décroissant.
+     * limités aux 30% les plus pertinents, triés par score décroissant.
      */
     private function scoreChunks($chunks, array $questionVector): array
     {
@@ -199,8 +202,23 @@ class RetrievalService
             }
         }
 
+        // Trier par score décroissant
         usort($scored, fn ($a, $b) => $b['score'] <=> $a['score']);
-        return $scored;
+        
+        // Prendre les 30% les plus pertinents (minimum 1, maximum MAX_CHUNKS)
+        $total = count($scored);
+        if ($total === 0) {
+            return [];
+        }
+        
+        $topCount = max(1, min((int)ceil($total * self::TOP_PERCENT), self::MAX_CHUNKS));
+        
+        Log::debug('RetrievalService: sélection des meilleurs chunks', [
+            'total_above_threshold' => $total,
+            'top_30_percent' => $topCount,
+        ]);
+        
+        return array_slice($scored, 0, $topCount);
     }
 
     // ═══════════════════════════════════════════════════════════════

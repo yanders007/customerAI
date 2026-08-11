@@ -27,8 +27,11 @@ class ClientAuthController extends Controller
         $request->session()->put('client_id', $client->id);
         $request->session()->forget('project_id'); // reset du projet sélectionné à chaque connexion
 
-        // Mettre à jour last_login
-        $client->update(['last_login' => now()]);
+        // Mettre à jour last_login et last_seen
+        $client->update([
+            'last_login' => now(),
+            'last_seen' => now(),
+        ]);
 
         return response()->json([
             'success' => true,
@@ -65,5 +68,22 @@ class ClientAuthController extends Controller
             'client' => $client,
             'project' => $project,
         ]);
+    }
+
+    // Heartbeat : met à jour last_seen pour indiquer que le client est actif
+    public function heartbeat(Request $request)
+    {
+        $clientId = $request->session()->get('client_id');
+        
+        if (!$clientId) {
+            return response()->json(['success' => false, 'error' => 'Non autorisé'], 401);
+        }
+
+        $client = Client::find($clientId);
+        if ($client) {
+            $client->update(['last_seen' => now()]);
+        }
+
+        return response()->json(['success' => true]);
     }
 }

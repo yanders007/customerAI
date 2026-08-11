@@ -62,6 +62,11 @@ Route::prefix('client')->group(function () {
     Route::get('/me',      [ClientAuthController::class, 'me']);
 
     Route::middleware('auth.client')->group(function () {
+        // Heartbeat pour statut en ligne (120 req/min = 1 toutes les 30s par client)
+        Route::middleware(['throttle:120,1'])->group(function () {
+            Route::post('/heartbeat', [ClientAuthController::class, 'heartbeat']);
+        });
+
         // Projets (limité à 30 req/min)
         Route::middleware(['throttle:30,1'])->group(function () {
             Route::get('/projets',         [ProjectController::class, 'index']);

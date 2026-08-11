@@ -17,6 +17,9 @@ class ClientController extends Controller
             // Calculer si le client est actif (connecté dans les 30 derniers jours)
             $isActive = $client->last_login && $client->last_login->gte(now()->subDays(30));
             
+            // Calculer si le client est en ligne (last_seen < 2 minutes)
+            $isOnline = $client->isOnline();
+            
             return [
                 'id' => $client->id,
                 'name' => $client->name,
@@ -24,7 +27,9 @@ class ClientController extends Controller
                 'support_email' => $client->support_email,
                 'client_identifier' => $client->client_identifier,
                 'last_login' => $client->last_login?->toIso8601String(),
+                'last_seen' => $client->last_seen?->toIso8601String(),
                 'is_active' => $isActive,
+                'is_online' => $isOnline,
                 'projets_count' => $client->projets()->count(),
             ];
         });

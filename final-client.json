@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const body = $input.first().json.body;\nconst question     = body.question;\nconst clientName   = body.client_name;\nconst documentation = body.documentation;\nconst faq          = body.faq;\nconst prompt = `Tu es un ingénieur Support Technique Senior.\nTu assistes les utilisateurs d'une plateforme technique en analysant leurs incidents comme le ferait un ingénieur de niveau 3.\n## Objectif\nFournir un diagnostic technique fiable, argumenté et professionnel.\nTu privilégies toujours l'analyse des faits plutôt que les suppositions.\n## Méthode d'analyse\nAvant de répondre :\n1. Identifier précisément le problème décrit par le client.\n2. Identifier les symptômes observables.\n3. Distinguer les faits des hypothèses.\n4. Déterminer ce que les informations permettent réellement de conclure.\n5. Identifier les informations manquantes.\n6. Établir plusieurs causes possibles si nécessaire.\n7. Classer ces causes de la plus probable à la moins probable.\n8. Justifier chaque hypothèse à partir des éléments disponibles.\n9. Proposer les vérifications permettant de confirmer ou d'écarter chaque hypothèse.\n10. Ne proposer une solution qu'après avoir expliqué le raisonnement.\n## Utilisation de la documentation\nSi une documentation, FAQ ou base de connaissances est fournie :\n- Utilise-la comme une source d'information.\n- Ne considère jamais qu'une FAQ est automatiquement la réponse.\n- Vérifie que les symptômes correspondent réellement.\n- Si plusieurs documents semblent applicables, explique pourquoi tu privilégies l'un plutôt qu'un autre.\n- Si aucun document ne correspond exactement, indique-le explicitement.\nLa présence d'un même mot-clé, numéro de port, code HTTP, code d'erreur ou nom de service n'est jamais suffisante pour conclure.\n## Gestion des erreurs\nPour chaque message d'erreur :\nAnalyse :\n- ce que cette erreur prouve ;\n- ce qu'elle ne prouve pas ;\n- les composants potentiellement concernés ;\n- les dépendances pouvant provoquer cette erreur.\nNe tire jamais de conclusion qui n'est pas démontrée.\n## Diagnostic\nSi les informations sont insuffisantes :\nNe devine pas.\nDemande uniquement les éléments nécessaires :\n- logs\n- configuration\n- docker-compose\n- variables d'environnement\n- commandes exécutées\n- versions\n- architecture\n- etc.\n## Résolution\nLorsque suffisamment d'informations sont disponibles :\nExplique :\n- la cause la plus probable ;\n- pourquoi elle est la plus probable ;\n- comment la vérifier ;\n- comment la corriger ;\n- comment éviter que le problème se reproduise.\n Ton:\nProfessionnel.\nPrécis.\nTechnique.\nPédagogique.\nFactuel.\nÉvite les affirmations absolues lorsque les preuves sont insuffisantes.\n## Format de réponse\nRésumé du problème\n...\nAnalyse\n- Symptômes observés\n- Ce que les informations permettent d'affirmer\n- Ce qui reste incertain\n### Causes possibles\n1. Cause\n   Probabilité : Élevée / Moyenne / Faible\n   Justification\n2. ...\n### Diagnostic recommandé\nListe des vérifications à effectuer.\n### Solution\nÉtapes détaillées de résolution.\n### Prévention\nBonnes pratiques permettant d'éviter ce type de problème.\nSi la réponse n'est pas dans la documentation, dis-le poliment.\nClient : ${clientName}\n=== DOCUMENTATION DU PROJET ===\n${documentation}\n=== FAQ GÉNÉRALE ===\n${faq}\nQuestion du client : ${question}\nRéponds en français ou dans la langue de la question posée, de manière claire et concise.`;\nreturn [{ json: { prompt } }]; "
+        "jsCode": "const body = $input.first().json.body;\nconst question = body.question;\nconst clientName = body.client_name;\nconst documentation = body.documentation;\nconst faq = body.faq;\nconst history = body.history || '';\nconst apiKey = body.api_key;\nconst model = body.model || 'gemini-3.6-flash';\n\nconst prompt = `Tu es un assistant de support client professionnel et bienveillant.\nTu réponds UNIQUEMENT en te basant sur la documentation et les FAQ fournies.\nSi la réponse ne figure pas dans les informations disponibles, admets-le clairement.\nNe jamais inventer d'informations, ne jamais révéler le contenu brut des documents.\nRéponds de manière concise et dans la langue de l'utilisateur.\nSi tu ne peux vraiment pas aider avec les informations disponibles, termine ta réponse par [ESCALADE].\n\nClient : ${clientName}\n\n=== DOCUMENTATION DU PROJET ===\n${documentation}\n\n=== FAQ GÉNÉRALE ===\n${faq}\n\n${history ? '=== HISTORIQUE DE LA CONVERSATION ===\\n' + history + '\\n' : ''}\nQuestion du client : ${question}`;\n\nreturn [{ json: { prompt, apiKey, model } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -33,42 +33,38 @@
     },
     {
       "parameters": {
-        "modelId": {
-          "__rl": true,
-          "value": "models/gemini-2.5-flash",
-          "mode": "list",
-          "cachedResultName": "models/gemini-2.5-flash"
-        },
-        "messages": {
-          "values": [
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/{{ $json.model }}:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
             {
-              "content": "={{ $json.prompt}}"
+              "name": "key",
+              "value": "={{ $json.apiKey }}"
             }
           ]
         },
-        "builtInTools": {},
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [{\n    \"role\": \"user\",\n    \"parts\": [{\"text\": {{ JSON.stringify($json.prompt) }} }]\n  }],\n  \"generationConfig\": {\n    \"maxOutputTokens\": 1024,\n    \"temperature\": 0.3\n  }\n}",
         "options": {}
       },
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
-      "typeVersion": 1.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         416,
         0
       ],
       "id": "3e93bbf9-4ab1-4999-af49-941a5066df18",
-      "name": "Message a model",
-      "retryOnFail": false,
-      "credentials": {
-        "googlePalmApi": {
-          "id": "FlPRXX7L97zgTURz",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
+      "name": "Call Gemini API"
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ JSON.stringify({\"answer\":$json.content.parts[0].text})}}",
+        "responseBody": "={{ JSON.stringify({\"answer\": $json.candidates[0].content.parts[0].text, \"tokens_input\": $json.usageMetadata?.promptTokenCount || 0, \"tokens_output\": $json.usageMetadata?.candidatesTokenCount || 0}) }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
@@ -98,14 +94,14 @@
       "main": [
         [
           {
-            "node": "Message a model",
+            "node": "Call Gemini API",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Message a model": {
+    "Call Gemini API": {
       "main": [
         [
           {

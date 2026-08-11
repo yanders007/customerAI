@@ -29,7 +29,7 @@ class AskController extends Controller
     private const FALLBACK_DOC_MAX_CHARS = 15000;  // Réduit de 50k à 15k
 
     public function __construct(
-        private AiService $n8n,
+        private N8nService $n8n,
         private RetrievalService $retrieval,
         private CohereEmbeddingService $embeddings,
     ) {}
@@ -213,7 +213,7 @@ class AskController extends Controller
         $history = $this->buildHistory($conversation, $userMessage->id);
 
         $chunksUsed  = isset($retrieved['chunks_count']) ? (int)$retrieved['chunks_count'] : 0;
-        $n8nResponse = $this->n8n->ask(
+        $n8nResponse = $this->n8n->askAssistant(
             question:      $question,
             documentation: trim($docTexte),
             faq:           trim($faqTexte),
