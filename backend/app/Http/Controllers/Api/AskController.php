@@ -770,6 +770,27 @@ Réponse (juste le chiffre) :";
         return response()->json(['success' => true, 'data' => $conversations]);
     }
 
+    // ── Supprimer conversation (admin) ──────────────────────────────────
+    public function adminDeleteConversation(int $id)
+    {
+        $conversation = Conversation::find($id);
+        
+        if (!$conversation) {
+            return response()->json(['success' => false, 'error' => 'Conversation introuvable'], 404);
+        }
+
+        // Supprimer tous les messages associés
+        $conversation->messages()->delete();
+        
+        // Supprimer la conversation
+        $conversation->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Conversation supprimée avec succès'
+        ]);
+    }
+
     // ── Liste conversations du client connecté ──────────────────────────
     public function clientList(\Illuminate\Http\Request $request)
     {

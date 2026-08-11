@@ -1422,10 +1422,27 @@ export function AdminPanel() {
                               <strong style={{ fontSize:14 }}>{c.projet_name||'Projet'} — Conv. #{c.id}</strong>
                               <p style={{ fontSize:12, color:'#64748b', marginTop:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.last_message||'Aucun message'}</p>
                             </div>
-                            <div style={{ fontSize:12, color:'#94a3b8', textAlign:'right', flexShrink:0 }}>
+                            <div style={{ fontSize:12, color:'#94a3b8', textAlign:'right', flexShrink:0, display:'flex', flexDirection:'column', alignItems:'flex-end', gap:6 }}>
                               <span style={{ padding:'3px 10px', borderRadius:20, fontSize:11, fontWeight:700, background: c.status==='escalated'?'#fef2f2':c.status==='open'?'#ecfdf5':'#f1f5f9', color: c.status==='escalated'?'#991b1b':c.status==='open'?'#065f46':'#475569' }}>{c.status}</span>
                               <div style={{ marginTop:4 }}>{new Date(c.updated_at).toLocaleDateString('fr-FR')}</div>
-                              {c.uuid && <a href={`/support/conversation/${c.uuid}`} target="_blank" rel="noreferrer" style={{ display:'inline-block', marginTop:4, padding:'4px 10px', border:'1px solid #e2e8f0', borderRadius:6, color:'#6366f1', fontSize:11, fontWeight:600, textDecoration:'none' }}>Ouvrir →</a>}
+                              <div style={{ display:'flex', gap:6 }}>
+                                {c.uuid && <a href={`/support/conversation/${c.uuid}`} target="_blank" rel="noreferrer" style={{ display:'inline-block', padding:'4px 10px', border:'1px solid #e2e8f0', borderRadius:6, color:'#6366f1', fontSize:11, fontWeight:600, textDecoration:'none' }}>Ouvrir →</a>}
+                                {c.status === 'escalated' && (
+                                  <button onClick={async () => {
+                                    if (!confirm(`Supprimer la conversation escaladée #${c.id} ?`)) return;
+                                    try {
+                                      await api.delete(`/admin/conversations/${c.id}`);
+                                      notify('Conversation supprimée');
+                                      await fetchConvs();
+                                    } catch (err) {
+                                      console.error('Erreur suppression:', err);
+                                      notify('Erreur lors de la suppression', 'error');
+                                    }
+                                  }} style={{ padding:'4px 10px', border:'1px solid #ef4444', borderRadius:6, color:'#ef4444', fontSize:11, fontWeight:600, background:'transparent', cursor:'pointer' }} title="Supprimer cette conversation">
+                                    <i className="fas fa-trash"/> Supprimer
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))}

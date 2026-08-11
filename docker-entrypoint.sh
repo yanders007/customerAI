@@ -32,6 +32,19 @@ php artisan view:cache
 if [ -f "/app/n8n/workflow.json" ]; then
     echo "▶ Import du workflow n8n..."
     n8n import:workflow --input=/app/n8n/workflow.json || echo "⚠ Import n8n échoué (workflow déjà présent ?)"
+    
+    # Activer le workflow après import
+    echo "▶ Activation du workflow n8n..."
+    sleep 2 # Attendre que N8N soit prêt
+    WORKFLOW_ID=$(curl -s http://localhost:5678/rest/workflows 2>/dev/null | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+    if [ ! -z "$WORKFLOW_ID" ]; then
+        curl -X PATCH http://localhost:5678/rest/workflows/$WORKFLOW_ID \
+          -H "Content-Type: application/json" \
+          -d '{"active": true}' 2>/dev/null || echo "⚠ Activation n8n échouée"
+        echo "✓ Workflow activé (ID: $WORKFLOW_ID)"
+    else
+        echo "⚠ Impossible de trouver l'ID du workflow"
+    fi
 fi
 
 # ── Lancer Supervisor (nginx + php-fpm + n8n + queue worker) ─────────────────

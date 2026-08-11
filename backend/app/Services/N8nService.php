@@ -60,7 +60,7 @@ class N8nService
         ]);
 
         try {
-            $response = Http::timeout(90)
+            $response = Http::timeout(180) // 3 minutes pour N8N (cold start + processing)
                 ->post($this->webhookUrl, [
                     'question'      => $question,
                     'documentation' => $documentation,

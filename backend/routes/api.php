@@ -42,6 +42,7 @@ Route::prefix('admin')->group(function () {
 
         // Conversations (liste pour l'admin)
         Route::get('/conversations', [AskController::class, 'adminList']);
+        Route::delete('/conversations/{id}', [AskController::class, 'adminDeleteConversation']);
 
         // Configuration IA
         Route::get('/ai-config',         [AiConfigController::class, 'show']);
