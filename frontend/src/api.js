@@ -10,7 +10,7 @@ const BASE_URL = import.meta.env.VITE_API_URL
 export const api = axios.create({
   baseURL: `${BASE_URL}/api`,
   withCredentials: true,
-  timeout: 30000, // 30 secondes (important pour mobile/3G)
+  timeout: 120000, // 2 minutes (N8N peut être lent au cold start)
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
