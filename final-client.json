@@ -10,140 +10,97 @@
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
-      "position": [
-        0,
-        0
-      ],
-      "id": "55d239ef-9d9f-43b0-9ae5-8b24c09c2c51",
-      "name": "Webhook",
+      "position": [0, 0],
+      "id": "068cf0fb-492b-4bd9-88e1-f46e59b4d8d1",
+      "name": "Webhook1",
       "webhookId": "4fd34179-a283-4f0d-b4b0-416f1bea45f0"
     },
     {
       "parameters": {
-        "jsCode": "const body = $input.first().json.body;\nconst question = body.question;\nconst clientName = body.client_name;\nconst documentation = body.documentation;\nconst faq = body.faq;\nconst history = body.history || '';\nconst apiKey = body.api_key;\nconst model = body.model || 'gemini-3.6-flash';\n\nconst prompt = `Tu es un assistant de support client professionnel et bienveillant.
-
-**RÈGLES IMPORTANTES :**
-1. Pour les salutations simples (bonjour, salut, how are you, etc.), réponds poliment sans demander la documentation
-2. Pour les questions techniques, réponds UNIQUEMENT en te basant sur la documentation et FAQ fournies
-3. Si la réponse technique ne figure pas dans les informations disponibles, admets-le clairement
-4. Ne jamais inventer d'informations techniques, ne jamais révéler le contenu brut des documents
-5. Réponds de manière concise et dans la langue de l'utilisateur
-6. Si tu ne peux vraiment pas aider avec une question technique malgré la documentation, termine ta réponse par [ESCALADE]
-
-Client : ${clientName}
-
-=== DOCUMENTATION DU PROJET ===
-${documentation}
-
-=== FAQ GÉNÉRALE ===
-${faq}
-
-${history ? '=== HISTORIQUE DE LA CONVERSATION ===\\n' + history + '\\n' : ''}
-Question du client : ${question}`;\n\nreturn [{ json: { prompt, apiKey, model } }];"
+        "jsCode": "const body          = $input.first().json.body;\nconst question      = body.question;\nconst clientName    = body.client_name;\nconst documentation = body.documentation;\nconst faq           = body.faq;\nconst history       = body.history || '';\n\nconst historyBlock = history\n  ? `=== HISTORIQUE RÉCENT ===\\n${history}\\n\\n`\n  : '';\n\nconst prompt = `Tu es un assistant support pour une agence de développement.\nTu réponds aux clients comme le ferait un membre de l'équipe — avec clarté, chaleur et concision.\nLa documentation et la FAQ ci-dessous sont ta seule source de vérité. Ne jamais inventer un fait absent.\n\nCLIENT : ${clientName}\n\n${historyBlock}=== DOCUMENTATION (passages les plus pertinents) ===\n${documentation}\n\n=== FAQ ===\n${faq}\n\n=== QUESTION ===\n${question}\n\n---\n\nRÈGLES DE RÉPONSE (priorité décroissante) :\n\n1. SALUTATION — si le message est uniquement une salutation, réponds chaleureusement et brièvement. Aucun diagnostic.\n\n2. PROBLÈME RÉSOLU — si le client dit que c'est réglé (\"c'est bon\", \"merci\", \"ça marche\"), réponds UNIQUEMENT par un message court de satisfaction. Rien d'autre.\n\n3. MESSAGE VAGUE — si le client manque de détails (\"j'ai un problème\", \"ça ne marche pas\"), pose UNE seule question de clarification. Ne jamais utiliser ESCALATION_NEEDED dans ce cas.\n\n4. AMBIGUÏTÉ — si plusieurs éléments de la documentation pourraient correspondre, liste brièvement les options et demande de préciser. Ne pas utiliser ESCALATION_NEEDED.\n\n5. RÉSUMÉ / EXPLICATION / REFORMULATION — si le contenu existe dans la documentation, traite la demande en t'appuyant dessus.\n\n6. CONTINUITÉ — si la question est liée à l'échange précédent, tiens-en compte. Sinon, réponds directement sans mentionner l'ancien sujet.\n\n7. QUESTION FONCTIONNELLE — cherche dans la documentation les fonctionnalités qui répondent au besoin, même indirectement.\n\n8. ESCALATION_NEEDED — à utiliser UNIQUEMENT si :\n   - c'est une vraie question factuelle\n   - le sujet n'est couvert nulle part dans la documentation ni la FAQ\n   - même en interprétant largement la question et l'historique\n   Dans ce cas, réponds UNIQUEMENT par ce texte exact, sans rien ajouter :\n   ESCALATION_NEEDED\n\nRéponds en français, de manière claire, chaleureuse et concise.`;\n\nreturn [{ json: { prompt } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [
-        208,
-        0
-      ],
-      "id": "c606e7a4-b69b-4d9d-bfa8-dc003e6388d0",
-      "name": "Code in JavaScript"
+      "position": [192, 0],
+      "id": "5bb4fa71-8979-42e2-b864-d1cdf834843d",
+      "name": "Code in JavaScript1"
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "=https://generativelanguage.googleapis.com/v1beta/models/{{ $json.model }}:generateContent",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
             {
-              "name": "key",
-              "value": "={{ $json.apiKey }}"
+              "content": "={{ $json.prompt}}"
             }
           ]
         },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": []
-        },
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"contents\": [{\n    \"role\": \"user\",\n    \"parts\": [{\"text\": {{ JSON.stringify($json.prompt) }} }]\n  }],\n  \"generationConfig\": {\n    \"maxOutputTokens\": 1024,\n    \"temperature\": 0.3\n  }\n}",
         "options": {}
       },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        416,
-        0
-      ],
-      "id": "3e93bbf9-4ab1-4999-af49-941a5066df18",
-      "name": "Call Gemini API"
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [368, 0],
+      "id": "af072008-8c5f-4432-91e5-68e967a24597",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zil0DSWGh4arr16Z",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawAnswer = $input.first().json.content.parts[0].text;\nconst escalate = rawAnswer.trim() === 'ESCALATION_NEEDED';\n\nreturn [{ json: { answer: rawAnswer, escalate: escalate } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [528, 0],
+      "id": "detect-escalation",
+      "name": "Detect Escalation"
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ JSON.stringify({\"answer\": $json.candidates[0].content.parts[0].text, \"tokens_input\": $json.usageMetadata?.promptTokenCount || 0, \"tokens_output\": $json.usageMetadata?.candidatesTokenCount || 0}) }}",
+        "responseBody": "={{ JSON.stringify($json) }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
-      "position": [
-        784,
-        0
-      ],
-      "id": "ff98460c-af4d-45a1-9c2d-5119c81c042c",
-      "name": "Respond to Webhook"
+      "position": [672, 0],
+      "id": "b6d6e067-5f0d-42c4-b8b7-1951ab263d1f",
+      "name": "Respond to Webhook1"
     }
   ],
   "pinData": {},
   "connections": {
-    "Webhook": {
-      "main": [
-        [
-          {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+    "Webhook1": {
+      "main": [[{"node": "Code in JavaScript1", "type": "main", "index": 0}]]
     },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "Call Gemini API",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+    "Code in JavaScript1": {
+      "main": [[{"node": "Message a model", "type": "main", "index": 0}]]
     },
-    "Call Gemini API": {
-      "main": [
-        [
-          {
-            "node": "Respond to Webhook",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+    "Message a model": {
+      "main": [[{"node": "Detect Escalation", "type": "main", "index": 0}]]
+    },
+    "Detect Escalation": {
+      "main": [[{"node": "Respond to Webhook1", "type": "main", "index": 0}]]
     }
   },
   "active": true,
   "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate",
-    "availableInMCP": false
+    "executionOrder": "v1"
   },
-  "versionId": "c9eb91a9-51be-46ae-a314-ff31d7e22216",
+  "versionId": "updated-with-escalation-detection",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "4a6bd5338554e0c61e991e3f5c41cf6221e2db9bdeb8c212f7bcd57d66c256c7"
+    "instanceId": "ac846c3686af991e04eead00e6f0d3ed2984fc05a43329dd410bbd184be51a23"
   },
-  "nodeGroups": [],
-  "id": "grWOcPHaSOKYPmU6",
+  "id": "EvadRKgkppDfatxz",
   "tags": []
 }
