@@ -41,6 +41,15 @@ class AiConfigController extends Controller
             return response()->json(['success' => true, 'data' => null]);
         }
 
+        $apiKey = $config->api_key;
+        \Log::info('Admin show config', [
+            'provider' => $config->provider,
+            'has_encrypted' => !empty($config->getAttributes()['api_key_encrypted'] ?? null),
+            'encrypted_length' => strlen($config->getAttributes()['api_key_encrypted'] ?? ''),
+            'decrypted_key' => $apiKey ? substr($apiKey, 0, 15) . '...' : 'NULL',
+            'decrypted_length' => strlen($apiKey ?? ''),
+        ]);
+
         return response()->json([
             'success' => true,
             'data'    => [
@@ -49,8 +58,9 @@ class AiConfigController extends Controller
                 'model'         => $config->model,
                 'is_active'     => $config->is_active,
                 'system_prompt' => $config->system_prompt,
-                'api_key_hint'  => $this->maskKey($config->api_key),
-                'has_key'       => !empty($config->api_key),
+                'api_key_hint'  => $this->maskKey($apiKey ?? ''),
+                'has_key'       => !empty($apiKey) && strlen($apiKey) >= 10,
+                'key_length'    => strlen($apiKey ?? ''),
                 'updated_at'    => $config->updated_at,
             ],
         ]);
@@ -147,6 +157,44 @@ class AiConfigController extends Controller
         $config->delete();
         
         return response()->json(['success' => true, 'message' => 'Configuration supprimée.']);
+    }
+
+    // ── GET /admin/ai-config/debug ────────────────────────────────────────
+    // Endpoint de debug pour vérifier l'état de la clé API
+    public function debug(): JsonResponse
+    {
+        $config = AiConfig::where('is_active', true)->latest()->first();
+
+        if (!$config) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Aucune config active trouvée',
+            ]);
+        }
+
+        $apiKey = $config->api_key;
+        $attrs = $config->getAttributes();
+
+        return response()->json([
+            'success' => true,
+            'debug' => [
+                'id' => $config->id,
+                'provider' => $config->provider,
+                'model' => $config->model,
+                'is_active' => $config->is_active,
+                'has_api_key_encrypted_field' => isset($attrs['api_key_encrypted']),
+                'api_key_encrypted_not_empty' => !empty($attrs['api_key_encrypted']),
+                'api_key_encrypted_length' => strlen($attrs['api_key_encrypted'] ?? ''),
+                'api_key_encrypted_first_20' => substr($attrs['api_key_encrypted'] ?? '', 0, 20),
+                'accessor_returned_null' => is_null($apiKey),
+                'accessor_returned_empty' => empty($apiKey),
+                'decrypted_length' => strlen($apiKey ?? ''),
+                'decrypted_first_15' => $apiKey ? substr($apiKey, 0, 15) . '...' : 'NULL',
+                'validation_would_pass' => !empty($apiKey) && strlen($apiKey) >= 10,
+                'updated_at' => $config->updated_at,
+                'created_at' => $config->created_at,
+            ],
+        ]);
     }
 
     // ── Helper ────────────────────────────────────────────────────────────

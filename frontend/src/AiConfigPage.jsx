@@ -1,5 +1,5 @@
 /**
- * AiConfigPage — Page de configuration IA pour l'admin
+ * AiConfigPage — Page de configuration pour l'admin
  *
  * INTÉGRATION dans pages.jsx :
  *  1. Ajouter en haut :  import AiConfigPage from './AiConfigPage';
@@ -199,7 +199,7 @@ export default function AiConfigPage({ api }) {
 
   // ── Supprimer ─────────────────────────────────────────────────────────
   const handleDelete = async () => {
-    if (!window.confirm('Supprimer la configuration IA active ?')) return;
+    if (!window.confirm('Supprimer la configuration active ?')) return;
     await api.delete('/admin/ai-config').catch(() => {});
     setActiveConfig(null);
     setSelectedProvider(null);
@@ -215,7 +215,7 @@ export default function AiConfigPage({ api }) {
 
       {/* ── En-tête ─────────────────────────────────────────────────── */}
       <div style={{ marginBottom: 28 }}>
-        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Configuration de l'IA</h2>
+        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>Configuration du système</h2>
         <p style={{ margin: '6px 0 0', color: 'var(--text-secondary, #666)', fontSize: 14 }}>
           Connectez le provider IA de votre choix. Créez un compte chez le fournisseur et copiez votre clé API.
         </p>
@@ -437,7 +437,7 @@ export default function AiConfigPage({ api }) {
               {showAdvanced && (
                 <div style={{ marginTop: 10 }}>
                   <p style={{ fontSize: 12, color: '#94a3b8', margin: '0 0 8px' }}>
-                    Laissez vide pour utiliser le prompt par défaut. Personnalisez le comportement de l'IA selon votre contexte métier.
+                    Laissez vide pour utiliser le prompt par défaut. Personnalisez le comportement du système selon votre contexte métier.
                   </p>
                   <textarea
                     value={systemPrompt}
@@ -534,7 +534,7 @@ export default function AiConfigPage({ api }) {
         }}>
           <div style={{ fontSize: 32, marginBottom: 12 }}>🔑</div>
           <p style={{ margin: 0, fontWeight: 500 }}>
-            Cliquez sur un provider ci-dessus pour configurer l'IA
+            Cliquez sur un provider ci-dessus pour configurer le système
           </p>
           <p style={{ margin: '6px 0 0', fontSize: 13 }}>
             Commencez par Gemini ou Groq — tous deux sont gratuits sans CB

@@ -61,7 +61,11 @@ export function ClientLogin() {
     setLoading(true); 
     setError('');
     
-    console.log('[ClientLogin] Tentative de connexion...', { identifier });
+    console.log('[ClientLogin] Tentative de connexion...', { 
+      identifier, 
+      baseURL: api.defaults.baseURL,
+      userAgent: navigator.userAgent 
+    });
     
     try {
       const r = await api.post('/client/login', { client_identifier: identifier, password });
@@ -71,10 +75,36 @@ export function ClientLogin() {
         console.log('[ClientLogin] Connexion réussie');
         saveSession('client', r.data.client); 
         navigate('/projects'); 
+      } else {
+        // Cas où success=false dans la réponse
+        setError(r.data.error || 'Échec de connexion.');
       }
     } catch (err) { 
-      console.error('[ClientLogin] Erreur:', err);
-      setError(err.response?.data?.error || 'Identifiants incorrects.'); 
+      console.error('[ClientLogin] Erreur complète:', {
+        message: err.message,
+        code: err.code,
+        status: err.response?.status,
+        data: err.response?.data,
+        config: {
+          url: err.config?.url,
+          method: err.config?.method,
+          baseURL: err.config?.baseURL
+        }
+      });
+      
+      let errorMsg = 'Identifiants incorrects.';
+      
+      if (err.code === 'ECONNABORTED' || err.code === 'ERR_NETWORK') {
+        errorMsg = 'Connexion impossible. Vérifiez votre réseau et réessayez.';
+      } else if (err.response?.status === 401) {
+        errorMsg = err.response?.data?.error || 'Identifiants invalides.';
+      } else if (err.response?.status >= 500) {
+        errorMsg = 'Erreur serveur. Réessayez dans quelques instants.';
+      } else if (err.response?.data?.error) {
+        errorMsg = err.response.data.error;
+      }
+      
+      setError(errorMsg); 
     }
     finally { setLoading(false); }
   };
@@ -84,8 +114,8 @@ export function ClientLogin() {
     <div className="login-container">
       <div className="login-left">
         <div className="login-brand">
-          <div className="logo"><i className="fas fa-robot"/><span>Support IA</span></div>
-          <p>Votre assistant IA intelligent disponible 24h/24 pour répondre à toutes vos questions.</p>
+          <div className="logo"><i className="fas fa-headset"/><span>Support Client</span></div>
+          <p>Votre assistant support disponible 24h/24 pour répondre à toutes vos questions.</p>
         </div>
         <div className="login-features">
           <div className="feature-item">
@@ -94,7 +124,7 @@ export function ClientLogin() {
           </div>
           <div className="feature-item">
             <i className="fas fa-book"/>
-            <div><h4>Documentation Intégrée</h4><p>L'IA analyse vos docs et répond avec précision.</p></div>
+            <div><h4>Documentation Intégrée</h4><p>Accédez rapidement à toute la documentation nécessaire.</p></div>
           </div>
           <div className="feature-item">
             <i className="fas fa-shield-alt"/>
@@ -105,7 +135,7 @@ export function ClientLogin() {
       <div className="login-right">
         <div className="login-box">
           <h2>Espace Client</h2>
-          <p>Connectez-vous pour accéder à votre assistant IA</p>
+          <p>Connectez-vous pour accéder au support</p>
           {error && <div style={{ background:'#fef2f2', color:'#991b1b', padding:'10px 14px', borderRadius:8, marginBottom:16, fontSize:14 }}>{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -196,13 +226,13 @@ export function AdminLogin() {
     <div className="login-container">
       <div className="login-left">
         <div className="login-brand">
-          <div className="logo"><i className="fas fa-robot"/><span>Support IA</span></div>
-          <p>Plateforme d'administration de votre assistant IA support client.</p>
+          <div className="logo"><i className="fas fa-headset"/><span>Support Client</span></div>
+          <p>Plateforme d'administration de votre système de support client.</p>
         </div>
         <div className="login-features">
           <div className="feature-item">
             <i className="fas fa-chart-line"/>
-            <div><h4>Analytics Avancés</h4><p>Suivez la consommation de tokens et l'efficacité du RAG.</p></div>
+            <div><h4>Analytics Avancés</h4><p>Suivez les performances et l'activité en temps réel.</p></div>
           </div>
           <div className="feature-item">
             <i className="fas fa-users"/>
@@ -210,7 +240,7 @@ export function AdminLogin() {
           </div>
           <div className="feature-item">
             <i className="fas fa-cogs"/>
-            <div><h4>Contrôle Total</h4><p>FAQ, documentations, escalades et bien plus.</p></div>
+            <div><h4>Contrôle Total</h4><p>FAQ, documentations, escalades et paramètres.</p></div>
           </div>
         </div>
       </div>
@@ -272,7 +302,7 @@ export function ForgotPassword() {
     <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#f8fafc', padding:'2rem' }}>
       <div style={{ background:'#fff', borderRadius:16, padding:'2.5rem 2rem', width:'100%', maxWidth:420, boxShadow:'0 10px 30px rgba(0,0,0,.1)' }}>
         <div style={{ textAlign:'center', marginBottom:'1.5rem' }}>
-          <i className="fas fa-robot" style={{ fontSize:32, color:'#6366f1' }}/>
+          <i className="fas fa-comments" style={{ fontSize:32, color:'#6366f1' }}/>
           <h2 style={{ fontSize:24, fontWeight:800, marginTop:12 }}>Mot de passe oublié</h2>
         </div>
         {sent ? (
@@ -402,7 +432,7 @@ export function ProjectSelect() {
     <div className="sidebar" style={{ position:'static', width:'100%', height:'auto', border:'none' }}>
       <div style={{ minHeight:'100vh', background:'#f8fafc' }}>
         <header style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 2rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <div className="logo"><i className="fas fa-robot"/><span>Support IA</span></div>
+          <div className="logo"><i className="fas fa-headset"/><span>Support Client</span></div>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
             <span style={{ fontSize:14, color:'#64748b' }}>Bonjour, <strong>{client?.name}</strong></span>
             <button className="logout-btn" onClick={async () => { await api.post('/client/logout'); clearSession(); navigate('/login-client'); }} style={{ width:'auto', padding:'8px 16px', background:'#fef2f2', color:'#ef4444', borderRadius:8, fontWeight:600, fontSize:13 }}>
@@ -412,7 +442,7 @@ export function ProjectSelect() {
         </header>
         <main style={{ padding:'3rem 2rem', maxWidth:860, margin:'0 auto' }}>
           <h1 style={{ fontSize:28, fontWeight:800, color:'#1e1b4b', marginBottom:8 }}>Vos projets</h1>
-          <p style={{ color:'#64748b', marginBottom:'2rem' }}>Sélectionnez un projet pour démarrer avec votre assistant IA.</p>
+          <p style={{ color:'#64748b', marginBottom:'2rem' }}>Sélectionnez un projet pour démarrer avec le support.</p>
           {projects.length === 0 ? (
             <div style={{ textAlign:'center', padding:'4rem', color:'#64748b' }}>
               <i className="fas fa-folder-open" style={{ fontSize:48, marginBottom:16, opacity:.3 }}/>
@@ -629,7 +659,7 @@ export function Chat() {
       {/* ─ Sidebar ─ */}
       <aside className={`sidebar ${sidebarOpen ? '' : 'collapsed'}`} style={{ position:'relative', height:'100vh', flexShrink:0 }}>
         <div className="sidebar-header">
-          <div className="logo"><i className="fas fa-robot"/><span>Support IA</span></div>
+          <div className="logo"><i className="fas fa-headset"/><span>Support Client</span></div>
           <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <i className="fas fa-chevron-left"/>
           </button>
@@ -708,8 +738,8 @@ export function Chat() {
       <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
         <header style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 1.5rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
           <div>
-            <h1 style={{ fontSize:18, fontWeight:800, color:'#1e1b4b' }}>{project?.nom_projet || 'Assistant IA'}</h1>
-            <p style={{ fontSize:12, color:'#64748b' }}>Assistant intelligent · Disponible 24h/24</p>
+            <h1 style={{ fontSize:18, fontWeight:800, color:'#1e1b4b' }}>{project?.nom_projet || 'Support'}</h1>
+            <p style={{ fontSize:12, color:'#64748b' }}>Service client · Disponible 24h/24</p>
           </div>
           <button onClick={() => startNewConversation()} style={{ background:'rgba(99,102,241,.1)', color:'#6366f1', border:'1.5px solid #6366f1', padding:'8px 16px', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
             <i className="fas fa-plus"/> Nouvelle conversation
@@ -719,7 +749,7 @@ export function Chat() {
         <div style={{ flex:1, overflowY:'auto', padding:'1.5rem', display:'flex', flexDirection:'column', gap:12 }}>
           {messages.length === 0 && (
             <div style={{ textAlign:'center', padding:'4rem', color:'#94a3b8' }}>
-              <i className="fas fa-robot" style={{ fontSize:48, marginBottom:16, opacity:.3 }}/>
+              <i className="fas fa-comments" style={{ fontSize:48, marginBottom:16, opacity:.3 }}/>
               <p>Posez votre première question à l'assistant</p>
             </div>
           )}
@@ -731,7 +761,7 @@ export function Chat() {
                 </div>
               )}
               <div style={{ maxWidth:'75%', padding:'10px 14px', borderRadius:16, background: m.role === 'user' ? '#6366f1' : m.role === 'human_support' ? '#7c3aed' : '#fff', color: m.role === 'user' || m.role === 'human_support' ? '#fff' : '#1e293b', border: m.role === 'assistant' ? '1px solid #e2e8f0' : 'none', borderBottomRightRadius: m.role === 'user' ? 4 : 16, borderBottomLeftRadius: m.role !== 'user' ? 4 : 16, boxShadow:'0 2px 8px rgba(0,0,0,.06)' }}>
-                {m.role !== 'user' && <div style={{ fontSize:10, fontWeight:700, opacity:.6, marginBottom:4, textTransform:'uppercase', letterSpacing:'.05em' }}>{m.role === 'human_support' ? 'Support humain' : 'Assistant IA'}</div>}
+                {m.role !== 'user' && <div style={{ fontSize:10, fontWeight:700, opacity:.6, marginBottom:4, textTransform:'uppercase', letterSpacing:'.05em' }}>{m.role === 'human_support' ? 'Support humain' : 'Assistant'}</div>}
                 <div dangerouslySetInnerHTML={{ __html: renderMd(m.content) }} style={{ fontSize:14, lineHeight:1.6 }}/>
                 <div style={{ fontSize:10, opacity:.5, marginTop:4, textAlign:'right' }}>{formatTime(m.created_at)}</div>
               </div>
@@ -739,7 +769,7 @@ export function Chat() {
           ))}
           {sending && (
             <div style={{ display:'flex' }}>
-              <div style={{ width:32, height:32, borderRadius:'50%', background:'#6366f1', display:'flex', alignItems:'center', justifyContent:'center', marginRight:8 }}><i className="fas fa-robot" style={{ color:'#fff', fontSize:14 }}/></div>
+              <div style={{ width:32, height:32, borderRadius:'50%', background:'#6366f1', display:'flex', alignItems:'center', justifyContent:'center', marginRight:8 }}><i className="fas fa-headset" style={{ color:'#fff', fontSize:14 }}/></div>
               <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:16, borderBottomLeftRadius:4, padding:'12px 16px' }}>
                 <div style={{ display:'flex', gap:4 }}>
                   {[0,1,2].map(i => <div key={i} style={{ width:8, height:8, borderRadius:'50%', background:'#94a3b8', animation:'bounce 1.2s infinite', animationDelay:`${i*.2}s` }}/>)}
@@ -819,13 +849,13 @@ export function SupportConversation() {
   );
 
   const roleCls = { user:'user', assistant:'assistant', human_support:'human_support' };
-  const roleLabel = { user:'Client', assistant:'Assistant IA', human_support:'Support humain' };
+  const roleLabel = { user:'Client', assistant:'Assistant', human_support:'Support humain' };
   const isResolved = conv.status === 'resolved';
 
   return (
     <div style={{ display:'flex', flexDirection:'column', height:'100vh', background:'#f8fafc' }}>
       <header style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 1.5rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
-        <div className="logo"><i className="fas fa-robot"/><span>Assistance humaine</span></div>
+        <div className="logo"><i className="fas fa-user-headset"/><span>Assistance humaine</span></div>
         <div>
           <span style={{ fontSize:14, color:'#64748b' }}>{conv.client} — {conv.projet}</span>
           <span style={{ marginLeft:12, padding:'4px 10px', borderRadius:20, fontSize:12, fontWeight:700, background: isResolved ? '#ecfdf5' : '#fef2f2', color: isResolved ? '#065f46' : '#991b1b' }}>
@@ -850,7 +880,7 @@ export function SupportConversation() {
         {error && <div style={{ background:'#fef2f2', color:'#991b1b', padding:'8px 12px', borderRadius:8, marginBottom:12, fontSize:13 }}>{error}</div>}
         {isResolved && <div style={{ background:'#ecfdf5', color:'#065f46', padding:'8px 12px', borderRadius:8, marginBottom:12, fontSize:13 }}>Conversation résolue. Vous pouvez tout de même répondre si le client relance.</div>}
         <div style={{ background:'#ecfdf5', color:'#065f46', fontSize:12, marginBottom:10, display:'flex', alignItems:'center', gap:6 }}>
-          <i className="fas fa-graduation-cap"/> Cette réponse sera ajoutée à la FAQ — l'IA saura répondre seule la prochaine fois.
+          <i className="fas fa-graduation-cap"/> Cette réponse sera ajoutée à la FAQ — le système saura répondre automatiquement la prochaine fois.
         </div>
         <textarea rows={3} style={{ width:'100%', padding:'10px 14px', border:'1.5px solid #e2e8f0', borderRadius:10, fontSize:14, fontFamily:'inherit', outline:'none', resize:'vertical', marginBottom:10 }}
           placeholder="Répondez au client ici…" value={reply} onChange={e => setReply(e.target.value)}/>
@@ -973,7 +1003,7 @@ export function AdminPanel() {
       {/* ─ Sidebar ─ */}
       <aside className={`admin-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
         <div className="sidebar-header">
-          <div className="logo"><i className="fas fa-robot"/><span>Support IA</span></div>
+          <div className="logo"><i className="fas fa-headset"/><span>Support Client</span></div>
           <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <i className="fas fa-chevron-left"/>
           </button>
@@ -1321,7 +1351,7 @@ export function AdminPanel() {
                 <h3 style={{ fontWeight:700, marginBottom:'1rem' }}>Comment lire ces données ?</h3>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:16 }}>
                   {[
-                    { color:'#6366f1', label:'Chunks RAG', desc:'L\'IA a reçu uniquement les passages pertinents (efficace)' },
+                    { color:'#6366f1', label:'Chunks RAG', desc:'Le système a reçu uniquement les passages pertinents (efficace)' },
                     { color:'#10b981', label:'FAQ directe', desc:'La réponse était dans la FAQ — zéro token d\'input doc' },
                     { color:'#f59e0b', label:'Fallback',    desc:'Toute la documentation a été envoyée (coûteux)' },
                     { color:'#94a3b8', label:'Small-talk',  desc:'Salutation ou message hors doc — aucun token consommé' },
@@ -1352,7 +1382,7 @@ export function AdminPanel() {
           {section === 'convs' && (
             <div>
               <div className="section-header">
-                <div><h2>Conversations</h2><p>Supervision des échanges IA</p></div>
+                <div><h2>Conversations</h2><p>Supervision des échanges clients</p></div>
                 <button className="btn btn-outline btn-sm" onClick={() => fetchConvs()}><i className="fas fa-sync"/> Actualiser</button>
               </div>
               
@@ -2032,7 +2062,7 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
         const r = await api.post('/admin/docs?type=doc', { projet_id: projetId, titre: form.titre, contenu: form.contenu });
         setLocalDocs(d => [...d, r.data.data]);
       }
-      onNotify('Documentation ajoutée et indexation IA en cours…');
+      onNotify('Documentation ajoutée et indexation en cours…');
       setForm({ titre:'', contenu:'' }); setFile(null);
     } catch (e) { onNotify(e.response?.data?.error || 'Erreur', 'error'); }
     finally { setLoading(false); }
@@ -2438,7 +2468,7 @@ function WizardModal({ client, onDone, onCancel, onError }) {
           )}
           {step === 3 && (
             <div>
-              <p style={{ fontSize:14, color:'#64748b', marginBottom:'1rem' }}>Optionnel — les FAQs permettent à l'IA de répondre directement sans chercher dans la documentation.</p>
+              <p style={{ fontSize:14, color:'#64748b', marginBottom:'1rem' }}>Optionnel — les FAQs permettent au système de répondre directement sans chercher dans la documentation.</p>
               {faqs.length > 0 && (
                 <div style={{ background:'#f8fafc', borderRadius:10, padding:'0.75rem 1rem', marginBottom:'1rem' }}>
                   {faqs.map((f,i) => <div key={i} style={{ fontSize:13, borderBottom:'1px solid #e2e8f0', paddingBottom:6, marginBottom:6 }}><strong>Q :</strong> {f.question}</div>)}

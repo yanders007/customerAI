@@ -47,6 +47,7 @@ Route::prefix('admin')->group(function () {
         // Configuration IA
         Route::get('/ai-config',                [AiConfigController::class, 'index']);
         Route::get('/ai-config/active',         [AiConfigController::class, 'show']);
+        Route::get('/ai-config/debug',          [AiConfigController::class, 'debug']);
         Route::post('/ai-config',               [AiConfigController::class, 'store']);
         Route::post('/ai-config/activate/{id}', [AiConfigController::class, 'activate']);
         Route::post('/ai-config/test',          [AiConfigController::class, 'test']);

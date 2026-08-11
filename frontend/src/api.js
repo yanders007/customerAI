@@ -13,8 +13,13 @@ export const api = axios.create({
   timeout: 120000, // 2 minutes (N8N peut être lent au cold start)
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest'
   },
+  // Aide pour mobile : retry sur timeout
+  validateStatus: function (status) {
+    return status >= 200 && status < 500; // Accepte les 4xx pour gestion d'erreur propre
+  }
 });
 
 // Logging des requêtes pour debug

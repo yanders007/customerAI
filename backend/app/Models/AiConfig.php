@@ -23,19 +23,26 @@ class AiConfig extends Model
     protected $hidden = ['api_key_encrypted'];
 
     // ── Accesseur : décrypte la clé à la demande ───────────────────────────
-    public function getApiKeyAttribute(): string
+    public function getApiKeyAttribute(): ?string
     {
+        if (empty($this->attributes['api_key_encrypted'])) {
+            return null;
+        }
+        
         try {
-            return Crypt::decryptString($this->api_key_encrypted);
-        } catch (\Exception) {
-            return '';
+            return Crypt::decryptString($this->attributes['api_key_encrypted']);
+        } catch (\Exception $e) {
+            \Log::error('Erreur décryptage clé API', ['error' => $e->getMessage()]);
+            return null;
         }
     }
 
     // ── Mutateur : chiffre avant sauvegarde ───────────────────────────────
     public function setApiKeyAttribute(string $value): void
     {
-        $this->api_key_encrypted = Crypt::encryptString($value);
+        if (!empty($value)) {
+            $this->attributes['api_key_encrypted'] = Crypt::encryptString($value);
+        }
     }
 
     // ── Récupère la config active (avec cache 5 min) ───────────────────────
