@@ -36,6 +36,21 @@ function Toast({ message, kind = 'success', onClose }) {
   );
 }
 
+function BrandMosaic() {
+  return (
+    <div className="brand-mosaic" aria-hidden="true">
+      <span className="mosaic-tile mosaic-tile--square" />
+      <span className="mosaic-tile mosaic-tile--wide" />
+      <span className="mosaic-tile mosaic-tile--tall" />
+      <span className="mosaic-tile mosaic-tile--diamond" />
+      <span className="mosaic-tile mosaic-tile--outline" />
+      <span className="mosaic-tile mosaic-tile--dot" />
+      <span className="mosaic-tile mosaic-tile--bar" />
+      <span className="mosaic-tile mosaic-tile--ring" />
+    </div>
+  );
+}
+
 // ════════════════════════════════════════════════
 //  LOGIN CLIENT
 // ════════════════════════════════════════════════
@@ -123,6 +138,7 @@ export function ClientLogin() {
           <p className="login-lede">Votre espace pour retrouver les réponses, les projets et la connaissance de votre équipe.</p>
         </div>
         <div className="login-features">
+          <BrandMosaic />
           <div className="feature-item">
             <span className="feature-kicker">01 / Accès client</span>
             <div><h4>Retrouver le bon contexte</h4><p>Vos projets et votre documentation au même endroit.</p></div>
@@ -234,6 +250,7 @@ export function AdminLogin() {
           <p className="login-lede">La console où votre équipe transforme sa connaissance client en réponses fiables.</p>
         </div>
         <div className="login-features">
+          <BrandMosaic />
           <div className="feature-item">
             <span className="feature-kicker">01 / Piloter</span>
             <div><h4>Voir ce qui mérite une action</h4><p>Les signaux importants, sans bruit autour.</p></div>
@@ -443,7 +460,7 @@ export function ProjectSelect() {
 
   if (loading) return <Spinner/>;
   return (
-    <div className="sidebar" style={{ position:'static', width:'100%', height:'auto', border:'none' }}>
+    <div className="sidebar project-select-page" style={{ position:'static', width:'100%', height:'auto', border:'none' }}>
       <div style={{ minHeight:'100vh', background:'#f8fafc' }}>
         <header style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 2rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
           <div className="logo"><img className="brand-mark" src="/customerai-mark.png" alt=""/><span>CustomerAI</span></div>
@@ -463,7 +480,7 @@ export function ProjectSelect() {
               <p>Aucun projet disponible pour votre compte.</p>
             </div>
           ) : (
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:16 }}>
+            <div className="project-select-grid" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:16 }}>
               {projects.map(p => (
                 <button key={p.id} onClick={() => pick(p)} style={{ background:'#fff', border:'1.5px solid #dfe8f2', borderRadius:16, padding:'1.5rem', textAlign:'left', cursor:'pointer', transition:'all .2s' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor='#155eef'; e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='0 10px 30px rgba(37,99,235,.15)'; }}
@@ -996,6 +1013,7 @@ export function AdminPanel() {
   const fetchClientStats = async id => { const r = await api.get(`/admin/dashboard/${id}`); setClientStats(r.data.stats); };
 
   const pickClient = async c => {
+    closeSidebarOnMobile();
     setSelected(c); setSelProjet(null); setDocs([]); setSelDoc(null); setFaqs([]); setSubTab('projets');
     await Promise.all([fetchProjets(c.id), fetchClientStats(c.id)]);
     setSection('panel');
@@ -1075,7 +1093,7 @@ export function AdminPanel() {
           </div>
         </header>
 
-        <div className="admin-shell-content" style={{ padding:'2rem', maxWidth:1400 }}>
+        <div className="admin-shell-content admin-shell-content--wide" style={{ padding:'2rem' }}>
 
           {/* ══ DASHBOARD ══ */}
           {section === 'dashboard' && dashStats && (
@@ -1532,13 +1550,13 @@ export function AdminPanel() {
           {section === 'panel' && selected && (
             <ClientPanel client={selected} clientStats={clientStats} projets={projets} docs={docs} faqs={faqs} selProjet={selProjet} selDoc={selDoc} subTab={subTab}
               setSubTab={setSubTab} setSelProjet={setSelProjet} setSelDoc={setSelDoc}
-              onPickProjet={async p => { setSelProjet(p); setSelDoc(null); setFaqs([]); setSubTab('docs'); await fetchDocs(p.id); }}
-              onPickDoc={async d => { setSelDoc(d); setSubTab('faq'); await fetchFaqs(d.id); }}
+              onPickProjet={async p => { closeSidebarOnMobile(); setSelProjet(p); setSelDoc(null); setFaqs([]); setSubTab('docs'); await fetchDocs(p.id); }}
+              onPickDoc={async d => { closeSidebarOnMobile(); setSelDoc(d); setSubTab('faq'); await fetchFaqs(d.id); }}
               onDeleteProjet={async id => { if (!confirm('Supprimer ce projet ?')) return; await api.delete('/admin/docs?type=projet', { data:{ id } }); notify('Projet supprimé'); fetchProjets(selected.id); fetchClientStats(selected.id); fetchDashboard(); }}
               onDeleteDoc={async id => { if (!confirm('Supprimer ?')) return; await api.delete('/admin/docs?type=doc', { data:{ id } }); notify('Documentation supprimée'); fetchDocs(selProjet.id); }}
               onDeleteFaq={async id => { if (!confirm('Supprimer ?')) return; await api.delete('/admin/docs?type=faq', { data:{ id } }); notify('FAQ supprimée'); fetchFaqs(selDoc.id); }}
-              onBack={() => setSection('clients')}
-              onNewProjet={() => setShowWizard(true)}
+              onBack={() => { closeSidebarOnMobile(); setSection('clients'); }}
+              onNewProjet={() => { closeSidebarOnMobile(); setShowWizard(true); }}
               onNotify={notify}
             />
           )}
@@ -2001,11 +2019,11 @@ function FaqGlobalSection({ onNotify }) {
 
 function ClientPanel({ client, clientStats, projets, docs, faqs, selProjet, selDoc, subTab, setSubTab, setSelProjet, setSelDoc, onPickProjet, onPickDoc, onDeleteProjet, onDeleteDoc, onDeleteFaq, onBack, onNewProjet, onNotify }) {
   return (
-    <div>
+    <div className="client-panel">
       <button onClick={onBack} style={{ color:'#6366f1', background:'none', border:'none', cursor:'pointer', fontSize:14, fontWeight:600, marginBottom:16, display:'flex', alignItems:'center', gap:6 }}>
         <i className="fas fa-arrow-left"/> Retour clients
       </button>
-      <div style={{ background:'linear-gradient(135deg,#6366f1,#4f46e5)', borderRadius:16, padding:'1.5rem 2rem', marginBottom:24, color:'#fff', display:'flex', alignItems:'center', gap:16 }}>
+      <div className="client-panel__hero" style={{ background:'linear-gradient(135deg,#6366f1,#4f46e5)', borderRadius:16, padding:'1.5rem 2rem', marginBottom:24, color:'#fff', display:'flex', alignItems:'center', gap:16 }}>
         <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(client.name)}&background=ffffff&color=6366f1&size=60`} alt="" style={{ width:52, height:52, borderRadius:12 }}/>
         <div style={{ flex:1 }}>
           <h2 style={{ fontWeight:800, fontSize:20 }}>{client.name}</h2>
@@ -2017,7 +2035,7 @@ function ClientPanel({ client, clientStats, projets, docs, faqs, selProjet, selD
       </div>
 
       {clientStats && (
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:12, marginBottom:24 }}>
+        <div className="client-panel__stats" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:12, marginBottom:24 }}>
           {[['Projets',clientStats.projets,'folder','#6366f1'],['Docs',clientStats.documentations,'file-alt','#10b981'],['FAQ',clientStats.faqs,'question-circle','#f59e0b'],['Conversations',clientStats.conversations,'comments','#3b82f6'],['Tokens',clientStats.tokens_total?.toLocaleString()||0,'coins','#8b5cf6']].map(([label,val,icon,color]) => (
             <div key={label} style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:12, padding:'1rem', textAlign:'center', boxShadow:'0 1px 4px rgba(0,0,0,.05)' }}>
               <div style={{ width:36, height:36, borderRadius:10, background:`${color}20`, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 8px' }}>
@@ -2030,7 +2048,7 @@ function ClientPanel({ client, clientStats, projets, docs, faqs, selProjet, selD
         </div>
       )}
 
-      <div style={{ display:'flex', gap:4, marginBottom:20, borderBottom:'2px solid #e2e8f0', paddingBottom:0 }}>
+      <div className="client-panel__tabs" style={{ display:'flex', gap:4, marginBottom:20, borderBottom:'2px solid #e2e8f0', paddingBottom:0 }}>
         {['projets', selProjet && 'docs', selDoc && 'faq'].filter(Boolean).map(tab => (
           <button key={tab} onClick={() => setSubTab(tab)} style={{ padding:'8px 16px', border:'none', background:'none', fontWeight:600, fontSize:14, color: subTab===tab ? '#6366f1' : '#64748b', borderBottom: subTab===tab ? '2px solid #6366f1' : '2px solid transparent', cursor:'pointer', marginBottom:-2, textTransform:'capitalize' }}>
             {tab === 'projets' ? 'Projets' : tab === 'docs' ? `Docs — ${selProjet?.nom_projet}` : `FAQ — ${selDoc?.titre}`}
@@ -2116,11 +2134,11 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
   };
 
   return (
-    <div>
+    <div className="doc-tab-panel">
       {/* Modal de visualisation */}
       {viewDoc && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.6)', zIndex:700, display:'flex', alignItems:'center', justifyContent:'center', padding:'2rem' }} onClick={() => setViewDoc(null)}>
-          <div style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:900, maxHeight:'90vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.3)' }} onClick={e => e.stopPropagation()}>
+          <div className="doc-view-modal" style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:1100, maxHeight:'92vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.3)' }} onClick={e => e.stopPropagation()}>
             <div style={{ padding:'1.5rem 2rem', borderBottom:'2px solid #e2e8f0', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <div>
                 <h3 style={{ fontSize:20, fontWeight:800, color:'#1e1b4b', marginBottom:4 }}>{viewDoc.titre}</h3>
@@ -2135,7 +2153,7 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
                 </button>
               </div>
             </div>
-            <div style={{ flex:1, overflowY:'auto', padding:'2rem' }}>
+            <div className="doc-view-body" style={{ flex:1, overflowY:'auto', padding:'2rem' }}>
               <div style={{ background:'#f8fafc', borderRadius:12, padding:'1.5rem', fontFamily:'Georgia, serif', fontSize:15, lineHeight:1.8, color:'#1e293b', whiteSpace:'pre-wrap' }}>
                 {viewDoc.contenu}
               </div>
@@ -2159,11 +2177,11 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
       {/* Modal d'édition */}
       {editDoc && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.6)', zIndex:700, display:'flex', alignItems:'center', justifyContent:'center', padding:'2rem' }} onClick={() => setEditDoc(null)}>
-          <div style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:900, maxHeight:'90vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.3)' }} onClick={e => e.stopPropagation()}>
+          <div className="doc-editor-modal" style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:1100, maxHeight:'92vh', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,.3)' }} onClick={e => e.stopPropagation()}>
             <div style={{ padding:'1.5rem 2rem', borderBottom:'2px solid #e2e8f0' }}>
               <h3 style={{ fontSize:20, fontWeight:800, color:'#1e1b4b' }}>Modifier le document</h3>
             </div>
-            <div style={{ flex:1, overflowY:'auto', padding:'2rem' }}>
+            <div className="doc-editor-body" style={{ flex:1, overflowY:'auto', padding:'2rem' }}>
               <div className="form-group">
                 <label style={{ fontWeight:600, marginBottom:8, display:'block' }}>Titre</label>
                 <input value={editForm.titre} onChange={e => setEditForm({...editForm, titre:e.target.value})} style={{ width:'100%', padding:'10px 14px', border:'1.5px solid #e2e8f0', borderRadius:8, fontSize:15 }}/>
