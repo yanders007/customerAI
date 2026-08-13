@@ -78,6 +78,9 @@ services:
         value: "true"
       - key: SESSION_SAME_SITE
         value: none
+      # Purge automatique des conversations : choisir 2 ou 3 jours
+      - key: CONVERSATION_RETENTION_DAYS
+        value: "3"
       - key: LOG_CHANNEL
         value: stderr
       - key: LOG_LEVEL
