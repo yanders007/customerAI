@@ -155,9 +155,11 @@ class AskController extends Controller
         }
 
         // ── 2) Documentation disponible pour ce projet ? ─────────────────
-        $documentations = Documentation::where('projet_id', $projet->id)->with('faqs')->get();
+        // exists() évite de charger toutes les documentations et FAQ en mémoire
+        // avant même que le retrieval ait sélectionné le contexte pertinent.
+        $hasDocumentation = Documentation::where('projet_id', $projet->id)->exists();
 
-        if ($documentations->isEmpty()) {
+        if (!$hasDocumentation) {
             return response()->json(['success' => false, 'error' => 'Aucune documentation disponible pour ce projet'], 404);
         }
 
@@ -199,12 +201,9 @@ class AskController extends Controller
 
         $docTexte = mb_substr(trim($retrieved['context']), 0, self::FALLBACK_DOC_MAX_CHARS);
 
-        $faqTexte = '';
-        foreach ($documentations as $doc) {
-            foreach ($doc->faqs as $faq) {
-                $faqTexte .= "Q: {$faq->question}\nR: {$faq->reponse}\n\n";
-            }
-        }
+        // Le retrieval ne renvoie que les FAQ sémantiquement proches au lieu
+        // d’envoyer toutes les FAQ du projet dans chaque prompt.
+        $faqTexte = trim((string) ($retrieved['faq_context'] ?? ''));
 
         // Historique de conversation
         $history = $this->buildHistory($conversation, $userMessage->id);
@@ -314,7 +313,7 @@ class AskController extends Controller
         })->implode("\n");
     }
 
-    // ── Détection d'intention intelligente avec IA ─────────────────────
+    // ── Détection locale des intentions courtes ────────────────────────
     private function detectIntent(string $question, ?string $clientName, string $projetName): ?array
     {
         // Messages très courts et évidents (optimisation)
@@ -323,8 +322,22 @@ class AskController extends Controller
             return $quickPatterns;
         }
 
-        // Détection par IA pour intentions plus complexes
-        return $this->aiIntentDetection($question, $clientName, $projetName);
+        // Small talks élargis : cette méthode était présente mais jamais appelée.
+        // Elle couvre les variantes naturelles sans déclencher le RAG ni un appel IA.
+        $smallTalk = $this->smallTalkAnswer($question, $clientName, $projetName);
+        if ($smallTalk !== null) {
+            return [
+                'response'      => $smallTalk,
+                'source'        => 'smalltalk',
+                'tokens_input'  => 0,
+                'tokens_output' => 0,
+            ];
+        }
+
+        // Une question non triviale passe directement au retrieval et au modèle
+        // configuré. L’ancienne classification Gemini ajoutait un appel réseau
+        // avant chaque question technique sans améliorer le contexte RAG.
+        return null;
     }
 
     private function quickIntentPatterns(string $question, ?string $clientName, string $projetName): ?array
@@ -400,6 +413,9 @@ class AskController extends Controller
         return null;        return null;
     }
 
+    // Conservée pour compatibilité avec d’anciens appels éventuels. Le chemin
+    // principal ne l’utilise plus : les questions techniques vont directement
+    // au retrieval afin d’éviter une classification Gemini supplémentaire.
     private function aiIntentDetection(string $question, ?string $clientName, string $projetName): ?array
     {
         // Utiliser Gemini pour la détection d'intention (plus fiable que Cohere pour ce cas)
@@ -683,7 +699,9 @@ Réponse (juste le chiffre) :";
                 // sans lui, cette FAQ ne serait JAMAIS retrouvée par la
                 // recherche par intention (elle ne cherche que parmi les
                 // FAQ ayant un embedding).
-                $newVector = $this->embeddings->embed($questionToLearn);
+                // Une FAQ est recherchée à partir de sa question : l’embedding
+                // doit donc utiliser le mode search_query, pas search_document.
+                $newVector = $this->embeddings->embedQuery($questionToLearn);
 
                 // Upsert : si une FAQ très proche du SENS de cette question
                 // existe déjà, on met à jour sa réponse plutôt que d'en
