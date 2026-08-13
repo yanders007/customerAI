@@ -60,4 +60,8 @@ return [
         'frontend_url' => env('FRONTEND_URL', 'http://localhost:5173'),
     ],
 
+    'conversations' => [
+        'retention_days' => (int) env('CONVERSATION_RETENTION_DAYS', 3),
+    ],
+
 ];
