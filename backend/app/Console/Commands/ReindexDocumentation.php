@@ -47,7 +47,7 @@ class ReindexDocumentation extends Command
             $this->info("✓ Terminé : {$chunksCount} chunks créés, {$withEmbedding} avec embeddings");
 
             if ($withEmbedding === 0 && $chunksCount > 0) {
-                $this->warn("⚠ Aucun embedding généré. Vérifiez les logs et votre quota API Gemini.");
+                $this->warn("⚠ Aucun embedding généré. Vérifiez COHERE_API_KEY, les logs et le quota Cohere.");
             }
 
             return 0;
@@ -82,7 +82,7 @@ class ReindexDocumentation extends Command
 
                 $bar->advance();
 
-                // Pause pour éviter le rate limit de l'API Gemini
+                // Pause pour éviter le rate limit de l'API Cohere/Gemini
                 if ($delay > 0 && !$docs->last()->is($doc)) {
                     sleep($delay);
                 }
@@ -100,8 +100,8 @@ class ReindexDocumentation extends Command
 
         if ($errors > 0) {
             $this->warn("⚠ Certains embeddings n'ont pas pu être générés. Vérifiez :");
-            $this->warn("  - Votre clé API Gemini dans .env (GEMINI_API_KEY)");
-            $this->warn("  - Votre quota API : https://aistudio.google.com/apikey");
+            $this->warn("  - Votre clé API Cohere dans .env (COHERE_API_KEY)");
+            $this->warn("  - Votre quota API Cohere : https://dashboard.cohere.com/api-keys");
             $this->warn("  - Les logs : tail -f storage/logs/laravel.log");
         }
 
