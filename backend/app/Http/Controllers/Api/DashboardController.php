@@ -8,6 +8,7 @@ use App\Models\Documentation;
 use App\Models\Faq;
 use App\Models\Message;
 use App\Models\Projet;
+use App\Models\AiUsage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -24,6 +25,47 @@ class DashboardController extends Controller
             ->whereYear('created_at', now()->year)
             ->selectRaw('COALESCE(SUM(tokens_input + tokens_output), 0) as total')
             ->value('total');
+
+        $measuredToday = AiUsage::whereDate('created_at', today())
+            ->selectRaw('COALESCE(SUM(tokens_input + tokens_output + embedding_tokens), 0) as total')
+            ->value('total');
+
+        $measuredMonth = AiUsage::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->selectRaw('COALESCE(SUM(tokens_input + tokens_output + embedding_tokens), 0) as total')
+            ->value('total');
+
+        $clientUsageRows = AiUsage::whereNotNull('client_id')
+            ->selectRaw('client_id,
+                COALESCE(SUM(tokens_input), 0) as input,
+                COALESCE(SUM(tokens_output), 0) as output,
+                COALESCE(SUM(embedding_tokens), 0) as embedding,
+                COALESCE(SUM(tokens_input + tokens_output + embedding_tokens), 0) as total,
+                COUNT(*) as requests,
+                MAX(created_at) as last_used_at')
+            ->groupBy('client_id')
+            ->orderByDesc('total')
+            ->limit(50)
+            ->get();
+
+        $clientNames = Client::whereIn('id', $clientUsageRows->pluck('client_id'))
+            ->get(['id', 'name', 'email'])
+            ->keyBy('id');
+
+        $usageByClient = $clientUsageRows->map(function ($row) use ($clientNames) {
+            $client = $clientNames->get($row->client_id);
+            return [
+                'client_id'     => (int) $row->client_id,
+                'name'          => $client?->name ?? 'Client supprimé',
+                'email'         => $client?->email,
+                'tokens_input'  => (int) $row->input,
+                'tokens_output' => (int) $row->output,
+                'embedding'     => (int) $row->embedding,
+                'total'         => (int) $row->total,
+                'requests'      => (int) $row->requests,
+                'last_used_at'  => $row->last_used_at,
+            ];
+        })->values();
 
         // Statistiques RAG : compare chunks vs fallback sur les 30 derniers jours
         $ragStats = Message::where('created_at', '>=', now()->subDays(30))
@@ -104,6 +146,9 @@ class DashboardController extends Controller
             'tokens' => [
                 'today'          => (int) $tokensToday,
                 'month'          => (int) $tokensMonth,
+                'measured_today' => (int) $measuredToday,
+                'measured_month' => (int) $measuredMonth,
+                'usage_by_client'=> $usageByClient,
                 'week_data'      => $tokensWeek,
                 'month30_data'   => $tokensMonth30,
                 'rag_efficiency' => $ragEfficiency,

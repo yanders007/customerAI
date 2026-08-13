@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AiConfig;
+use App\Models\AiUsage;
 use App\Services\AiService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,10 +22,13 @@ class AiConfigController extends Controller
             ->get()
             ->map(fn($c) => [
                 'id'            => $c->id,
+                'label'         => $c->label,
                 'provider'      => $c->provider,
                 'model'         => $c->model,
                 'is_active'     => $c->is_active,
                 'api_key_hint'  => $this->maskKey($c->api_key),
+                'has_key'       => !empty($c->api_key),
+                'last_used_at'  => $c->last_used_at,
                 'updated_at'    => $c->updated_at,
             ]);
 
@@ -42,18 +46,12 @@ class AiConfigController extends Controller
         }
 
         $apiKey = $config->api_key;
-        \Log::info('Admin show config', [
-            'provider' => $config->provider,
-            'has_encrypted' => !empty($config->getAttributes()['api_key_encrypted'] ?? null),
-            'encrypted_length' => strlen($config->getAttributes()['api_key_encrypted'] ?? ''),
-            'decrypted_key' => $apiKey ? substr($apiKey, 0, 15) . '...' : 'NULL',
-            'decrypted_length' => strlen($apiKey ?? ''),
-        ]);
 
         return response()->json([
             'success' => true,
             'data'    => [
                 'id'            => $config->id,
+                'label'         => $config->label,
                 'provider'      => $config->provider,
                 'model'         => $config->model,
                 'is_active'     => $config->is_active,
@@ -61,6 +59,7 @@ class AiConfigController extends Controller
                 'api_key_hint'  => $this->maskKey($apiKey ?? ''),
                 'has_key'       => !empty($apiKey) && strlen($apiKey) >= 10,
                 'key_length'    => strlen($apiKey ?? ''),
+                'last_used_at'  => $config->last_used_at,
                 'updated_at'    => $config->updated_at,
             ],
         ]);
@@ -92,6 +91,7 @@ class AiConfigController extends Controller
             'provider'      => ['required', 'string', 'in:openai,gemini,anthropic,mistral,groq,deepseek,together,openrouter,perplexity,xai,cohere-chat'],
             'model'         => ['required', 'string', 'max:100'],
             'api_key'       => ['required', 'string', 'min:10', 'max:500'],
+            'label'         => ['nullable', 'string', 'max:120'],
             'system_prompt' => ['nullable', 'string', 'max:5000'],
         ]);
 
@@ -102,6 +102,7 @@ class AiConfigController extends Controller
         $config = new AiConfig([
             'provider'      => $data['provider'],
             'model'         => $data['model'],
+            'label'         => $data['label'] ?? null,
             'is_active'     => true,
             'system_prompt' => $data['system_prompt'] ?? null,
         ]);
@@ -136,6 +137,18 @@ class AiConfigController extends Controller
 
         $result = $this->aiService->testConfig($tempConfig);
 
+        AiUsage::recordUsage([
+            'admin_id'         => $request->session()->get('admin_id'),
+            'request_type'     => 'config_test',
+            'provider'         => $data['provider'],
+            'model'            => $data['model'],
+            'ai_config_id'     => null,
+            'tokens_input'     => (int) ($result['tokens_input'] ?? 0),
+            'tokens_output'    => (int) ($result['tokens_output'] ?? 0),
+            'embedding_tokens' => 0,
+            'metadata'         => ['success' => empty($result['error'])],
+        ]);
+
         if (!empty($result['answer']) && empty($result['error'])) {
             return response()->json([
                 'success' => true,
@@ -154,6 +167,14 @@ class AiConfigController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $config = AiConfig::findOrFail($id);
+
+        if ($config->is_active && AiConfig::where('id', '!=', $id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sélectionnez d’abord une autre clé API avant de supprimer la clé active.',
+            ], 422);
+        }
+
         $config->delete();
         
         return response()->json(['success' => true, 'message' => 'Configuration supprimée.']);
@@ -173,8 +194,6 @@ class AiConfigController extends Controller
         }
 
         $apiKey = $config->api_key;
-        $attrs = $config->getAttributes();
-
         return response()->json([
             'success' => true,
             'debug' => [
@@ -182,15 +201,10 @@ class AiConfigController extends Controller
                 'provider' => $config->provider,
                 'model' => $config->model,
                 'is_active' => $config->is_active,
-                'has_api_key_encrypted_field' => isset($attrs['api_key_encrypted']),
-                'api_key_encrypted_not_empty' => !empty($attrs['api_key_encrypted']),
-                'api_key_encrypted_length' => strlen($attrs['api_key_encrypted'] ?? ''),
-                'api_key_encrypted_first_20' => substr($attrs['api_key_encrypted'] ?? '', 0, 20),
-                'accessor_returned_null' => is_null($apiKey),
-                'accessor_returned_empty' => empty($apiKey),
-                'decrypted_length' => strlen($apiKey ?? ''),
-                'decrypted_first_15' => $apiKey ? substr($apiKey, 0, 15) . '...' : 'NULL',
-                'validation_would_pass' => !empty($apiKey) && strlen($apiKey) >= 10,
+                'label' => $config->label,
+                'has_key' => !empty($apiKey),
+                'key_hint' => $this->maskKey($apiKey ?? ''),
+                'key_length' => strlen($apiKey ?? ''),
                 'updated_at' => $config->updated_at,
                 'created_at' => $config->created_at,
             ],

@@ -9,6 +9,7 @@ use App\Models\Documentation;
 use App\Models\Faq;
 use App\Models\Message;
 use App\Models\Projet;
+use App\Models\AiUsage;
 use App\Services\CohereEmbeddingService;
 use App\Services\AiService;
 use App\Services\RetrievalService;
@@ -139,6 +140,18 @@ class AskController extends Controller
                 'retrieval_source' => 'smalltalk',
                 'chunks_used'      => 0,
             ]);
+            AiUsage::recordUsage([
+                'client_id'        => $clientId,
+                'conversation_id'  => $conversation->id,
+                'message_id'       => $assistantMessage->id,
+                'request_type'     => 'smalltalk',
+                'provider'         => 'local',
+                'model'            => 'rules',
+                'tokens_input'     => 0,
+                'tokens_output'    => 0,
+                'embedding_tokens' => 0,
+                'metadata'         => ['source' => $intentResult['source'] ?? 'smalltalk'],
+            ]);
             $conversation->touch();
 
             return response()->json([
@@ -179,9 +192,21 @@ class AskController extends Controller
                 'role'             => 'assistant',
                 'content'          => $learnedAnswer,
                 'tokens_input'     => 0,
-                'tokens_output'    => intdiv(mb_strlen($learnedAnswer), 4),
+                'tokens_output'    => 0,
                 'retrieval_source' => 'faq',
                 'chunks_used'      => 0,
+            ]);
+            AiUsage::recordUsage([
+                'client_id'        => $clientId,
+                'conversation_id'  => $conversation->id,
+                'message_id'       => $assistantMessage->id,
+                'request_type'     => 'faq',
+                'provider'         => 'local',
+                'model'            => 'retrieval',
+                'tokens_input'     => 0,
+                'tokens_output'    => 0,
+                'embedding_tokens' => (int) ($retrieved['embedding_tokens'] ?? 0),
+                'metadata'         => ['faq_id' => $retrieved['faq']->id],
             ]);
             $conversation->update(['status' => $conversation->status === 'resolved' ? 'open' : $conversation->status]);
             $conversation->touch();
@@ -230,6 +255,22 @@ class AskController extends Controller
             'tokens_output'    => $aiResponse['tokens_output'] ?? 0,
             'retrieval_source' => $retrieved['source'] ?? 'fallback',
             'chunks_used'      => $chunksUsed,
+        ]);
+        AiUsage::recordUsage([
+            'client_id'        => $clientId,
+            'conversation_id'  => $conversation->id,
+            'message_id'       => $assistantMessage->id,
+            'ai_config_id'     => $aiResponse['ai_config_id'] ?? null,
+            'request_type'     => 'chat',
+            'provider'         => $aiResponse['provider'] ?? null,
+            'model'            => $aiResponse['model'] ?? null,
+            'tokens_input'     => (int) ($aiResponse['tokens_input'] ?? 0),
+            'tokens_output'    => (int) ($aiResponse['tokens_output'] ?? 0),
+            'embedding_tokens' => (int) ($retrieved['embedding_tokens'] ?? 0),
+            'metadata'         => [
+                'retrieval_source' => $retrieved['source'] ?? 'fallback',
+                'chunks_used'      => $chunksUsed,
+            ],
         ]);
 
         // ── Escalade si l'IA ne sait pas répondre ───────────────────────
