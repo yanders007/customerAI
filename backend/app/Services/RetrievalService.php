@@ -36,7 +36,11 @@ class RetrievalService
 {
     // ── Seuils ──────────────────────────────────────────────────────
     // FAQ : score minimum pour considérer qu'une FAQ répond à la question
-    private const FAQ_THRESHOLD = 0.75;  // Augmenté pour éviter les faux positifs
+    private const FAQ_THRESHOLD = 0.75;  // Réponse directe uniquement si la correspondance est forte
+
+    // FAQ secondaires autorisées dans le contexte du modèle, sans réponse directe.
+    private const FAQ_CONTEXT_THRESHOLD = 0.50;
+    private const MAX_FAQ_CONTEXT      = 3;
 
     // Chunks : score minimum pour inclure un chunk dans le contexte
     // Seuil calibré après tests : 0.42 pour capturer les questions courtes/vagues
@@ -52,6 +56,9 @@ class RetrievalService
     
     // Limite absolue de chunks (même si 30% dépasse cette valeur)
     private const MAX_CHUNKS = 10;  // Maximum absolu
+
+    // Limite de contexte pour éviter d’envoyer un prompt inutilement lourd.
+    private const MAX_CONTEXT_CHARS = 18000;
 
     public function __construct(
         private CohereEmbeddingService $embeddings,
@@ -71,62 +78,85 @@ class RetrievalService
      */
     public function retrieve(string $question, ?int $projetId = null): array
     {
-        // ── Étape 1 : correspondance FAQ directe (sémantique) ────
-        $faqMatch = $this->matchFaq($question, $projetId);
-        if ($faqMatch !== null) {
-            Log::debug('RetrievalService: réponse FAQ directe', ['score' => $faqMatch['score']]);
-            return ['context' => $faqMatch['context'], 'source' => 'faq', 'faq' => $faqMatch['faq']];
-        }
-
-        // ── Étape 2 : embedding de la question ───────────────────
+        // ── Étape 1 : embedding de la question ───────────────────
         if (!$this->embeddings->isConfigured()) {
-            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null];
+            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => ''];
         }
 
-        $questionVector = $this->embeddings->embed($question);
+        // Une question doit utiliser input_type=search_query, différent du
+        // mode search_document utilisé lors de l’indexation.
+        $questionVector = $this->embeddings->embedQuery($question);
         if ($questionVector === null) {
-            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null];
+            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => ''];
         }
 
-        // ── Étape 3 : similarité cosinus sur les chunks ──────────
+        // Une seule vectorisation de la question sert à la FAQ et aux chunks.
+        $faqSearch = $this->searchFaqs($questionVector, $projetId);
+        if ($faqSearch['match'] !== null) {
+            $faqMatch = $faqSearch['match'];
+            Log::debug('RetrievalService: réponse FAQ directe', ['score' => $faqMatch['score']]);
+            return [
+                'context'     => $faqMatch['context'],
+                'source'      => 'faq',
+                'faq'         => $faqMatch['faq'],
+                'faq_context' => $faqSearch['context'],
+            ];
+        }
+
+        // ── Étape 2 : similarité cosinus sur les chunks ──────────
         $chunks = $this->loadChunks($projetId);
         if ($chunks->isEmpty()) {
-            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null];
+            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => $faqSearch['context']];
         }
 
         $scored = $this->scoreChunks($chunks, $questionVector);
 
         if (empty($scored)) {
-    return ['context' => $this->fallback($projetId), 'source' => 'fallback'];
-}
+            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => $faqSearch['context']];
+        }
 
-        // ── Étape 4 : déduplication sémantique (MMR simplifié) ───
+        // ── Étape 3 : déduplication sémantique (MMR simplifié) ───
         $selected = $this->deduplicate($scored);
 
         if (empty($selected)) {
-            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null];
+            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => $faqSearch['context']];
         }
 
-        $context = implode("\n\n---\n\n", array_map(fn ($s) => $s['chunk']->content, $selected));
+        $contextParts = [];
+        $contextChars = 0;
+        foreach ($selected as $item) {
+            $content = trim((string) $item['chunk']->content);
+            if ($content === '') continue;
+
+            $separatorChars = empty($contextParts) ? 0 : 9;
+            $remaining = self::MAX_CONTEXT_CHARS - $contextChars - $separatorChars;
+            if ($remaining <= 0) break;
+
+            $contextParts[] = mb_substr($content, 0, $remaining);
+            $contextChars += mb_strlen($contextParts[array_key_last($contextParts)]) + $separatorChars;
+        }
+        $context = implode("\n\n---\n\n", $contextParts);
 
         Log::debug('RetrievalService: chunks sélectionnés', [
-            'count'  => count($selected),
+            'count'  => count($contextParts),
             'scores' => array_map(fn ($s) => round($s['score'], 3), $selected),
         ]);
 
-        return ['context' => $context, 'source' => 'chunks', 'faq' => null, 'chunks_count' => count($selected)];
+        return [
+            'context'      => $context,
+            'source'       => 'chunks',
+            'faq'          => null,
+            'faq_context'  => $faqSearch['context'],
+            'chunks_count' => count($contextParts),
+        ];
     }
 
     // ═══════════════════════════════════════════════════════════════
     // Étape 1 — FAQ directe
     // ═══════════════════════════════════════════════════════════════
 
-    private function matchFaq(string $question, ?int $projetId): ?array
+    private function searchFaqs(array $questionVector, ?int $projetId): array
     {
-        if (!$this->embeddings->isConfigured()) {
-            return null;
-        }
-
         $query = Faq::query();
         if ($projetId !== null) {
             // On filtre les FAQs liées aux documentations du projet
@@ -136,16 +166,10 @@ class RetrievalService
         $faqs = $query->whereNotNull('embedding')->get();
 
         if ($faqs->isEmpty()) {
-            return null;
+            return ['match' => null, 'context' => ''];
         }
 
-        $questionVector = $this->embeddings->embed($question);
-        if ($questionVector === null) {
-            return null;
-        }
-
-        $best      = null;
-        $bestScore = 0.0;
+        $ranked = [];
 
         foreach ($faqs as $faq) {
             $faqVector = is_array($faq->embedding) ? $faq->embedding : json_decode($faq->embedding, true);
@@ -153,18 +177,32 @@ class RetrievalService
                 continue;
             }
             $score = CohereEmbeddingService::cosineSimilarity($questionVector, $faqVector);
-            if ($score > $bestScore) {
-                $bestScore = $score;
-                $best      = $faq;
-            }
+            $ranked[] = ['faq' => $faq, 'score' => $score];
         }
 
-        if ($best === null || $bestScore < self::FAQ_THRESHOLD) {
-            return null;
+        if (empty($ranked)) {
+            return ['match' => null, 'context' => ''];
         }
 
-        $context = "**FAQ — Réponse directe**\n\nQ : {$best->question}\nR : {$best->reponse}";
-        return ['context' => $context, 'score' => $bestScore, 'faq' => $best];
+        usort($ranked, fn ($a, $b) => $b['score'] <=> $a['score']);
+        $best = $ranked[0];
+        $faqContext = [];
+        foreach (array_slice($ranked, 0, self::MAX_FAQ_CONTEXT) as $item) {
+            if ($item['score'] < self::FAQ_CONTEXT_THRESHOLD) continue;
+            $faqContext[] = "Q : {$item['faq']->question}\nR : {$item['faq']->reponse}";
+        }
+
+        $context = implode("\n\n---\n\n", $faqContext);
+        $direct = null;
+        if ($best['score'] >= self::FAQ_THRESHOLD) {
+            $direct = [
+                'context' => "**FAQ — Réponse directe**\n\nQ : {$best['faq']->question}\nR : {$best['faq']->reponse}",
+                'score'   => $best['score'],
+                'faq'     => $best['faq'],
+            ];
+        }
+
+        return ['match' => $direct, 'context' => $context];
     }
 
     // ═══════════════════════════════════════════════════════════════
