@@ -59,28 +59,32 @@ class IndexDocumentationJob implements ShouldQueue
             ]);
 
             // Si aucun embedding n'a été généré mais qu'il y a des chunks,
-            // c'est probablement un quota dépassé. Pour les gros documents
-            // (>40 chunks), on recommande l'utilisation de docs:reindex
-            // avec un délai plus long, car le retry échouera probablement aussi.
+            // le document ne doit pas être considéré comme indexé : le RAG
+            // tomberait sinon silencieusement en fallback texte.
             if ($chunksCount > 0 && $withEmbedding === 0) {
+                $message = "Aucun embedding Cohere généré pour le document {$this->documentation->id}. Vérifiez COHERE_API_KEY et le quota Cohere.";
+
                 if ($chunksCount > 40) {
-                    Log::warning("IndexDocumentationJob: gros document sans embeddings - utiliser docs:reindex", [
+                    Log::warning("IndexDocumentationJob: document sans embeddings", [
                         'documentation_id' => $this->documentation->id,
                         'chunks' => $chunksCount,
                         'recommandation' => "php artisan docs:reindex --id={$this->documentation->id} --delay=5",
                     ]);
-                    // Ne pas retry pour les gros documents, ça échouera encore
-                    $this->fail(new \Exception("Document trop volumineux ({$chunksCount} chunks) - Utilisez: php artisan docs:reindex --id={$this->documentation->id} --delay=5"));
+                    // Ne pas retry automatiquement les gros documents si la
+                    // vectorisation est indisponible : l’échec doit être visible.
+                    throw new \RuntimeException($message . " Réessayez avec docs:reindex --id={$this->documentation->id} --delay=5.");
                 } else {
-                    Log::warning("IndexDocumentationJob: aucun embedding généré, retry", [
+                    Log::warning("IndexDocumentationJob: aucun embedding généré", [
                         'documentation_id' => $this->documentation->id,
                         'attempt' => $this->attempts(),
                     ]);
-                    
-                    // Relancer le job pour les petits documents
+
                     if ($this->attempts() < $this->tries) {
                         $this->release(60); // Réessayer dans 60 secondes
+                        return;
                     }
+
+                    throw new \RuntimeException($message);
                 }
             }
         } catch (\Throwable $e) {
