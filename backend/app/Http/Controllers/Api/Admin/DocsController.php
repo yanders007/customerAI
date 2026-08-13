@@ -114,8 +114,10 @@ class DocsController extends Controller
                 'question'         => ['required', 'string', 'max:500'],
                 'reponse'          => ['required', 'string', 'max:5000'],
             ]);
-            // Générer l'embedding de la FAQ pour la recherche directe
-            $embedding = $this->embeddings->embed($data['question'] . ' ' . $data['reponse']);
+            // La recherche compare la question de l’utilisateur à la question
+            // FAQ : vectoriser la question seule en mode search_query évite que
+            // le contenu de la réponse biaise la similarité.
+            $embedding = $this->embeddings->embedQuery($data['question']);
             $faq = Faq::create([...$data, 'embedding' => $embedding ? json_encode($embedding) : null]);
             return response()->json(['success' => true, 'message' => 'FAQ ajoutée', 'data' => $faq], 201);
         }
@@ -158,8 +160,8 @@ class DocsController extends Controller
                 'reponse' => ['required', 'string', 'max:5000']
             ]);
             $faq = Faq::findOrFail($data['id']);
-            // Régénérer l'embedding après modification
-            $embedding = $this->embeddings->embed($data['question'] . ' ' . $data['reponse']);
+            // Régénérer l’embedding de recherche après modification.
+            $embedding = $this->embeddings->embedQuery($data['question']);
             $faq->update(['question' => $data['question'], 'reponse' => $data['reponse'], 'embedding' => $embedding ? json_encode($embedding) : null]);
             return response()->json(['success' => true, 'message' => 'FAQ mise à jour']);
         }
