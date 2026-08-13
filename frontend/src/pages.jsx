@@ -119,7 +119,7 @@ export function ClientLogin() {
     <div className="login-container">
       <div className="login-left">
       <div className="login-brand">
-          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-blue-intelligence-mark_23cbc398.png" alt=""/><span>CustomerAI</span></div>
+          <div className="logo"><img className="brand-mark" src="/customerai-mark.png" alt=""/><span>CustomerAI</span></div>
           <p className="login-lede">Votre espace pour retrouver les réponses, les projets et la connaissance de votre équipe.</p>
         </div>
         <div className="login-features">
@@ -230,7 +230,7 @@ export function AdminLogin() {
     <div className="login-container">
       <div className="login-left">
       <div className="login-brand">
-          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-blue-intelligence-mark_23cbc398.png" alt=""/><span>CustomerAI</span></div>
+          <div className="logo"><img className="brand-mark" src="/customerai-mark.png" alt=""/><span>CustomerAI</span></div>
           <p className="login-lede">La console où votre équipe transforme sa connaissance client en réponses fiables.</p>
         </div>
         <div className="login-features">
@@ -446,7 +446,7 @@ export function ProjectSelect() {
     <div className="sidebar" style={{ position:'static', width:'100%', height:'auto', border:'none' }}>
       <div style={{ minHeight:'100vh', background:'#f8fafc' }}>
         <header style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 2rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-blue-intelligence-mark_23cbc398.png" alt=""/><span>CustomerAI</span></div>
+          <div className="logo"><img className="brand-mark" src="/customerai-mark.png" alt=""/><span>CustomerAI</span></div>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
             <span style={{ fontSize:14, color:'#64748b' }}>Bonjour, <strong>{client?.name}</strong></span>
             <button className="logout-btn" onClick={async () => { await api.post('/client/logout'); clearSession(); navigate('/login-client'); }} style={{ width:'auto', padding:'8px 16px', background:'#eaf2ff', color:'#1546b8', borderRadius:8, fontWeight:600, fontSize:13 }}>
@@ -685,12 +685,12 @@ export function Chat() {
   const roleCls = { user:'user', assistant:'assistant', human_support:'human_support' };
 
   return (
-    <div style={{ display:'flex', height:'100vh', overflow:'hidden', background:'#f8fafc' }}>
+      <div style={{ display:'flex', height:'100vh', overflow:'hidden', background:'#f8fafc' }}>
       {/* ─ Sidebar ─ */}
       {sidebarOpen && <button type="button" className="mobile-sidebar-backdrop" aria-label="Fermer le menu" onClick={() => setSidebarOpen(false)}/>} 
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''} ${sidebarOpen ? '' : 'collapsed'}`} style={{ position:'relative', height:'100vh', flexShrink:0 }}>
         <div className="sidebar-header">
-          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-blue-intelligence-mark_23cbc398.png" alt=""/><span>CustomerAI</span></div>
+          <div className="logo"><img className="brand-mark" src="/customerai-mark.png" alt=""/><span>CustomerAI</span></div>
           <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <i className="fas fa-chevron-left"/>
           </button>
@@ -1031,12 +1031,12 @@ export function AdminPanel() {
   if (loading) return <Spinner/>;
 
   return (
-    <div className="admin-container">
+      <div className="admin-container">
       {/* ─ Sidebar ─ */}
       {sidebarOpen && <button type="button" className="mobile-sidebar-backdrop" aria-label="Fermer le menu" onClick={() => setSidebarOpen(false)}/>} 
       <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''} ${sidebarOpen ? '' : 'collapsed'}`}>
         <div className="sidebar-header">
-          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-brand-mark_16709fcd.png" alt=""/><span>CustomerAI</span></div>
+          <div className="logo"><img className="brand-mark" src="/customerai-mark.png" alt=""/><span>CustomerAI</span></div>
           <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <i className="fas fa-chevron-left"/>
           </button>
