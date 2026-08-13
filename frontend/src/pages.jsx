@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { api, clearSession, saveProject, saveSession } from './api';
+import { api, clearSession, isWebdevPreview, saveProject, saveSession } from './api';
 import AiConfigPage from './AiConfigPage';
 import DOMPurify from 'dompurify';
 import './styles/login.css';
 import './styles/admin.css';
 import './styles/client.css';
+import './styles/customerai-overrides.css';
+
+// Style reminder: CustomerAI follows the “Atelier éditorial” direction — ivoire, bleu encre,
+// corail d’action, hiérarchie de lecture et responsive natif. Preserve all API contracts below.
 
 // ════════════════════════════════════════════════
 //  HELPERS COMMUNS
@@ -45,6 +49,7 @@ export function ClientLogin() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (isWebdevPreview) { setChecking(false); return; }
     console.log('[ClientLogin] Vérification session existante...');
     api.get('/client/me').then(r => {
       console.log('[ClientLogin] Session trouvée, redirection');
@@ -114,28 +119,29 @@ export function ClientLogin() {
     <div className="login-container">
       <div className="login-left">
         <div className="login-brand">
-          <div className="logo"><i className="fas fa-headset"/><span>Support Client</span></div>
-          <p>Votre assistant support disponible 24h/24 pour répondre à toutes vos questions.</p>
+          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-mark_a824261e.png" alt=""/><span>CustomerAI</span></div>
+          <p className="login-lede">Votre espace pour retrouver les réponses, les projets et la connaissance de votre équipe.</p>
         </div>
         <div className="login-features">
           <div className="feature-item">
-            <i className="fas fa-bolt"/>
-            <div><h4>Réponses Instantanées</h4><p>Obtenez des réponses précises en moins d'une seconde.</p></div>
+            <span className="feature-kicker">01 / Accès client</span>
+            <div><h4>Retrouver le bon contexte</h4><p>Vos projets et votre documentation au même endroit.</p></div>
           </div>
           <div className="feature-item">
-            <i className="fas fa-book"/>
-            <div><h4>Documentation Intégrée</h4><p>Accédez rapidement à toute la documentation nécessaire.</p></div>
+            <span className="feature-kicker">02 / Base utile</span>
+            <div><h4>Des réponses qui tiennent</h4><p>Une connaissance organisée pour avancer sans détour.</p></div>
           </div>
           <div className="feature-item">
-            <i className="fas fa-shield-alt"/>
-            <div><h4>Sécurisé & Privé</h4><p>Vos données sont chiffrées et protégées.</p></div>
+            <span className="feature-kicker">03 / Continuité</span>
+            <div><h4>Un fil de support clair</h4><p>Chaque échange reste relié au bon projet.</p></div>
           </div>
         </div>
       </div>
       <div className="login-right">
         <div className="login-box">
-          <h2>Espace Client</h2>
-          <p>Connectez-vous pour accéder au support</p>
+          <span className="login-context-label">Espace client / CustomerAI</span>
+          <h2>Retrouver votre espace</h2>
+          <p>Reprenez là où votre équipe s’est arrêtée.</p>
           {error && <div style={{ background:'#fef2f2', color:'#991b1b', padding:'10px 14px', borderRadius:8, marginBottom:16, fontSize:14 }}>{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -156,12 +162,9 @@ export function ClientLogin() {
               <a href="/forgot-password?type=client" className="forgot-link">Mot de passe oublié ?</a>
             </div>
             <button type="submit" className="btn btn-primary btn-block btn-lg" disabled={loading}>
-              <i className="fas fa-sign-in-alt"/> {loading ? 'Connexion…' : 'Se connecter'}
+              <i className="fas fa-arrow-right"/> {loading ? 'Connexion…' : 'Ouvrir mon espace'}
             </button>
           </form>
-          <p style={{ textAlign:'center', marginTop:20, fontSize:13, color:'#64748b' }}>
-            Espace administrateur ? <a href="/login-admin" style={{ color:'#6366f1', fontWeight:600 }}>Connexion Admin</a>
-          </p>
         </div>
       </div>
     </div>
@@ -181,6 +184,7 @@ export function AdminLogin() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (isWebdevPreview) { setChecking(false); return; }
     console.log('[AdminLogin] Vérification session existante...');
     api.get('/admin/me').then(r => {
       console.log('[AdminLogin] Session trouvée, redirection vers /admin');
@@ -226,28 +230,29 @@ export function AdminLogin() {
     <div className="login-container">
       <div className="login-left">
         <div className="login-brand">
-          <div className="logo"><i className="fas fa-headset"/><span>Support Client</span></div>
-          <p>Plateforme d'administration de votre système de support client.</p>
+          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-mark_a824261e.png" alt=""/><span>CustomerAI</span></div>
+          <p className="login-lede">L’atelier où votre équipe transforme sa connaissance client en réponses fiables.</p>
         </div>
         <div className="login-features">
           <div className="feature-item">
-            <i className="fas fa-chart-line"/>
-            <div><h4>Analytics Avancés</h4><p>Suivez les performances et l'activité en temps réel.</p></div>
+            <span className="feature-kicker">01 / Piloter</span>
+            <div><h4>Voir ce qui mérite une action</h4><p>Les signaux importants, sans bruit autour.</p></div>
           </div>
           <div className="feature-item">
-            <i className="fas fa-users"/>
-            <div><h4>Gestion Clients</h4><p>Créez et gérez vos clients et leurs projets.</p></div>
+            <span className="feature-kicker">02 / Structurer</span>
+            <div><h4>Donner une base à chaque client</h4><p>Projets, documentation et FAQ dans un même fil.</p></div>
           </div>
           <div className="feature-item">
-            <i className="fas fa-cogs"/>
-            <div><h4>Contrôle Total</h4><p>FAQ, documentations, escalades et paramètres.</p></div>
+            <span className="feature-kicker">03 / Affiner</span>
+            <div><h4>Améliorer la prochaine réponse</h4><p>Chaque FAQ devient un raccourci utile pour l’équipe.</p></div>
           </div>
         </div>
       </div>
       <div className="login-right">
         <div className="login-box">
-          <h2>Espace Administrateur</h2>
-          <p>Connectez-vous pour gérer votre plateforme</p>
+          <span className="login-context-label">Console équipe / CustomerAI</span>
+          <h2>Piloter votre support</h2>
+          <p>Gérez les clients, la connaissance et les escalades.</p>
           {error && <div style={{ background:'#fef2f2', color:'#991b1b', padding:'10px 14px', borderRadius:8, marginBottom:16, fontSize:14 }}>{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -268,11 +273,11 @@ export function AdminLogin() {
               <a href="/forgot-password?type=admin" className="forgot-link">Mot de passe oublié ?</a>
             </div>
             <button type="submit" className="btn btn-primary btn-block btn-lg" disabled={loading}>
-              <i className="fas fa-sign-in-alt"/> {loading ? 'Connexion…' : 'Se connecter'}
+              <i className="fas fa-arrow-right"/> {loading ? 'Connexion…' : 'Ouvrir la console'}
             </button>
           </form>
           <p style={{ textAlign:'center', marginTop:20, fontSize:13, color:'#64748b' }}>
-            Espace client ? <a href="/login-client" style={{ color:'#6366f1', fontWeight:600 }}>Connexion Client</a>
+            Vous êtes client ? <a href="/login-client" style={{ color:'#6366f1', fontWeight:600 }}>Retrouver mon espace</a>
           </p>
         </div>
       </div>
@@ -1025,9 +1030,9 @@ export function AdminPanel() {
   return (
     <div className="admin-container">
       {/* ─ Sidebar ─ */}
-      <aside className={`admin-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
+      <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''} ${sidebarOpen ? '' : 'collapsed'}`}>
         <div className="sidebar-header">
-          <div className="logo"><i className="fas fa-headset"/><span>Support Client</span></div>
+          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-mark_a824261e.png" alt=""/><span>CustomerAI</span></div>
           <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <i className="fas fa-chevron-left"/>
           </button>
@@ -1066,7 +1071,7 @@ export function AdminPanel() {
           </div>
         </header>
 
-        <div style={{ padding:'2rem', maxWidth:1400 }}>
+        <div className="admin-shell-content" style={{ padding:'2rem', maxWidth:1400 }}>
 
           {/* ══ DASHBOARD ══ */}
           {section === 'dashboard' && dashStats && (
@@ -1901,42 +1906,29 @@ function NewClientForm({ onCreated, onError, onSuccess }) {
   };
 
   return !open ? (
-    <button className="btn btn-primary" onClick={() => setOpen(true)}><i className="fas fa-plus"/> Ajouter un Client</button>
+    <button className="btn btn-primary client-create-trigger" onClick={() => setOpen(true)}>
+      <i className="fas fa-plus"/> Ajouter un client
+    </button>
   ) : (
-    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.5)', zIndex:500, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={() => !loading && setOpen(false)}>
-      <div style={{ background:'#fff', borderRadius:16, padding:'2rem', width:'100%', maxWidth:560, boxShadow:'0 25px 60px rgba(0,0,0,.2)' }} onClick={e => e.stopPropagation()}>
-        <h3 style={{ fontWeight:800, marginBottom:4 }}>Nouveau client</h3>
-        <p style={{ fontSize:13, color:'#64748b', marginBottom:'1.5rem' }}>
-          Les identifiants seront générés automatiquement et envoyés par email.
-        </p>
-        <div style={{ background:'#eff6ff', border:'1px solid #bfdbfe', borderRadius:10, padding:'12px 16px', marginBottom:'1.5rem', display:'flex', gap:10 }}>
-          <i className="fas fa-envelope" style={{ color:'#3b82f6', fontSize:18, flexShrink:0, marginTop:2 }}/>
-          <div style={{ fontSize:13, color:'#1e40af', lineHeight:1.5 }}>
-            <strong>Envoi automatique :</strong> Un email contenant l'identifiant et le mot de passe sera envoyé à l'adresse indiquée.
+    <div className="modal-backdrop client-modal-backdrop" role="presentation" onClick={() => !loading && setOpen(false)}>
+      <form className="form-modal client-form-modal" onSubmit={e => { e.preventDefault(); handleCreate(); }} onClick={e => e.stopPropagation()}>
+        <div className="modal-heading">
+          <div className="modal-heading-copy">
+            <span className="eyebrow"><i className="fas fa-user-plus"/> Nouveau profil</span>
+            <h3>Ajouter un client</h3>
+            <p>Créez l’espace client et envoyez automatiquement ses accès.</p>
           </div>
+          <button type="button" className="modal-close" onClick={() => !loading && setOpen(false)} aria-label="Fermer"><i className="fas fa-times"/></button>
         </div>
-        <div className="form-group">
-          <label>Nom complet <span style={{ color:'#ef4444' }}>*</span></label>
-          <input value={form.name} onChange={e => setForm({...form,name:e.target.value})} placeholder="Nom du client" autoFocus disabled={loading}/>
+        <div className="form-callout form-callout--coral"><span className="callout-icon"><i className="fas fa-paper-plane"/></span><div><strong>Envoi automatique</strong><span>Les identifiants seront générés et envoyés à l’adresse du client.</span></div></div>
+        <div className="form-section-label">Informations principales</div>
+        <div className="form-grid form-grid--single">
+          <div className="field-block"><label htmlFor="client-name">Nom complet <span className="required-mark">*</span></label><div className="field-with-icon"><i className="fas fa-user"/><input id="client-name" value={form.name} onChange={e => setForm({...form,name:e.target.value})} placeholder="Ex. Atelier Martin" autoFocus disabled={loading} required/></div></div>
+          <div className="field-block"><label htmlFor="client-email">Email du client <span className="required-mark">*</span></label><div className="field-with-icon"><i className="fas fa-envelope"/><input id="client-email" type="email" value={form.email} onChange={e => setForm({...form,email:e.target.value})} placeholder="client@entreprise.com" disabled={loading} required/></div></div>
         </div>
-        <div className="form-group">
-          <label>Email du client <span style={{ color:'#ef4444' }}>*</span></label>
-          <input type="email" value={form.email} onChange={e => setForm({...form,email:e.target.value})} placeholder="client@entreprise.com" disabled={loading}/>
-        </div>
-        <div className="form-group">
-          <label>Email support (escalades) <span style={{ fontSize:11, color:'#94a3b8', fontWeight:400 }}>optionnel</span></label>
-          <input type="email" value={form.support_email} onChange={e => setForm({...form,support_email:e.target.value})} placeholder="support@votreagence.com" disabled={loading}/>
-          <small style={{ fontSize:11, color:'#64748b', marginTop:4, display:'block' }}>
-            Cet email recevra les demandes d'escalade vers un humain
-          </small>
-        </div>
-        <div style={{ display:'flex', gap:8, marginTop:'1rem' }}>
-          <button className="btn btn-outline" style={{ flex:1 }} onClick={() => setOpen(false)} disabled={loading}>Annuler</button>
-          <button className="btn btn-primary" style={{ flex:1 }} disabled={loading} onClick={handleCreate}>
-            {loading ? 'Création…' : '📧 Créer et Envoyer'}
-          </button>
-        </div>
-      </div>
+        <div className="field-block"><label htmlFor="support-email">Email support <span className="optional-mark">Optionnel</span></label><div className="field-with-icon"><i className="fas fa-life-ring"/><input id="support-email" type="email" value={form.support_email} onChange={e => setForm({...form,support_email:e.target.value})} placeholder="support@votreagence.com" disabled={loading}/></div><span className="field-hint">Reçoit les demandes d’escalade lorsqu’une réponse humaine est nécessaire.</span></div>
+        <div className="modal-actions"><button type="button" className="btn btn-outline" onClick={() => setOpen(false)} disabled={loading}>Annuler</button><button type="submit" className="btn btn-primary" disabled={loading}><i className="fas fa-paper-plane"/> {loading ? 'Création…' : 'Créer et envoyer'}</button></div>
+      </form>
     </div>
   );
 }
@@ -2187,17 +2179,14 @@ function DocTabPanel({ projetId, docs, onPickDoc, onDeleteDoc, onRefresh, onNoti
         </div>
       )}
 
-      <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:16, padding:'1.5rem', marginBottom:16 }}>
-        <h3 style={{ fontWeight:700, marginBottom:'1rem', display:'flex', alignItems:'center', gap:8 }}>
-          <div style={{ width:32, height:32, borderRadius:10, background:'rgba(16,185,129,.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <i className="fas fa-plus" style={{ color:'#10b981', fontSize:14 }}/>
-          </div>
-          Ajouter une documentation
-        </h3>
-        <div className="form-group"><label>Titre</label><input value={form.titre} onChange={e => setForm({...form,titre:e.target.value})} placeholder="Titre du document"/></div>
-        <div className="form-group"><label>Contenu texte</label><textarea rows={5} value={form.contenu} onChange={e => setForm({...form,contenu:e.target.value})} placeholder="Collez le contenu de la documentation…"/></div>
-        <div className="form-group"><label>Ou importer (PDF/TXT)</label><input type="file" accept=".pdf,.txt" onChange={e => setFile(e.target.files[0])}/>{file && <span style={{ fontSize:12, color:'#6366f1' }}>📎 {file.name}</span>}</div>
-        <button className="btn btn-primary btn-sm" disabled={loading} onClick={create}>{loading ? 'Indexation en cours…' : 'Ajouter la documentation'}</button>
+      <div className="knowledge-form-card">
+        <div className="knowledge-form-heading"><div className="section-icon section-icon--mint"><i className="fas fa-file-circle-plus"/></div><div><span className="eyebrow eyebrow--mint">Base de connaissance</span><h3>Ajouter une documentation</h3><p>Importez un fichier ou collez directement son contenu.</p></div></div>
+        <div className="form-grid form-grid--single">
+          <div className="field-block"><label htmlFor="doc-title">Titre du document</label><div className="field-with-icon"><i className="fas fa-heading"/><input id="doc-title" value={form.titre} onChange={e => setForm({...form,titre:e.target.value})} placeholder="Ex. Guide d’utilisation"/></div></div>
+          <div className="field-block"><label htmlFor="doc-content">Contenu texte <span className="optional-mark">Optionnel si vous importez un fichier</span></label><textarea id="doc-content" rows={5} value={form.contenu} onChange={e => setForm({...form,contenu:e.target.value})} placeholder="Collez le contenu de la documentation…"/></div>
+          <div className="field-block"><label htmlFor="doc-file">Fichier source <span className="optional-mark">PDF ou TXT</span></label><label className={`upload-dropzone ${file ? 'has-file' : ''}`} htmlFor="doc-file"><span className="upload-icon"><i className={`fas ${file ? 'fa-file-check' : 'fa-cloud-arrow-up'}`}/></span><span className="upload-copy"><strong>{file ? file.name : 'Déposer ou choisir un fichier'}</strong><small>{file ? 'Fichier prêt à être indexé' : 'Formats acceptés : PDF, TXT'}</small></span><span className="upload-action">Parcourir</span><input id="doc-file" type="file" accept=".pdf,.txt,application/pdf,text/plain" onChange={e => setFile(e.target.files?.[0] || null)}/></label>{file && <button className="file-remove" type="button" onClick={() => setFile(null)}><i className="fas fa-times"/> Retirer le fichier</button>}</div>
+        </div>
+        <div className="form-card-footer"><span><i className="fas fa-circle-info"/> L’indexation démarre après l’ajout.</span><button className="btn btn-primary" disabled={loading || !form.titre.trim() || (!form.contenu.trim() && !file)} onClick={create}>{loading ? 'Indexation en cours…' : 'Ajouter la documentation'}<i className="fas fa-arrow-right"/></button></div>
       </div>
 
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px, 1fr))', gap:12 }}>
@@ -2453,60 +2442,14 @@ function WizardModal({ client, onDone, onCancel, onError }) {
   const STEPS = ['Projet', 'Documentation', 'FAQ'];
 
   return (
-    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,.5)', zIndex:600, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }}>
-      <div style={{ background:'#fff', borderRadius:20, width:'100%', maxWidth:560, boxShadow:'0 25px 80px rgba(0,0,0,.25)', overflow:'hidden' }}>
-        <div style={{ background:'linear-gradient(135deg,#6366f1,#4f46e5)', padding:'1.5rem 2rem', color:'#fff' }}>
-          <h2 style={{ fontWeight:800, fontSize:20, marginBottom:4 }}>Nouveau projet pour {client.name}</h2>
-          <div style={{ display:'flex', gap:8 }}>
-            {STEPS.map((s,i) => (
-              <div key={s} style={{ display:'flex', alignItems:'center', gap:6 }}>
-                <div style={{ width:24, height:24, borderRadius:'50%', background: step > i+1 ? '#10b981' : step === i+1 ? 'rgba(255,255,255,.9)' : 'rgba(255,255,255,.3)', color: step === i+1 ? '#6366f1' : '#fff', fontSize:12, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center' }}>
-                  {step > i+1 ? '✓' : i+1}
-                </div>
-                <span style={{ fontSize:13, opacity: step === i+1 ? 1 : .7 }}>{s}</span>
-                {i < STEPS.length-1 && <span style={{ opacity:.4 }}>→</span>}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div style={{ padding:'2rem' }}>
-          {step === 1 && (
-            <div>
-              <div className="form-group"><label>Nom du projet</label><input value={form.nom_projet} onChange={e => setForm({...form,nom_projet:e.target.value})} placeholder="ex : Site e-commerce, App mobile…" autoFocus/></div>
-              <div style={{ display:'flex', gap:8, marginTop:'1rem' }}>
-                <button className="btn btn-outline" style={{ flex:1 }} onClick={onCancel}>Annuler</button>
-                <button className="btn btn-primary" style={{ flex:1 }} onClick={nextStep1}>Suivant →</button>
-              </div>
-            </div>
-          )}
-          {step === 2 && (
-            <div>
-              <div className="form-group"><label>Titre</label><input value={form.titre} onChange={e => setForm({...form,titre:e.target.value})} placeholder="Documentation technique, Guide utilisateur…" autoFocus/></div>
-              <div className="form-group"><label>Contenu texte</label><textarea rows={5} value={form.contenu} onChange={e => setForm({...form,contenu:e.target.value})} placeholder="Collez le contenu…"/></div>
-              <div className="form-group"><label>Ou importer (PDF/TXT)</label><input type="file" accept=".pdf,.txt" onChange={e => setFile(e.target.files[0])}/>{file && <span style={{ fontSize:12, color:'#6366f1' }}>📎 {file.name}</span>}</div>
-              <div style={{ display:'flex', gap:8, marginTop:'1rem' }}>
-                <button className="btn btn-outline" style={{ flex:1 }} onClick={() => setStep(1)}>← Retour</button>
-                <button className="btn btn-primary" style={{ flex:1 }} onClick={nextStep2}>Suivant →</button>
-              </div>
-            </div>
-          )}
-          {step === 3 && (
-            <div>
-              <p style={{ fontSize:14, color:'#64748b', marginBottom:'1rem' }}>Optionnel — les FAQs permettent au système de répondre directement sans chercher dans la documentation.</p>
-              {faqs.length > 0 && (
-                <div style={{ background:'#f8fafc', borderRadius:10, padding:'0.75rem 1rem', marginBottom:'1rem' }}>
-                  {faqs.map((f,i) => <div key={i} style={{ fontSize:13, borderBottom:'1px solid #e2e8f0', paddingBottom:6, marginBottom:6 }}><strong>Q :</strong> {f.question}</div>)}
-                </div>
-              )}
-              <div className="form-group"><label>Question</label><input value={faqForm.question} onChange={e => setFaqForm({...faqForm,question:e.target.value})} placeholder="Question fréquente…"/></div>
-              <div className="form-group"><label>Réponse</label><textarea rows={3} value={faqForm.reponse} onChange={e => setFaqForm({...faqForm,reponse:e.target.value})} placeholder="Réponse concise…"/></div>
-              <button className="btn btn-outline btn-sm" onClick={addFaqLocal}>+ Ajouter cette FAQ</button>
-              <div style={{ display:'flex', gap:8, marginTop:'1.5rem' }}>
-                <button className="btn btn-outline" style={{ flex:1 }} onClick={() => setStep(2)}>← Retour</button>
-                <button className="btn btn-primary" style={{ flex:1 }} disabled={loading} onClick={createAll}>{loading ? 'Création en cours…' : '✓ Terminer'}</button>
-              </div>
-            </div>
-          )}
+    <div className="modal-backdrop wizard-backdrop" role="presentation">
+      <div className="form-modal wizard-modal" role="dialog" aria-modal="true" aria-labelledby="wizard-title">
+        <div className="wizard-heading"><div><span className="eyebrow eyebrow--light"><i className="fas fa-wand-magic-sparkles"/> Création guidée</span><h2 id="wizard-title">Nouveau projet pour {client.name}</h2><p>Organisez la connaissance avant de la rendre accessible.</p></div><button type="button" className="modal-close modal-close--light" onClick={onCancel} aria-label="Fermer"><i className="fas fa-times"/></button></div>
+        <div className="wizard-steps" aria-label="Progression de la création">{STEPS.map((s,i) => <div key={s} className={`wizard-step ${step === i + 1 ? 'active' : ''} ${step > i + 1 ? 'done' : ''}`}><span>{step > i + 1 ? <i className="fas fa-check"/> : i + 1}</span><strong>{s}</strong></div>)}</div>
+        <div className="wizard-body">
+          {step === 1 && <div className="wizard-pane"><div className="wizard-intro"><span className="section-icon"><i className="fas fa-folder-plus"/></span><div><h3>Commencez par le projet</h3><p>Un projet regroupe la documentation et les FAQ d’un même contexte client.</p></div></div><div className="field-block"><label htmlFor="wizard-project">Nom du projet</label><div className="field-with-icon"><i className="fas fa-folder"/><input id="wizard-project" value={form.nom_projet} onChange={e => setForm({...form,nom_projet:e.target.value})} placeholder="Ex. Portail de réservation" autoFocus/></div></div><div className="modal-actions"><button type="button" className="btn btn-outline" onClick={onCancel}>Annuler</button><button type="button" className="btn btn-primary" onClick={nextStep1}>Continuer <i className="fas fa-arrow-right"/></button></div></div>}
+          {step === 2 && <div className="wizard-pane"><div className="wizard-intro"><span className="section-icon section-icon--mint"><i className="fas fa-file-lines"/></span><div><h3>Ajoutez la documentation</h3><p>Choisissez la source la plus confortable : texte collé ou fichier PDF/TXT.</p></div></div><div className="field-block"><label htmlFor="wizard-title-input">Titre du document</label><div className="field-with-icon"><i className="fas fa-heading"/><input id="wizard-title-input" value={form.titre} onChange={e => setForm({...form,titre:e.target.value})} placeholder="Ex. Guide utilisateur" autoFocus/></div></div><div className="field-block"><label htmlFor="wizard-content">Contenu texte</label><textarea id="wizard-content" rows={5} value={form.contenu} onChange={e => setForm({...form,contenu:e.target.value})} placeholder="Collez le contenu…"/></div><div className="field-block"><label htmlFor="wizard-file">Ou importer un fichier</label><label className={`upload-dropzone ${file ? 'has-file' : ''}`} htmlFor="wizard-file"><span className="upload-icon"><i className={`fas ${file ? 'fa-file-check' : 'fa-cloud-arrow-up'}`}/></span><span className="upload-copy"><strong>{file ? file.name : 'Choisir un PDF ou TXT'}</strong><small>{file ? 'Prêt à être envoyé à l’indexation' : 'Déposer le fichier ici ou parcourir'}</small></span><span className="upload-action">Parcourir</span><input id="wizard-file" type="file" accept=".pdf,.txt,application/pdf,text/plain" onChange={e => setFile(e.target.files?.[0] || null)}/></label></div><div className="modal-actions"><button type="button" className="btn btn-outline" onClick={() => setStep(1)}><i className="fas fa-arrow-left"/> Retour</button><button type="button" className="btn btn-primary" onClick={nextStep2}>Continuer <i className="fas fa-arrow-right"/></button></div></div>}
+          {step === 3 && <div className="wizard-pane"><div className="wizard-intro"><span className="section-icon section-icon--coral"><i className="fas fa-circle-question"/></span><div><h3>Ajoutez vos FAQ</h3><p>Optionnel : les réponses directes accélèrent les futures conversations.</p></div></div>{faqs.length > 0 && <div className="faq-draft-list">{faqs.map((f,i) => <div className="faq-draft" key={i}><span>Q{i + 1}</span><strong>{f.question}</strong></div>)}</div>}<div className="field-block"><label htmlFor="wizard-question">Question</label><input id="wizard-question" value={faqForm.question} onChange={e => setFaqForm({...faqForm,question:e.target.value})} placeholder="Ex. Comment réinitialiser mon mot de passe ?"/></div><div className="field-block"><label htmlFor="wizard-answer">Réponse</label><textarea id="wizard-answer" rows={3} value={faqForm.reponse} onChange={e => setFaqForm({...faqForm,reponse:e.target.value})} placeholder="Réponse claire et concise…"/></div><button type="button" className="btn btn-outline btn-sm add-faq-button" onClick={addFaqLocal}><i className="fas fa-plus"/> Ajouter cette FAQ</button><div className="modal-actions"><button type="button" className="btn btn-outline" onClick={() => setStep(2)}><i className="fas fa-arrow-left"/> Retour</button><button type="button" className="btn btn-primary" disabled={loading} onClick={createAll}>{loading ? 'Création en cours…' : 'Créer le projet'}<i className="fas fa-check"/></button></div></div>}
         </div>
       </div>
     </div>
