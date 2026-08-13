@@ -343,3 +343,65 @@ body {
         padding: 24px;
     }
 }
+
+/* CustomerAI “Atelier éditorial”: the auth shell is calm and operational — ivory canvas,
+   ink authority, coral action, marginal notes instead of a saturated SaaS gradient. */
+:root {
+    --ca-auth-ink: #1f2937;
+    --ca-auth-muted: #718096;
+    --ca-auth-canvas: #f6f3ee;
+    --ca-auth-surface: #fffdfa;
+    --ca-auth-line: #e5e0d8;
+    --ca-auth-coral: #e66a4e;
+    --ca-auth-coral-deep: #c9563e;
+}
+
+body { font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif; background: var(--ca-auth-canvas); }
+.login-container { background: var(--ca-auth-canvas); }
+.login-left { position: relative; overflow: hidden; color: var(--ca-auth-ink); background: var(--ca-auth-canvas); border-right: 1px solid var(--ca-auth-line); padding: clamp(32px, 7vw, 88px); }
+.login-left::before { content: ''; position: absolute; top: 11%; right: 8%; width: 180px; height: 180px; border: 1px solid rgba(230,106,78,.2); border-radius: 50%; pointer-events: none; }
+.login-left::after { content: ''; position: absolute; right: 16%; bottom: 12%; width: 54px; height: 54px; border: 1px solid rgba(31,41,55,.12); transform: rotate(12deg); pointer-events: none; }
+.login-brand, .login-features { position: relative; z-index: 1; }
+.login-brand .logo { gap: 10px; margin-bottom: 18px; color: var(--ca-auth-ink); font-family: 'Manrope', sans-serif; font-size: 29px; letter-spacing: -.05em; }
+.login-brand .logo .brand-mark { width: 34px; height: 34px; object-fit: contain; }
+.login-brand .logo i { display: none; }
+.login-lede { max-width: 410px; color: var(--ca-auth-muted); font-size: 16px; line-height: 1.7; }
+.login-features { margin-top: 70px; gap: 25px; }
+.feature-item { display: grid; grid-template-columns: 104px minmax(0, 1fr); align-items: start; gap: 18px; padding-top: 16px; border-top: 1px solid var(--ca-auth-line); }
+.feature-item i { display: none; }
+.feature-kicker { color: var(--ca-auth-coral-deep); font-size: 10px; font-weight: 850; letter-spacing: .1em; line-height: 1.35; text-transform: uppercase; }
+.feature-item h4 { margin-bottom: 4px; color: var(--ca-auth-ink); font-size: 15px; font-weight: 800; letter-spacing: -.015em; }
+.feature-item p { color: var(--ca-auth-muted); font-size: 13px; line-height: 1.55; }
+.login-right { background: var(--ca-auth-surface); padding: clamp(28px, 6vw, 82px); }
+.login-box { max-width: 430px; }
+.login-context-label { display: block; margin-bottom: 12px; color: var(--ca-auth-coral-deep); font-size: 10px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+.login-box h2 { margin-bottom: 8px; color: var(--ca-auth-ink); font-family: 'DM Serif Display', Georgia, serif; font-size: 37px; font-weight: 400; letter-spacing: -.03em; }
+.login-box > p { color: var(--ca-auth-muted); margin-bottom: 32px; }
+.form-group { margin-bottom: 21px; }
+.form-group label { color: var(--ca-auth-ink); font-weight: 800; }
+.form-group label i { color: var(--ca-auth-coral); }
+.form-group input { min-height: 48px; color: var(--ca-auth-ink); background: #fff; border-color: var(--ca-auth-line); border-radius: 10px; }
+.form-group input:focus { border-color: var(--ca-auth-coral); box-shadow: 0 0 0 4px rgba(230,106,78,.12); }
+.toggle-password:hover, .forgot-link { color: var(--ca-auth-coral-deep); }
+.btn-primary { background: var(--ca-auth-coral); box-shadow: 0 10px 22px rgba(230,106,78,.2); }
+.btn-primary:hover { background: var(--ca-auth-coral-deep); }
+.login-box form + p a { color: var(--ca-auth-coral-deep) !important; }
+
+@media (max-width: 900px) {
+    .login-left { display: flex; min-height: 260px; padding: 30px 24px 24px; border-right: 0; border-bottom: 1px solid var(--ca-auth-line); }
+    .login-left::before, .login-left::after { display: none; }
+    .login-brand .logo { font-size: 25px; }
+    .login-lede { max-width: 560px; font-size: 14px; }
+    .login-features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 28px; }
+    .feature-item { display: block; padding-top: 12px; }
+    .feature-item h4 { margin-top: 8px; font-size: 13px; }
+    .feature-item p { font-size: 11px; }
+    .login-right { min-height: calc(100vh - 260px); padding: 42px 24px 52px; }
+}
+
+@media (max-width: 560px) {
+    .login-left { min-height: auto; }
+    .login-features { display: none; }
+    .login-right { min-height: calc(100vh - 154px); padding: 34px 20px 42px; align-items: flex-start; }
+    .login-box h2 { font-size: 32px; }
+}
