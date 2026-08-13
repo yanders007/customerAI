@@ -8,8 +8,8 @@ import './styles/admin.css';
 import './styles/client.css';
 import './styles/customerai-overrides.css';
 
-// Style reminder: CustomerAI follows the “Atelier éditorial” direction — ivoire, bleu encre,
-// corail d’action, hiérarchie de lecture et responsive natif. Preserve all API contracts below.
+// Style reminder: CustomerAI follows the “Signal bleu de connaissance” direction — bleu nuit,
+// bleu électrique, cyan IA, surfaces lisibles et responsive natif. Preserve all API contracts below.
 
 // ════════════════════════════════════════════════
 //  HELPERS COMMUNS
@@ -118,8 +118,8 @@ export function ClientLogin() {
   return (
     <div className="login-container">
       <div className="login-left">
-        <div className="login-brand">
-          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-mark_a824261e.png" alt=""/><span>CustomerAI</span></div>
+      <div className="login-brand">
+          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-blue-intelligence-mark_23cbc398.png" alt=""/><span>CustomerAI</span></div>
           <p className="login-lede">Votre espace pour retrouver les réponses, les projets et la connaissance de votre équipe.</p>
         </div>
         <div className="login-features">
@@ -229,9 +229,9 @@ export function AdminLogin() {
   return (
     <div className="login-container">
       <div className="login-left">
-        <div className="login-brand">
-          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-mark_a824261e.png" alt=""/><span>CustomerAI</span></div>
-          <p className="login-lede">L’atelier où votre équipe transforme sa connaissance client en réponses fiables.</p>
+      <div className="login-brand">
+          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-blue-intelligence-mark_23cbc398.png" alt=""/><span>CustomerAI</span></div>
+          <p className="login-lede">La console où votre équipe transforme sa connaissance client en réponses fiables.</p>
         </div>
         <div className="login-features">
           <div className="feature-item">
@@ -446,16 +446,16 @@ export function ProjectSelect() {
     <div className="sidebar" style={{ position:'static', width:'100%', height:'auto', border:'none' }}>
       <div style={{ minHeight:'100vh', background:'#f8fafc' }}>
         <header style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 2rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <div className="logo"><i className="fas fa-headset"/><span>Support Client</span></div>
+          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-blue-intelligence-mark_23cbc398.png" alt=""/><span>CustomerAI</span></div>
           <div style={{ display:'flex', alignItems:'center', gap:12 }}>
             <span style={{ fontSize:14, color:'#64748b' }}>Bonjour, <strong>{client?.name}</strong></span>
-            <button className="logout-btn" onClick={async () => { await api.post('/client/logout'); clearSession(); navigate('/login-client'); }} style={{ width:'auto', padding:'8px 16px', background:'#fef2f2', color:'#ef4444', borderRadius:8, fontWeight:600, fontSize:13 }}>
+            <button className="logout-btn" onClick={async () => { await api.post('/client/logout'); clearSession(); navigate('/login-client'); }} style={{ width:'auto', padding:'8px 16px', background:'#eaf2ff', color:'#1546b8', borderRadius:8, fontWeight:600, fontSize:13 }}>
               <i className="fas fa-sign-out-alt"/> Déconnexion
             </button>
           </div>
         </header>
         <main style={{ padding:'3rem 2rem', maxWidth:860, margin:'0 auto' }}>
-          <h1 style={{ fontSize:28, fontWeight:800, color:'#1e1b4b', marginBottom:8 }}>Vos projets</h1>
+          <h1 style={{ fontSize:28, fontWeight:800, color:'#0b1d3a', marginBottom:8 }}>Vos projets</h1>
           <p style={{ color:'#64748b', marginBottom:'2rem' }}>Sélectionnez un projet pour démarrer avec le support.</p>
           {projects.length === 0 ? (
             <div style={{ textAlign:'center', padding:'4rem', color:'#64748b' }}>
@@ -465,13 +465,13 @@ export function ProjectSelect() {
           ) : (
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:16 }}>
               {projects.map(p => (
-                <button key={p.id} onClick={() => pick(p)} style={{ background:'#fff', border:'1.5px solid #e2e8f0', borderRadius:16, padding:'1.5rem', textAlign:'left', cursor:'pointer', transition:'all .2s' }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor='#6366f1'; e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='0 10px 30px rgba(99,102,241,.15)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor='#e2e8f0'; e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow=''; }}>
-                  <div style={{ width:44, height:44, background:'rgba(99,102,241,.1)', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:12 }}>
-                    <i className="fas fa-folder" style={{ color:'#6366f1', fontSize:20 }}/>
+                <button key={p.id} onClick={() => pick(p)} style={{ background:'#fff', border:'1.5px solid #dfe8f2', borderRadius:16, padding:'1.5rem', textAlign:'left', cursor:'pointer', transition:'all .2s' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor='#155eef'; e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='0 10px 30px rgba(37,99,235,.15)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor='#dfe8f2'; e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow=''; }}>
+                  <div style={{ width:44, height:44, background:'rgba(37,99,235,.1)', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:12 }}>
+                    <i className="fas fa-folder" style={{ color:'#155eef', fontSize:20 }}/>
                   </div>
-                  <h3 style={{ fontWeight:700, color:'#1e1b4b', marginBottom:4, fontSize:15 }}>{p.nom_projet}</h3>
+                  <h3 style={{ fontWeight:700, color:'#0b1d3a', marginBottom:4, fontSize:15 }}>{p.nom_projet}</h3>
                   <p style={{ fontSize:13, color:'#64748b' }}>Cliquez pour accéder à l'assistant</p>
                 </button>
               ))}
@@ -497,10 +497,11 @@ export function Chat() {
   const [project, setProject]             = useState(null);
   const [client, setClient]               = useState(null);
   const [escalated, setEscalated]         = useState(false);
-  const [sidebarOpen, setSidebarOpen]     = useState(true);
+  const [sidebarOpen, setSidebarOpen]     = useState(() => typeof window === 'undefined' || window.innerWidth > 1024);
   const bottomRef = useRef(null);
   const inputRef  = useRef(null);
   const navigate  = useNavigate();
+  const closeSidebarOnMobile = () => { if (typeof window !== 'undefined' && window.innerWidth <= 1024) setSidebarOpen(false); };
 
   useEffect(() => {
     (async () => {
@@ -686,15 +687,16 @@ export function Chat() {
   return (
     <div style={{ display:'flex', height:'100vh', overflow:'hidden', background:'#f8fafc' }}>
       {/* ─ Sidebar ─ */}
-      <aside className={`sidebar ${sidebarOpen ? '' : 'collapsed'}`} style={{ position:'relative', height:'100vh', flexShrink:0 }}>
+      {sidebarOpen && <button type="button" className="mobile-sidebar-backdrop" aria-label="Fermer le menu" onClick={() => setSidebarOpen(false)}/>} 
+      <aside className={`sidebar ${sidebarOpen ? 'open' : ''} ${sidebarOpen ? '' : 'collapsed'}`} style={{ position:'relative', height:'100vh', flexShrink:0 }}>
         <div className="sidebar-header">
-          <div className="logo"><i className="fas fa-headset"/><span>Support Client</span></div>
+          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-blue-intelligence-mark_23cbc398.png" alt=""/><span>CustomerAI</span></div>
           <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <i className="fas fa-chevron-left"/>
           </button>
         </div>
         <nav className="sidebar-nav">
-          <button className="nav-item active" onClick={() => startNewConversation()} style={{ width:'100%', textAlign:'left' }}>
+          <button className="nav-item active" onClick={async () => { await startNewConversation(); closeSidebarOnMobile(); }} style={{ width:'100%', textAlign:'left' }}>
             <i className="fas fa-plus-circle"/><span>Nouvelle conversation</span>
           </button>
           <div style={{ padding:'8px 12px', fontSize:11, fontWeight:700, color:'#94a3b8', textTransform:'uppercase', letterSpacing:'.06em', marginTop:8, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
@@ -715,7 +717,7 @@ export function Chat() {
             )}
           </div>
           {conversations.map(c => (
-            <button key={c.id} className={`nav-item ${c.id === activeConvId ? 'active' : ''}`} onClick={() => loadConversation(c.id)} style={{ width:'100%', textAlign:'left', display:'flex', alignItems:'center', gap:8 }}>
+            <button key={c.id} className={`nav-item ${c.id === activeConvId ? 'active' : ''}`} onClick={async () => { await loadConversation(c.id); closeSidebarOnMobile(); }} style={{ width:'100%', textAlign:'left', display:'flex', alignItems:'center', gap:8 }}>
               <i className={`fas fa-${c.status === 'escalated' ? 'exclamation-circle' : 'comment'}`} style={{ color: c.status === 'escalated' ? '#ef4444' : '' }}/>
               <span style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', flex:1 }}>Conv. #{c.id} · {formatDate(c.created_at)}</span>
               <button onClick={async (e) => {
@@ -764,18 +766,18 @@ export function Chat() {
       </aside>
 
       {/* ─ Main chat ─ */}
-      <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
-        <header style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 1.5rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
+      <div className="client-chat-main" style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
+        <header className="client-chat-header" style={{ background:'#fff', borderBottom:'1px solid #e2e8f0', padding:'0 1.5rem', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }}>
           <div>
             <h1 style={{ fontSize:18, fontWeight:800, color:'#1e1b4b' }}>{project?.nom_projet || 'Support'}</h1>
             <p style={{ fontSize:12, color:'#64748b' }}>Service client · Disponible 24h/24</p>
           </div>
-          <button onClick={() => startNewConversation()} style={{ background:'rgba(99,102,241,.1)', color:'#6366f1', border:'1.5px solid #6366f1', padding:'8px 16px', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
+          <button className="chat-new-conversation" onClick={() => startNewConversation()} style={{ background:'rgba(99,102,241,.1)', color:'#6366f1', border:'1.5px solid #6366f1', padding:'8px 16px', borderRadius:8, fontWeight:600, fontSize:13, cursor:'pointer', display:'flex', alignItems:'center', gap:6 }}>
             <i className="fas fa-plus"/> Nouvelle conversation
           </button>
         </header>
 
-        <div style={{ flex:1, overflowY:'auto', padding:'1.5rem', display:'flex', flexDirection:'column', gap:12 }}>
+        <div className="client-chat-messages" style={{ flex:1, overflowY:'auto', padding:'1.5rem', display:'flex', flexDirection:'column', gap:12 }}>
           {messages.length === 0 && (
             <div style={{ textAlign:'center', padding:'4rem', color:'#94a3b8' }}>
               <i className="fas fa-comments" style={{ fontSize:48, marginBottom:16, opacity:.3 }}/>
@@ -789,7 +791,7 @@ export function Chat() {
                   <i className={`fas fa-${m.role === 'human_support' ? 'user-tie' : 'robot'}`} style={{ color:'#fff', fontSize:14 }}/>
                 </div>
               )}
-              <div style={{ maxWidth:'75%', padding:'10px 14px', borderRadius:16, background: m.role === 'user' ? '#6366f1' : m.role === 'human_support' ? '#7c3aed' : '#fff', color: m.role === 'user' || m.role === 'human_support' ? '#fff' : '#1e293b', border: m.role === 'assistant' ? '1px solid #e2e8f0' : 'none', borderBottomRightRadius: m.role === 'user' ? 4 : 16, borderBottomLeftRadius: m.role !== 'user' ? 4 : 16, boxShadow:'0 2px 8px rgba(0,0,0,.06)' }}>
+              <div className="chat-message-bubble" style={{ maxWidth:'75%', padding:'10px 14px', borderRadius:16, background: m.role === 'user' ? '#6366f1' : m.role === 'human_support' ? '#7c3aed' : '#fff', color: m.role === 'user' || m.role === 'human_support' ? '#fff' : '#1e293b', border: m.role === 'assistant' ? '1px solid #e2e8f0' : 'none', borderBottomRightRadius: m.role === 'user' ? 4 : 16, borderBottomLeftRadius: m.role !== 'user' ? 4 : 16, boxShadow:'0 2px 8px rgba(0,0,0,.06)' }}>
                 {m.role !== 'user' && <div style={{ fontSize:10, fontWeight:700, opacity:.6, marginBottom:4, textTransform:'uppercase', letterSpacing:'.05em' }}>{m.role === 'human_support' ? 'Support humain' : 'Assistant'}</div>}
                 <div dangerouslySetInnerHTML={{ __html: renderMd(m.content) }} style={{ fontSize:14, lineHeight:1.6 }}/>
                 <div style={{ fontSize:10, opacity:.5, marginTop:4, textAlign:'right' }}>{formatTime(m.created_at)}</div>
@@ -821,7 +823,7 @@ export function Chat() {
           <div ref={bottomRef}/>
         </div>
 
-        <div style={{ background:'#fff', borderTop:'1px solid #e2e8f0', padding:'1rem 1.5rem', display:'flex', gap:8, alignItems:'flex-end', flexShrink:0 }}>
+        <div className="client-chat-composer" style={{ background:'#fff', borderTop:'1px solid #e2e8f0', padding:'1rem 1.5rem', display:'flex', gap:8, alignItems:'flex-end', flexShrink:0 }}>
           <textarea ref={inputRef} rows={1} style={{ flex:1, minHeight:44, maxHeight:160, resize:'none', padding:'10px 14px', border:'1.5px solid #e2e8f0', borderRadius:12, fontSize:14, fontFamily:'inherit', outline:'none', transition:'border-color .15s', overflowY:'auto', background: escalated ? '#f3f4f6' : '#fff', color: escalated ? '#9ca3af' : '#1e293b' }}
             placeholder={escalated ? "En attente du support humain..." : "Posez votre question… (Entrée pour envoyer)"}
             value={input} onChange={e => setInput(e.target.value)}
@@ -945,13 +947,14 @@ export function AdminPanel() {
   const [selDoc, setSelDoc]           = useState(null);
   const [subTab, setSubTab]           = useState('projets');
   const [loading, setLoading]         = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => typeof window === 'undefined' || window.innerWidth > 1024);
   const [toast, setToast]             = useState(null);
   const [escalatedCount, setEscalatedCount] = useState(0);
   const [tokenPeriod, setTokenPeriod] = useState('week');
   const [showNewClient, setShowNewClient] = useState(false);
   const [showWizard, setShowWizard]   = useState(false);
   const navigate = useNavigate();
+  const closeSidebarOnMobile = () => { if (typeof window !== 'undefined' && window.innerWidth <= 1024) setSidebarOpen(false); };
 
   const notify = (text, kind='success') => { setToast({ text, kind }); setTimeout(() => setToast(null), 3500); };
 
@@ -1030,9 +1033,10 @@ export function AdminPanel() {
   return (
     <div className="admin-container">
       {/* ─ Sidebar ─ */}
+      {sidebarOpen && <button type="button" className="mobile-sidebar-backdrop" aria-label="Fermer le menu" onClick={() => setSidebarOpen(false)}/>} 
       <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''} ${sidebarOpen ? '' : 'collapsed'}`}>
         <div className="sidebar-header">
-          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-mark_a824261e.png" alt=""/><span>CustomerAI</span></div>
+          <div className="logo"><img className="brand-mark" src="/manus-storage/customerai-brand-mark_16709fcd.png" alt=""/><span>CustomerAI</span></div>
           <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
             <i className="fas fa-chevron-left"/>
           </button>
@@ -1040,7 +1044,7 @@ export function AdminPanel() {
         <nav className="sidebar-nav">
           {navItems.map(({ key, icon, label, badge }) => (
             <a key={key} href={`#${key}`} className={`nav-item ${section === key || (section === 'panel' && key === 'clients') ? 'active' : ''}`}
-              onClick={e => { e.preventDefault(); setSection(key); }}>
+              onClick={e => { e.preventDefault(); setSection(key); closeSidebarOnMobile(); }}>
               <i className={`fas fa-${icon}`}/>
               <span>{label}</span>
               {badge > 0 && <span style={{ marginLeft:'auto', background:'#ef4444', color:'#fff', fontSize:11, fontWeight:700, padding:'2px 7px', borderRadius:20, minWidth:18 }}>{badge}</span>}
@@ -1060,7 +1064,7 @@ export function AdminPanel() {
       <main className="admin-main">
         <header className="admin-header">
           <div className="header-title">
-            <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}><i className="fas fa-bars"/></button>
+            <button className="mobile-menu-btn" aria-label={sidebarOpen ? 'Fermer le menu' : 'Ouvrir le menu'} aria-expanded={sidebarOpen} onClick={() => setSidebarOpen(!sidebarOpen)}><i className={`fas fa-${sidebarOpen ? 'times' : 'bars'}`}/></button>
             <h1 id="pageTitle">{{ dashboard:'Tableau de bord', clients:'Clients', convs:'Conversations', tokens:'Tokens & RAG', 'faqs-global':'FAQ enregistrées', 'ai-config':'Configuration API', panel:'Détail client' }[section] || 'Admin'}</h1>
           </div>
           <div className="header-actions">
