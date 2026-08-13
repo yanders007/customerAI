@@ -10,13 +10,16 @@ class AiConfig extends Model
     protected $fillable = [
         'provider',
         'model',
+        'label',
         'api_key_encrypted',
         'is_active',
         'system_prompt',
+        'last_used_at',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_active'    => 'boolean',
+        'last_used_at' => 'datetime',
     ];
 
     // ── Masquer la clé dans toutes les sérialisations JSON ─────────────────
@@ -51,6 +54,11 @@ class AiConfig extends Model
         return cache()->remember('ai_config_active', 300, function () {
             return self::where('is_active', true)->latest()->first();
         });
+    }
+
+    public function markUsed(): void
+    {
+        $this->forceFill(['last_used_at' => now()])->saveQuietly();
     }
 
     // ── Invalide le cache quand une config est sauvegardée ─────────────────

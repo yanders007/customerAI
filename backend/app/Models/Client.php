@@ -16,6 +16,11 @@ class Client extends Model
         return $this->hasMany(Projet::class);
     }
 
+    public function aiUsages()
+    {
+        return $this->hasMany(AiUsage::class);
+    }
+
     /**
      * Vérifie si le client est en ligne (actif dans les 2 dernières minutes)
      */

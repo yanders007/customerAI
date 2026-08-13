@@ -18,4 +18,5 @@ class Conversation extends Model
     public function client()      { return $this->belongsTo(Client::class); }
     public function projet()      { return $this->belongsTo(Projet::class); }
     public function messages()    { return $this->hasMany(Message::class)->orderBy('created_at'); }
+    public function aiUsages()    { return $this->hasMany(AiUsage::class); }
 }
