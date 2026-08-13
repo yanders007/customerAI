@@ -62,20 +62,13 @@ PROMPT;
         // Vérifier que la clé API est valide
         $apiKey = $config->api_key;
         
-        // Debugging: log pour voir ce qui se passe
-        Log::info('AiService validation clé', [
-            'provider' => $config->provider,
-            'has_encrypted' => !empty($config->attributes['api_key_encrypted'] ?? null),
-            'encrypted_length' => strlen($config->attributes['api_key_encrypted'] ?? ''),
-            'decrypted_length' => strlen($apiKey ?? ''),
-            'is_empty' => empty($apiKey),
-        ]);
-        
         if (empty($apiKey) || strlen($apiKey) < 10) {
             return $this->errorResponse(
                 "Clé API invalide ou manquante pour {$config->provider}. Vérifiez la configuration dans l'admin."
             );
         }
+
+        $config->markUsed();
 
         $systemPrompt = $this->buildSystemPrompt($config, $documentation, $faq, $clientName);
         $userMessage  = $this->buildUserMessage($question, $history, $documentation, $faq, $clientName);
@@ -154,7 +147,7 @@ PROMPT;
         $answer = $data['choices'][0]['message']['content'] ?? '';
         $usage  = $data['usage'] ?? [];
 
-        return $this->formatResponse($answer, $usage['prompt_tokens'] ?? 0, $usage['completion_tokens'] ?? 0);
+        return $this->formatResponse($config, $answer, $usage['prompt_tokens'] ?? 0, $usage['completion_tokens'] ?? 0);
     }
 
     private function callGemini(AiConfig $config, string $system, string $user): array
@@ -176,6 +169,7 @@ PROMPT;
         $usageMeta = $data['usageMetadata'] ?? [];
 
         return $this->formatResponse(
+            $config,
             $answer,
             $usageMeta['promptTokenCount']     ?? 0,
             $usageMeta['candidatesTokenCount'] ?? 0,
@@ -201,7 +195,7 @@ PROMPT;
         $answer = $data['content'][0]['text'] ?? '';
         $usage  = $data['usage'] ?? [];
 
-        return $this->formatResponse($answer, $usage['input_tokens'] ?? 0, $usage['output_tokens'] ?? 0);
+        return $this->formatResponse($config, $answer, $usage['input_tokens'] ?? 0, $usage['output_tokens'] ?? 0);
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────
@@ -264,7 +258,7 @@ Réponds en français, de manière claire, chaleureuse et concise.";
 {$question}";
     }
 
-    private function formatResponse(string $rawAnswer, int $inputTokens, int $outputTokens): array
+    private function formatResponse(AiConfig $config, string $rawAnswer, int $inputTokens, int $outputTokens): array
     {
         $escalate = str_contains($rawAnswer, 'ESCALATION_NEEDED');
         $answer   = trim(str_replace('ESCALATION_NEEDED', '', $rawAnswer));
@@ -273,6 +267,9 @@ Réponds en français, de manière claire, chaleureuse et concise.";
             'answer'        => $answer,
             'tokens_input'  => $inputTokens,
             'tokens_output' => $outputTokens,
+            'provider'      => $config->provider,
+            'model'         => $config->model,
+            'ai_config_id'  => $config->id,
             'escalate'      => $escalate,
         ];
     }

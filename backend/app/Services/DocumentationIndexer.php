@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Documentation;
 use App\Models\DocumentationChunk;
+use App\Models\AiUsage;
 use Illuminate\Support\Facades\Log;
 
 class DocumentationIndexer
@@ -28,6 +29,7 @@ class DocumentationIndexer
      */
     public function index(Documentation $documentation): void
     {
+        $documentation->loadMissing('projet');
         DocumentationChunk::where('documentation_id', $documentation->id)->delete();
 
         $chunksText = $this->chunker->split($documentation->contenu);
@@ -55,6 +57,7 @@ class DocumentationIndexer
         $vectors = $this->embeddings->isConfigured()
             ? $this->embeddings->embedBatch($textsToEmbed)
             : array_fill(0, count($chunksText), null);
+        $embeddingTokens = $this->embeddings->lastUsageTokens();
 
         foreach ($chunksText as $i => $chunkText) {
             DocumentationChunk::create([
@@ -70,6 +73,21 @@ class DocumentationIndexer
             'documentation_id'   => $documentation->id,
             'chunks_total'       => count($chunksText),
             'chunks_vectorisés'  => $withEmbedding,
+        ]);
+
+        AiUsage::recordUsage([
+            'client_id'        => $documentation->projet?->client_id,
+            'request_type'     => 'embedding_index',
+            'provider'         => 'cohere',
+            'model'            => 'embed-multilingual-v3.0',
+            'tokens_input'     => 0,
+            'tokens_output'    => 0,
+            'embedding_tokens' => $embeddingTokens,
+            'metadata'         => [
+                'documentation_id' => $documentation->id,
+                'chunks_total'     => count($chunksText),
+                'chunks_vectorized'=> $withEmbedding,
+            ],
         ]);
     }
 }

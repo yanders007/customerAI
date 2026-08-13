@@ -80,14 +80,15 @@ class RetrievalService
     {
         // ── Étape 1 : embedding de la question ───────────────────
         if (!$this->embeddings->isConfigured()) {
-            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => ''];
+            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => '', 'embedding_tokens' => 0];
         }
 
         // Une question doit utiliser input_type=search_query, différent du
         // mode search_document utilisé lors de l’indexation.
         $questionVector = $this->embeddings->embedQuery($question);
+        $embeddingTokens = $this->embeddings->lastUsageTokens();
         if ($questionVector === null) {
-            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => ''];
+            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => '', 'embedding_tokens' => $embeddingTokens];
         }
 
         // Une seule vectorisation de la question sert à la FAQ et aux chunks.
@@ -100,26 +101,27 @@ class RetrievalService
                 'source'      => 'faq',
                 'faq'         => $faqMatch['faq'],
                 'faq_context' => $faqSearch['context'],
+                'embedding_tokens' => $embeddingTokens,
             ];
         }
 
         // ── Étape 2 : similarité cosinus sur les chunks ──────────
         $chunks = $this->loadChunks($projetId);
         if ($chunks->isEmpty()) {
-            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => $faqSearch['context']];
+            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => $faqSearch['context'], 'embedding_tokens' => $embeddingTokens];
         }
 
         $scored = $this->scoreChunks($chunks, $questionVector);
 
         if (empty($scored)) {
-            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => $faqSearch['context']];
+            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => $faqSearch['context'], 'embedding_tokens' => $embeddingTokens];
         }
 
         // ── Étape 3 : déduplication sémantique (MMR simplifié) ───
         $selected = $this->deduplicate($scored);
 
         if (empty($selected)) {
-            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => $faqSearch['context']];
+            return ['context' => $this->fallback($projetId), 'source' => 'fallback', 'faq' => null, 'faq_context' => $faqSearch['context'], 'embedding_tokens' => $embeddingTokens];
         }
 
         $contextParts = [];
@@ -148,6 +150,7 @@ class RetrievalService
             'faq'          => null,
             'faq_context'  => $faqSearch['context'],
             'chunks_count' => count($contextParts),
+            'embedding_tokens' => $embeddingTokens,
         ];
     }
 

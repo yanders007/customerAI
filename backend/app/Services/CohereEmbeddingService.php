@@ -17,6 +17,13 @@ class CohereEmbeddingService
     // 3 secondes = safe pour 20 requêtes/minute
     private const BATCH_DELAY_SECONDS = 3;
 
+    private int $lastUsageTokens = 0;
+
+    public function lastUsageTokens(): int
+    {
+        return $this->lastUsageTokens;
+    }
+
     public function isConfigured(): bool
     {
         return !empty(config('services.cohere.api_key'));
@@ -46,6 +53,8 @@ class CohereEmbeddingService
      */
     public function embedBatch(array $texts): array
     {
+        $this->lastUsageTokens = 0;
+
         if (empty($texts) || !$this->isConfigured()) {
             return array_fill(0, count($texts), null);
         }
@@ -87,6 +96,7 @@ class CohereEmbeddingService
                 }
 
                 $embeddings = $response->json('embeddings') ?? [];
+                $this->lastUsageTokens += (int) ($response->json('meta.billed_units.input_tokens') ?? 0);
                 $i = 0;
                 foreach ($batch as $index => $text) {
                     $results[$index] = $embeddings[$i] ?? null;
@@ -112,6 +122,8 @@ class CohereEmbeddingService
      */
     public function embedQuery(string $query): ?array
     {
+        $this->lastUsageTokens = 0;
+
         if (!$this->isConfigured()) {
             return null;
         }
@@ -139,6 +151,7 @@ class CohereEmbeddingService
             }
 
             $embeddings = $response->json('embeddings') ?? [];
+            $this->lastUsageTokens = (int) ($response->json('meta.billed_units.input_tokens') ?? 0);
             return $embeddings[0] ?? null;
         } catch (\Throwable $e) {
             Log::warning('CohereEmbeddingService: exception embedding query', [
