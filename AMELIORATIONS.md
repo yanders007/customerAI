@@ -1,9 +1,6 @@
 # 🚀 Améliorations CustomerAI - Résumé Complet
-
 ## ✨ Vue d'ensemble
 Toutes les fonctionnalités demandées ont été implémentées avec succès ! Voici le détail des améliorations apportées à votre plateforme CustomerAI.
-
----
 
 ## 📋 Fonctionnalités Ajoutées
 
@@ -24,7 +21,6 @@ Toutes les fonctionnalités demandées ont été implémentées avec succès ! V
 4. Les modifications sont automatiquement ré-indexées par l'IA
 ```
 
----
 
 ### 2. 🎨 **Création de FAQ Modernisée**
 **Localisation** : Section Admin → Clients → Projet → Docs → FAQ
