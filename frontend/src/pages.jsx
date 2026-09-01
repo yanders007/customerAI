@@ -8,7 +8,7 @@ import './styles/admin.css';
 import './styles/client.css';
 import './styles/customerai-overrides.css';
 
-// Style reminder: CustomerAI follows the “Signal bleu de connaissance” direction — bleu nuit,
+// Style reminder: CustomerAI follows the “Signal bleu de connaissance” — bleu nuit,
 // bleu électrique, cyan IA, surfaces lisibles et responsive natif. Preserve all API contracts below.
 
 // ════════════════════════════════════════════════
